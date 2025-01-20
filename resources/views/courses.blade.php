@@ -113,6 +113,7 @@
 				</div>
 
 				<div class="row">
+                    <!-- ici on parcoure les courses -->
 					<div class="col-lg-4 col-md-6">
 						<div class="single-course">
 							<a href="single-course.html">
@@ -251,144 +252,8 @@
 						</div>
 					</div>
 
-					<div class="col-lg-4 col-md-6">
-						<div class="single-course">
-							<a href="single-course.html">
-								<img src="assets/img/course-img/course-img-4.jpg" alt="Image">
-							</a>
 
-							<div class="course-content">
-								<span class="price">$49</span>
-								<span class="tag">Teaching</span>
-
-								<a href="single-courses.html">
-									<h3>Introduction to cybersecurity for teachers</h3>
-								</a>
-
-								<ul class="rating">
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<span>0.5</span>
-										<a href="#">(2 rating)</a>
-									</li>
-								</ul>
-
-								<p>Lorem ipsum dolor sit amet, consectetur adip iscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-
-								<ul class="lessons">
-									<li>0 Lessons</li>
-									<li class="float">50 Students</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-lg-4 col-md-6">
-						<div class="single-course">
-							<a href="single-course.html">
-								<img src="assets/img/course-img/course-img-5.jpg" alt="Image">
-							</a>
-
-							<div class="course-content">
-								<span class="price">$39</span>
-								<span class="tag">Teaching</span>
-
-								<a href="single-course.html">
-									<h3>Learning implementing formative assessment</h3>
-								</a>
-
-								<ul class="rating">
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<span>0.5</span>
-										<a href="#">(1 rating)</a>
-									</li>
-								</ul>
-
-								<p>Lorem ipsum dolor sit amet, consectetur adip iscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-
-								<ul class="lessons">
-									<li>0 Lessons</li>
-									<li class="float">44 Students</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-lg-4 col-md-6">
-						<div class="single-course">
-							<a href="single-course.html">
-								<img src="assets/img/course-img/course-img-6.jpg" alt="Image">
-							</a>
-
-							<div class="course-content">
-								<span class="price">$59</span>
-								<span class="tag">Education</span>
-
-								<a href="single-course.html">
-									<h3>Teaching languages in primary schools: putting research</h3>
-								</a>
-
-								<ul class="rating">
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<span>0.5</span>
-										<a href="#">(3 rating)</a>
-									</li>
-								</ul>
-
-								<p>Lorem ipsum dolor sit amet, consectetur adip iscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-
-								<ul class="lessons">
-									<li>0 Lessons</li>
-									<li class="float">44 Students</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
+                    <!-- pagination -->
 					<div class="col-lg-12 col-md-12">
                         <div class="pagination-area">
 							<!--
