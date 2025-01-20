@@ -446,7 +446,7 @@
 		<!-- Start Popular Courses Area -->
 
 		<!-- End Categories Area -->
-		<section class="categories-area ptb-100">
+		{{-- <section class="categories-area ptb-100">
 			<div class="container">
 				<div class="section-title">
 					<span>Categories</span>
@@ -582,7 +582,7 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> --}}
 		<!-- End Categories Area -->
 
 		<!-- Start Feature Area -->
@@ -673,7 +673,7 @@
 		<!-- End Feedback Area -->
 
 		<!-- Start Events Area -->
-		<section class="event-area-two ptb-100">
+		{{-- <section class="event-area-two ptb-100">
 			<div class="container">
 				<div class="section-title">
 					<span>Education Events</span>
@@ -796,11 +796,11 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> --}}
 		<!-- End Events Area -->
 
 		<!-- Start Teachers Area -->
-		<section class="teachers-area-two pt-100 pb-70">
+		{{-- <section class="teachers-area-two pt-100 pb-70">
 			<div class="container">
 				<div class="section-title">
 					<span>Our Teachers</span>
@@ -902,7 +902,7 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> --}}
 		<!-- End Teachers Area -->
 
 		<!-- Start Counter Area -->
@@ -971,7 +971,7 @@
 		<!-- End Counter Area -->
 
 		<!-- Start News Area -->
-		<section class="news-area-two pt-100 pb-70">
+		{{-- <section class="news-area-two pt-100 pb-70">
 			<div class="container">
 				<div class="section-title">
 					<span>Our News</span>
@@ -1044,11 +1044,11 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> --}}
 		<!-- End News Area -->
 
 		<!-- Start Partner Area -->
-		<div class="partner-area f5f6fa-bg-color ptb-100">
+		{{-- <div class="partner-area f5f6fa-bg-color ptb-100">
 			<div class="container">
 				<div class="partner-wrap owl-theme owl-carousel">
 					<div class="partner-item">
@@ -1082,126 +1082,12 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> --}}
 		<!-- End Partner Area -->
 
-		<!-- Start Footer Top Area -->
-		<footer class="footer-top-area pt-100 pb-70">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-3 col-sm-6">
-						<div class="footer-widget">
-							<h3>Find Us</h3>
-
-							<ul class="address">
-								<li class="location">
-									<i class="bx bxs-location-plus"></i>
-									6890 Blvd, The Bronx, NY 1058 New York, USA
-								</li>
-
-								<li>
-									<i class="bx bxs-envelope"></i>
-									<a href="mailto:hello@eduon.com">hello@eduon.com</a>
-									<a href="mailto:public@eduon.com">public@eduon.com</a>
-								</li>
-
-								<li>
-									<i class="bx bxs-phone-call"></i>
-									<a href="tel:+1(514)312-5678">+1 (514) 312-5678</a>
-									<a href="tel:+1(514)312-6688">+1 (514) 312-6688</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="col-lg-3 col-sm-6">
-						<div class="footer-widget">
-							<h3>Useful links</h3>
-
-							<ul class="link">
-								<li>
-									<a href="courses.html">All Courses</a>
-								</li>
-								<li>
-									<a href="about.html">About us</a>
-								</li>
-								<li>
-									<a href="faq.html">Help (FAQ)</a>
-								</li>
-								<li>
-									<a href="terms-conditions.html">Terms & Conditions</a>
-								</li>
-								<li>
-									<a href="privacy-policy.html">Privacy Policy</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="col-lg-3 col-sm-6">
-						<div class="footer-widget">
-							<h3>Top online courses</h3>
-
-							<ul class="link">
-								<li>
-									<a href="#">AI for everyone</a>
-								</li>
-								<li>
-									<a href="#">Networks and deep learning</a>
-								</li>
-								<li>
-									<a href="#">Learning with python</a>
-								</li>
-								<li>
-									<a href="#">Financial markets</a>
-								</li>
-								<li>
-									<a href="#">Speak English professionally</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="col-lg-3 col-sm-6">
-						<div class="footer-widget">
-							<h3>Popular subjects</h3>
-
-							<ul class="link">
-								<li>
-									<a href="#">Data science</a>
-								</li>
-								<li>
-									<a href="#">Computer science</a>
-								</li>
-								<li>
-									<a href="#">Business and Management</a>
-								</li>
-								<li>
-									<a href="#">Business and Management</a>
-								</li>
-								<li>
-									<a href="#">Nature & Environment</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</footer>
-		<!-- End Footer Top Area -->
-
-		<!-- Start Footer Bottom Area -->
-		<footer class="footer-bottom-area">
-			<div class="container">
-				<div class="copyright-wrap">
-					<p>
-						Copyright <i class="bx bx-copyright"></i>2022 Eduon. Designed By
-						<a href="https://hibootstrap.com/" target="blank">HiBootstrap.com</a>
-					</p>
-				</div>
-			</div>
-		</footer>
-		<!-- End Footer Bottom Area -->
+		<!-- Start Footer  Area -->
+		@include('footer')
+		<!-- End Footer  Area -->
 
 		<!-- Start Go Top Area -->
 		<div class="go-top">

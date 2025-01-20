@@ -19,7 +19,7 @@
                 <div class="collapse navbar-collapse mean-menu">
                     <ul class="navbar-nav m-auto">
                         <li class="nav-item">
-                            <a href="#" class="nav-link active">
+                            <a href="{{ route('home') }}" class="nav-link active">
                                 Home
                                 {{-- <i class="bx bx-chevron-down"></i> --}}
                             </a>
@@ -38,7 +38,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{ route('courses') }}" class="nav-link">
                                 Courses
                                 {{-- <i class="bx bx-chevron-down"></i> --}}
                             </a>
@@ -135,10 +135,10 @@
 
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a href="shop.html" class="nav-link">Shop</a>
+                                    <a href="{{ route('shop') }}" class="nav-link">Shop</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="cart.html" class="nav-link">Cart</a>
+                                    <a href="{{ route('cart') }}" class="nav-link">Cart</a>
                                 </li>
                                {{--  <li class="nav-item">
                                     <a href="checkout.html" class="nav-link">Checkout</a>
@@ -147,7 +147,7 @@
                                     <a href="single-product.html" class="nav-link">Single Product</a>
                                 </li> --}}
                                 <li class="nav-item">
-                                    <a href="wishlist.html" class="nav-link">Wishlist</a>
+                                    <a href="{{ route('wishlist') }}" class="nav-link">Wishlist</a>
                                 </li>
                             </ul>
                         </li>
@@ -178,7 +178,7 @@
                         </li> --}}
 
                         <li class="nav-item">
-                            <a href="contact.html" class="nav-link">Contact</a>
+                            <a href="{{ route('contact') }}" class="nav-link">Contact</a>
                         </li>
                     </ul>
 
