@@ -35,7 +35,7 @@
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
-		<title>Eduon - Online Courses & Training HTML Template</title>
+		<title>SafetyFirstHub - Online Courses & Training HTML Template</title>
     </head>
     <body>
 		<!-- Start Preloader Area -->
@@ -213,6 +213,7 @@
 				</div>
 
 				<div class="courses-slider-two owl-theme owl-carousel">
+                    <!-- ici on parcoure les courses -->
 					<div class="single-course">
 						<a href="single-course.html">
 							<img src="assets/img/course-img/course-img-1.jpg" alt="Image">
@@ -327,7 +328,7 @@
 						</div>
 					</div>
 
-					<div class="single-course">
+					{{-- <div class="single-course">
 						<a href="single-course.html">
 							<img src="assets/img/course-img/course-img-4.jpg" alt="Image">
 						</a>
@@ -439,7 +440,7 @@
 								<li class="float">44 Students</li>
 							</ul>
 						</div>
-					</div>
+					</div> --}}
 				</div>
 			</div>
 		</section>
@@ -663,12 +664,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="feedback-shape-1">
+			{{-- <div class="feedback-shape-1">
 				<img src="assets/img/feedback-img/feedback-shape-1.png" alt="Image">
 			</div>
 			<div class="feedback-shape-2">
 				<img src="assets/img/feedback-img/feedback-shape-2.png" alt="Image">
-			</div>
+			</div> --}}
 		</section>
 		<!-- End Feedback Area -->
 
