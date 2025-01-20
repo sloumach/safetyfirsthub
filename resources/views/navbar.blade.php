@@ -200,7 +200,7 @@
                         </div>
 
                         <div class="cart-icon">
-                            <a href="cart.html">
+                            <a href="{{ route('cart') }}">
                                 <i class="flaticon-shopping-cart"></i>
                                 <span>0</span>
                             </a>
