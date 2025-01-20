@@ -82,7 +82,7 @@
 				<div class="row">
 					<div class="col-lg-8">
 						<div class="shop-card-wrap">
-							<div class="showing-result">
+							{{-- <div class="showing-result">
 								<div class="row align-items-center">
 									<div class="col-lg-6 col-sm-6">
 										<div class="showing-result-count">
@@ -104,9 +104,10 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> --}}
 
 							<div class="row">
+                                <!-- ici on parcoure les courses	-->
 								<div class="col-lg-4 col-sm-6">
 									<div class="single-shop">
 										<div class="shop-img">
@@ -197,184 +198,7 @@
 									</div>
 								</div>
 
-								<div class="col-lg-4 col-sm-6">
-									<div class="single-shop">
-										<div class="shop-img">
-											<img src="assets/img/shop/shop-img-4.jpg" alt="Image">
-
-											<ul>
-												<li>
-													<a href="#">
-														<a href="#product-view-one" data-bs-toggle="modal">
-															<i class="bx bx-show-alt"></i>
-														</a>
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i class="bx bx-heart"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
-
-										<h3>Failed IT!</h3>
-										<span> <del>$49.00</del> $39.00</span>
-
-										<a href="cart.html" class="default-btn">
-											Add to cart
-										</a>
-									</div>
-								</div>
-
-								<div class="col-lg-4 col-sm-6">
-									<div class="single-shop">
-										<div class="shop-img">
-											<img src="assets/img/shop/shop-img-5.jpg" alt="Image">
-
-											<ul>
-												<li>
-													<a href="#">
-														<a href="#product-view-one" data-bs-toggle="modal">
-															<i class="bx bx-show-alt"></i>
-														</a>
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i class="bx bx-heart"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
-
-										<h3>E.A.POE</h3>
-										<span>$49.00</span>
-
-										<a href="cart.html" class="default-btn">
-											Add to cart
-										</a>
-									</div>
-								</div>
-
-								<div class="col-lg-4 col-sm-6">
-									<div class="single-shop">
-										<div class="shop-img">
-											<img src="assets/img/shop/shop-img-6.jpg" alt="Image">
-
-											<ul>
-												<li>
-													<a href="#">
-														<a href="#product-view-one" data-bs-toggle="modal">
-															<i class="bx bx-show-alt"></i>
-														</a>
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i class="bx bx-heart"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
-
-										<h3>Dior</h3>
-										<span>$59.00</span>
-
-										<a href="cart.html" class="default-btn">
-											Add to cart
-										</a>
-									</div>
-								</div>
-
-								<div class="col-lg-4 col-sm-6">
-									<div class="single-shop">
-										<div class="shop-img">
-											<img src="assets/img/shop/shop-img-7.jpg" alt="Image">
-
-											<ul>
-												<li>
-													<a href="#">
-														<a href="#product-view-one" data-bs-toggle="modal">
-															<i class="bx bx-show-alt"></i>
-														</a>
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i class="bx bx-heart"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
-
-										<h3>Your a heart</h3>
-										<span> <del>$49.00</del> $39.00</span>
-
-										<a href="cart.html" class="default-btn">
-											Add to cart
-										</a>
-									</div>
-								</div>
-
-								<div class="col-lg-4 col-sm-6">
-									<div class="single-shop">
-										<div class="shop-img">
-											<img src="assets/img/shop/shop-img-8.jpg" alt="Image">
-
-											<ul>
-												<li>
-													<a href="#">
-														<a href="#product-view-one" data-bs-toggle="modal">
-															<i class="bx bx-show-alt"></i>
-														</a>
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i class="bx bx-heart"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
-
-										<h3>Hand cover amockup</h3>
-										<span>$49.00</span>
-
-										<a href="cart.html" class="default-btn">
-											Add to cart
-										</a>
-									</div>
-								</div>
-
-								<div class="col-lg-4 col-sm-6 offset-sm-3 offset-lg-0">
-									<div class="single-shop">
-										<div class="shop-img">
-											<img src="assets/img/shop/shop-img-9.jpg" alt="Image">
-
-											<ul>
-												<li>
-													<a href="#product-view-one" data-bs-toggle="modal">
-														<i class="bx bx-show-alt"></i>
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i class="bx bx-heart"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
-
-										<h3>Book cover mockup</h3>
-										<span>$29.00</span>
-
-										<a href="cart.html" class="default-btn">
-											Add to cart
-										</a>
-									</div>
-								</div>
-
+                                <!-- pagination	-->
 								<div class="col-lg-12 col-md-12">
 									<div class="pagination-area">
 										<!--
@@ -398,7 +222,7 @@
 
 					<div class="col-lg-4">
 						<div class="widget-sidebar">
-							<div class="sidebar-widget search">
+							{{-- <div class="sidebar-widget search">
 								<form class="search-form">
 									<input class="form-control" name="search" placeholder="Search here" type="text">
 									<button class="search-button" type="submit">
@@ -436,7 +260,7 @@
 										<a href="#">Graduation</a>
 									</li>
 								</ul>
-							</div>
+							</div> --}}
 
 							<div class="sidebar-widget popular-post">
 								<h3 class="widget-title">Popular Posts</h3>
@@ -486,7 +310,7 @@
 								</div>
 							</div>
 
-							<div class="sidebar-widget tags">
+							{{-- <div class="sidebar-widget tags">
 								<h3>Tags</h3>
 
 								<ul>
@@ -512,7 +336,7 @@
 										<a href="#">Learning</a>
 									</li>
 								</ul>
-							</div>
+							</div> --}}
 						</div>
 					</div>
 				</div>

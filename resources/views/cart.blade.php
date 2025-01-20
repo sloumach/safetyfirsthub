@@ -96,6 +96,7 @@
 										</thead>
 
 										<tbody>
+                                            <!-- ici on parcoure le contenu de la cart	-->
 											<tr>
 												<td class="product-thumbnail">
 													<a href="#">
@@ -132,126 +133,20 @@
 												</td>
 											</tr>
 
-											<tr>
-												<td class="product-thumbnail">
-													<a href="#">
-														<img src="assets/img/cart/cart-img-2.jpg" alt="Image">
-													</a>
-												</td>
 
-												<td class="product-name">
-													<a href="#">Your heart is the sea</a>
-												</td>
-
-												<td class="product-price">
-													<span class="unit-amount">$20.00</span>
-												</td>
-
-												<td class="product-quantity">
-													<div class="input-counter">
-														<span class="minus-btn">
-															<i class='bx bx-minus' ></i>
-														</span>
-														<input type="text" value="1">
-														<span class="plus-btn">
-															<i class='bx bx-plus' ></i>
-														</span>
-													</div>
-												</td>
-
-												<td class="product-subtotal">
-													<span class="subtotal-amount">$20.50</span>
-
-													<a href="#" class="remove">
-														<i class="bx bx-x"></i>
-													</a>
-												</td>
-											</tr>
-
-											<tr>
-												<td class="product-thumbnail">
-													<a href="#">
-														<img src="assets/img/cart/cart-img-3.jpg" alt="Image">
-													</a>
-												</td>
-
-												<td class="product-name">
-													<a href="#">Hardcober mockup</a>
-												</td>
-
-												<td class="product-price">
-													<span class="unit-amount">$15.00</span>
-												</td>
-
-												<td class="product-quantity">
-													<div class="input-counter">
-														<span class="minus-btn">
-															<i class='bx bx-minus' ></i>
-														</span>
-														<input type="text" value="1">
-														<span class="plus-btn">
-															<i class='bx bx-plus' ></i>
-														</span>
-													</div>
-												</td>
-
-												<td class="product-subtotal">
-													<span class="subtotal-amount">$15.00</span>
-
-													<a href="#" class="remove">
-														<i class="bx bx-x"></i>
-													</a>
-												</td>
-											</tr>
-
-											<tr>
-												<td class="product-thumbnail">
-													<a href="#">
-														<img src="assets/img/cart/cart-img-4.jpg" alt="Image">
-													</a>
-												</td>
-
-												<td class="product-name">
-													<a href="#">Dior</a>
-												</td>
-
-												<td class="product-price">
-													<span class="unit-amount">$59.50</span>
-												</td>
-
-												<td class="product-quantity">
-													<div class="input-counter">
-														<span class="minus-btn">
-															<i class='bx bx-minus' ></i>
-														</span>
-														<input type="text" value="1">
-														<span class="plus-btn">
-															<i class='bx bx-plus' ></i>
-														</span>
-													</div>
-												</td>
-
-												<td class="product-subtotal">
-													<span class="subtotal-amount">$59.50</span>
-
-													<a href="#" class="remove">
-														<i class="bx bx-x"></i>
-													</a>
-												</td>
-											</tr>
 										</tbody>
 									</table>
 								</div>
 
 								<div class="coupon-cart">
 									<div class="row">
-										<div class="col-lg-8 col-sm-7">
+										{{-- <div class="col-lg-8 col-sm-7">
 											<div class="form-group mb-0">
 												<input type="text" class="form-control" placeholder="Coupon code">
 
 												<a href="#" class="default-btn">Apply coupon</a>
 											</div>
-										</div>
+										</div> --}}
 
 										<div class="col-lg-4 col-sm-5 text-right">
 											<a href="#" class="default-btn update">
