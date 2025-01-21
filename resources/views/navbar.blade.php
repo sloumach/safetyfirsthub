@@ -205,12 +205,33 @@
                                 <span>0</span>
                             </a>
                         </div>
-
+                        @guest
                         <div class="register">
-                            <a href="my-account.html" class="default-btn">
-                                Login / Register
+                            <a href="{{ route('login') }}" class="default-btn">
+                                Login
+                            </a>
+
+                            <a href="{{ route('register') }}" class="default-btn">
+                                register
                             </a>
                         </div>
+                        @else
+                        <div class="register">
+                            <div class="default-btn">
+                                Abdessalem
+                            </div>
+                        </div>
+                        <div class="register">
+                            <div class="default-btn">
+                                <a href="{{ route('logout') }}"
+                                       {{-- onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();" --}}>
+                                        Logout
+                                    </a>
+                            </div>
+                        </div>
+                        @endguest
+
                     </div>
                     <!-- End Other Option -->
                 </div>
@@ -255,8 +276,13 @@
                         </div>
 
                         <div class="register">
-                            <a href="my-account.html" class="default-btn">
-                                Login / Register
+                            <a href="{{ route('login') }}" class="default-btn">
+                                Login
+                            </a>
+                        </div>
+                        <div class="register">
+                            <a href="{{ route('register') }}" class="default-btn">
+                                Register
                             </a>
                         </div>
                     </div>
