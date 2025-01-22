@@ -27,6 +27,7 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
     });
     Route::controller(CourseController::class)->group(function () {
         Route::get('/singlecourse', 'singlecourse')->name('singlecourse');
+        Route::get('/courses', 'index')->name('courses');
     });
 
 });
