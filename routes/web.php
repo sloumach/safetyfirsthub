@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
+
 
 
 require __DIR__.'/auth.php';
@@ -24,9 +26,14 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/wishlist', 'wishlist')->name('wishlist');
     });
     Route::controller(CourseController::class)->group(function () {
-        Route::get('/courses', 'index')->name('courses');
+        Route::get('/singlecourse', 'singlecourse')->name('singlecourse');
     });
 
+});
+
+Route::controller(AdminController::class)->group(function () {
+    Route::get('adminindex', 'index')->name('adminindex');
+    Route::get('admincourses', 'courses')->name('admincourses');
 });
 
 

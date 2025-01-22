@@ -23,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
     ];
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -45,4 +46,10 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user');
+    }
+
 }

@@ -14,4 +14,10 @@ class CourseController extends Controller
 
         return view('courses');
     }
+    public function singlecourse () {
+
+
+
+        return view('single-course');
+    }
 }

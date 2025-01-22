@@ -90,7 +90,7 @@
 								<div class="col-12">
 									<div class="form-group">
 										<label>Email or Phone</label>
-										<input class="form-control" type="text" name="name">
+										<input class="form-control" type="text" name="email">
 									</div>
 								</div>
 
