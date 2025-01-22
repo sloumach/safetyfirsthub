@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'price',
+        'category',
+        'total_videos',
+        'description',
+        'cover',
     ];
 
     public function users()
