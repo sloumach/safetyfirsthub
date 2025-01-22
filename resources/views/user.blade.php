@@ -27,6 +27,7 @@
 		<link rel="stylesheet" href="assets/css/odometer.min.css">
 		<!-- Style CSS -->
 		<link rel="stylesheet" href="assets/css/style.css">
+		<link rel="stylesheet" href="assets/css/user.css">
 
 		<!-- Dark CSS -->
 		<link rel="stylesheet" href="assets/css/dark.css">
@@ -58,72 +59,18 @@
 
 
 
-		<!-- Start Page Title Area -->
-		<div class="page-title-area bg-5">
-			<div class="container">
-				<div class="page-title-content">
-					<h2>Contact</h2>
-					<ul>
-						<li>
-							<a href="index.html">
-								Home
-							</a>
-						</li>
-
-						<li class="active">Contact</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<!-- End Page Title Area -->
-
-		<!-- Start Contact Info Area -->
-		<section class="contact-info-area pt-100 pb-70">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-4 col-sm-6">
-						<div class="single-contact-info">
-							<i class="flaticon-call"></i>
-							<h3>Call us</h3>
-							<a href="tel:+1(514)312-5678">Phone :+1 (514) 312-5678</a>
-							<a href="tel:+1(514)312-6688">Tel :+1 (514) 312-6688</a>
-						</div>
-					</div>
-
-					<div class="col-lg-4 col-sm-6">
-						<div class="single-contact-info">
-							<i class="flaticon-pin"></i>
-							<h3>Our location</h3>
-							<a href="#">6890 Blvd, The Bronx, NY 1058 New York, USA</a>
-						</div>
-					</div>
-
-					<div class="col-lg-4 col-sm-6 offset-sm-3 offset-lg-0">
-						<div class="single-contact-info">
-							<i class="flaticon-email"></i>
-							<h3>Email</h3>
-							<a href="mailto:hello@eduon.com">hello@eduon.com</a>
-							<a href="mailto:public@eduon.com">public@eduon.com</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- End Contact Info Area -->
-
 		<!-- Start Contact Area -->
-		<section class="main-contact-area pb-100">
+		<section class="main-contact-area pb-100 mt-5">
 			<div class="container">
 				<div class="row">
 					<div class="col-12">
 						<div class="contact-wrap contact-pages mb-0">
 							<div class="contact-form">
 								<div class="section-title">
-									<h2>Drop us a message for any query</h2>
-									<p>For more information about our courses, get in touch <br> with eduon contacts</p>
+									<h2>Edit Profile</h2>
 
 								</div>
-								 <form id="profile-form">
+								<form id="profile-form">
             <div class="profile-section">
                 <div class="avatar-section">
                     <div class="avatar-preview">
@@ -138,43 +85,43 @@
                     <!-- Form fields remain the same -->
                     <div class="form-group">
                         <label for="full-name">Full Name</label>
-                        <input type="text" id="full-name" name="fullName" value="">
+                        <input type="text" id="full-name" name="fullname" required value="">
                     </div>
                     <div class="form-group">
                         <label for="job-role">Job Role</label>
-                        <input type="text" id="job-role" name="jobRole" value="">
+                        <input type="text" id="job-role" name="jobrole" required value="">
                     </div>
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" value="@gmail.com">
+                        <input type="email" id="email" name="email" required value="@gmail.com">
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" value="">
+                        <input type="tel" id="phone" name="phone" required value="">
                     </div>
                     <div class="form-group">
                         <label for="company">Company Name</label>
-                        <input type="text" id="company" name="company" value="">
+                        <input type="text" id="company" name="company" required value="">
                     </div>
                     <div class="form-group">
                         <label for="website">Company Website</label>
-                        <input type="url" id="website" name="website" value="">
+                        <input type="url" id="website" name="website" required value="">
                     </div>
                     <div class="form-group">
                         <label for="address">Address Line</label>
-                        <input type="text" id="address" name="address" value="">
+                        <input type="text" id="address" name="address" required value="">
                     </div>
                     <div class="form-group">
                         <label for="city">City</label>
-                        <input type="text" id="city" name="city" value="">
+                        <input type="text" id="city" name="city" required value="">
                     </div>
                     <div class="form-group">
                         <label for="postal-code">Postal Code</label>
-                        <input type="text" id="postal-code" name="postalCode" value="">
+                        <input type="text" id="postal-code" name="postalCode" required value="">
                     </div>
                     <div class="form-group">
                         <label for="country">Country</label>
-                        <select id="country" name="country">
+                        <select id="country" name="country" required >
                             <option value="Spain">Spain</option>
                             <option value="USA">USA</option>
                             <option value="Canada">Canada</option>
@@ -196,11 +143,7 @@
 		</section>
 		<!-- End Contact Area -->
 
-		<!-- Start Map Area -->
-		<div class="map-area">
-			<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.119763973046!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sbd!4v1595487039539!5m2!1sen!2sbd"></iframe>
-		</div>
-		<!-- End Map Area -->
+	
 
 		<!-- Start Footer Top Area -->
         @include('footer')
@@ -242,6 +185,7 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+		<script src="assets/js/user.js"></script>
 
     </body>
 </html>
