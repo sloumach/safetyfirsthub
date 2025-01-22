@@ -202,7 +202,7 @@
                         <div class="cart-icon">
                             <a href="{{ route('cart') }}">
                                 <i class="flaticon-shopping-cart"></i>
-                                <span>0</span>
+                                <span>{{ $cartCount }}</span>
                             </a>
                         </div>
                         @guest

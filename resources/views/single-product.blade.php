@@ -80,7 +80,7 @@
 				<div class="row align-items-center">
 					<div class="col-lg-6 col-md-12">
 						<div class="product-details-image">
-							<img src="{{ asset('assets/img/single-product/single-product-1.jpg') }}" alt="Image">
+							<img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
 						</div>
 					</div>
 
@@ -146,9 +146,10 @@
 								</div>
 							</div> --}}
 
-							<button type="submit" class="default-btn mt-5">
-								Add to Cart
-							</button>
+							<button type="button" class="default-btn add-to-cart mt-5" data-id="{{ $product->id }}">
+                                Add to Cart
+                                <i class="flaticon-right"></i>
+                            </button>
 						</div>
 					</div>
 
@@ -175,7 +176,7 @@
 										<div class="tabs_item">
 											<div class="products-details-tab-content">
 												<h3 class="mb-2">Description</h3>
-												<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea com modo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea com modo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore fugiat nulla pariatur.</p>
+												<p>{{ $product->description }}</p>
 											</div>
 										</div>
 
@@ -280,7 +281,7 @@
 		<!-- End Product Details Area -->
 
 		<!-- Start Related Product Area -->
-		<section class="related-product-area pb-70">
+		{{-- <section class="related-product-area pb-70">
 			<div class="container">
 				<div class="section-title">
 					<h2>Related Products</h2>
@@ -408,7 +409,7 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> --}}
 		<!-- End Related Product Area -->
 
 		<!-- Start Product View One Area -->
@@ -536,10 +537,11 @@
 										</span>
 									</div>
 
-                                    <button type="submit" class="default-btn">
-										Add to Cart
-										<i class="flaticon-right"></i>
-									</button>
+                                    <button type="button" class="default-btn add-to-cart" data-id="{{ $product->id }}">
+                                        Add to Cart
+                                        <i class="flaticon-right"></i>
+                                    </button>
+
 								</div>
 
 								<div class="share-this-product">
@@ -615,5 +617,33 @@
         <script src="{{ asset('assets/js/ajaxchimp.min.js') }}"></script>
         <!-- Custom JS -->
         <script src="{{ asset('assets/js/custom.js') }}"></script>
+
+        <script>
+            $(document).on('click', '.add-to-cart', function() {
+                let productId = $(this).data('id'); // Récupérer l'ID du produit
+                let cartCountSpan = $('.cart-icon span'); // Le span du compteur de panier
+                $.ajax({
+                    url: "{{ route('add.to.cart') }}", // Route pour ajouter au panier
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}", // Protection CSRF
+                        product_id: productId,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Mettre à jour le compteur du panier
+                            let currentCount = parseInt(cartCountSpan.text());
+                            cartCountSpan.text(currentCount + 1);
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        </script>
+
     </body>
 </html>
