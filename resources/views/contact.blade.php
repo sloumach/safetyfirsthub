@@ -27,6 +27,7 @@
 		<link rel="stylesheet" href="assets/css/odometer.min.css">
 		<!-- Style CSS -->
 		<link rel="stylesheet" href="assets/css/style.css">
+
 		<!-- Dark CSS -->
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
@@ -122,7 +123,15 @@
 									<p>For more information about our courses, get in touch <br> with eduon contacts</p>
 
 								</div>
-								<form id="contactForm">
+
+<form id="contactForm">
+<div class="row">
+<div class="col-lg-6 col-sm-6">
+<div class="form-group">
+<label>Name</label>
+<input type="text" name="name" id="name" class="form-control" required data-error="Please enter your name">
+
+<form id="contactForm">
 									<div class="row">
 										<div class="col-lg-6 col-sm-6">
 											<div class="form-group">
@@ -165,6 +174,7 @@
 										</div>
 									</div>
 								</form>
+
 							</div>
 						</div>
 					</div>
@@ -219,5 +229,6 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+
     </body>
 </html>

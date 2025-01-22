@@ -13,6 +13,8 @@ require __DIR__.'/auth.php';
 
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'home')->name('home');
+    Route::get('/profiles', 'profile')->name('profiles');
+
     Route::get('/policy', 'policy')->name('policy');
     Route::get('/terms', 'terms')->name('terms');
     Route::get('/faq', 'faq')->name('faq');

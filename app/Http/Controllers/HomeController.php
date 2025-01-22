@@ -12,6 +12,12 @@ class HomeController extends Controller
 
         return view('index-2');
     }
+    public function profile () {
+
+
+
+        return view('user');
+    }
 
     public function policy () {
 
