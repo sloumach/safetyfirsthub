@@ -108,95 +108,149 @@
 
 							<div class="row">
                                 <!-- ici on parcoure les courses	-->
-								<div class="col-lg-4 col-sm-6">
-									<div class="single-shop">
-										<div class="shop-img">
-											<img src="assets/img/shop/shop-img-1.jpg" alt="Image">
+                                @foreach ($products as $product)
+                                    <div class="col-lg-4 col-sm-6">
+                                        <div class="single-shop">
+                                            <div class="shop-img">
+                                                <img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
 
-											<ul>
-												<li>
-													<a href="#">
-														<a href="#product-view-one" data-bs-toggle="modal">
-															<i class="bx bx-show-alt"></i>
-														</a>
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i class="bx bx-heart"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
+                                                <ul>
+                                                    <li>
+                                                        <a href="#">
+                                                            <a href="#product-view-one{{ $product->id }}" data-bs-toggle="modal">
+                                                                <i class="bx bx-show-alt"></i>
+                                                            </a>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">
+                                                            <i class="bx bx-heart"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
 
-										<h3>transform: scaleY(1);</h3>
-										<span> <del>$49.00</del> $39.00</span>
+                                            <h3>transform: scaleY(1);</h3>
+                                            <span> <del>$49.00</del> $39.00</span>
 
-										<a href="cart.html" class="default-btn">
-											Add to cart
-										</a>
-									</div>
-								</div>
+                                            <a href="cart.html" class="default-btn">
+                                                Add to cart
+                                            </a>
+                                        </div>
+								    </div>
+                                    <div class="modal fade product-view-one" id="product-view-one{{ $product->id }}">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <button type="button" class="close" data-bs-dismiss="modal">
+                                                    <span aria-hidden="true">
+                                                        <i class="bx bx-x"></i>
+                                                    </span>
+                                                </button>
 
-								<div class="col-lg-4 col-sm-6">
-									<div class="single-shop">
-										<div class="shop-img">
-											<img src="assets/img/shop/shop-img-2.jpg" alt="Image">
+                                                <div class="row align-items-center">
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="product-view-one-image">
+                                                            <div id="big" class="owl-carousel owl-theme">
 
-											<ul>
-												<li>
-													<a href="#">
-														<a href="#product-view-one" data-bs-toggle="modal">
-															<i class="bx bx-show-alt"></i>
-														</a>
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i class="bx bx-heart"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
+                                                                <div class="item">
+                                                                <img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
+                                                                </div>
+                                                            </div>
 
-										<h3>EGO ias the enemy</h3>
-										<span> <del>$79.00</del> $59.00</span>
+                                                            <div id="thumbs" class="owl-carousel owl-theme">
+                                                                <div class="item">
+                                                                <img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
+                                                                </div>
 
-										<a href="cart.html" class="default-btn">
-											Add to cart
-										</a>
-									</div>
-								</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-								<div class="col-lg-4 col-sm-6">
-									<div class="single-shop">
-										<div class="shop-img">
-											<img src="assets/img/shop/shop-img-3.jpg" alt="Image">
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="product-content">
+                                                            <h3>
+                                                                <a href="#">transform: scaleY(1);</a>
+                                                            </h3>
 
-											<ul>
-												<li>
-													<a href="#">
-														<a href="#product-view-one" data-bs-toggle="modal">
-															<i class="bx bx-show-alt"></i>
-														</a>
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i class="bx bx-heart"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
+                                                            <div class="price">
+                                                                <del>$59.00</del> <span class="new-price">$39.00</span>
+                                                            </div>
 
-										<h3>Der liege augustine</h3>
-										<span>$59.00</span>
+                                                            <div class="product-review">
+                                                                <div class="rating">
+                                                                    <i class="bx bxs-star"></i>
+                                                                    <i class="bx bxs-star"></i>
+                                                                    <i class="bx bxs-star"></i>
+                                                                    <i class="bx bxs-star"></i>
+                                                                    <i class="bx bxs-star"></i>
+                                                                </div>
+                                                                <a href="#" class="rating-count">3 reviews</a>
+                                                            </div>
 
-										<a href="cart.html" class="default-btn">
-											Add to cart
-										</a>
-									</div>
-								</div>
+                                                            <ul class="product-info">
+                                                                <li>
+                                                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At magnam ad reprehenderit fuga nam, non odit necessitatibus facilis beatae temporibus</p>
+                                                                </li>
+                                                                <li>
+                                                                    <span>Availability:</span> <a href="#">In stock (7 items)</a>
+                                                                </li>
+                                                                <li>
+                                                                    <span>Product Type:</span> <a href="#">Book</a>
+                                                                </li>
+                                                            </ul>
+
+                                                            <div class="product-add-to-cart">
+                                                                <div class="input-counter">
+                                                                    <span class="minus-btn">
+                                                                        <i class="bx bx-minus"></i>
+                                                                    </span>
+
+                                                                    <input type="text" value="1">
+
+                                                                    <span class="plus-btn">
+                                                                        <i class="bx bx-plus"></i>
+                                                                    </span>
+                                                                </div>
+
+                                                                <button type="submit" class="default-btn">
+                                                                    Add to Cart
+                                                                    <i class="flaticon-right"></i>
+                                                                </button>
+                                                            </div>
+
+                                                            <div class="share-this-product">
+                                                                <h3>Share this product</h3>
+
+                                                                <ul>
+                                                                    <li>
+                                                                        <a href="#">
+                                                                            <i class="bx bxl-facebook"></i>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="#">
+                                                                            <i class="bx bxl-twitter"></i>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="#">
+                                                                            <i class="bx bxl-instagram"></i>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="#">
+                                                                            <i class="bx bxl-linkedin"></i>
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
 
                                 <!-- pagination	-->
 								<div class="col-lg-12 col-md-12">
@@ -222,45 +276,7 @@
 
 					<div class="col-lg-4">
 						<div class="widget-sidebar">
-							{{-- <div class="sidebar-widget search">
-								<form class="search-form">
-									<input class="form-control" name="search" placeholder="Search here" type="text">
-									<button class="search-button" type="submit">
-										<i class="bx bx-search"></i>
-									</button>
-								</form>
-							</div>
 
-							<div class="sidebar-widget categories">
-								<h3>Categories</h3>
-
-								<ul>
-									<li>
-										<a href="#">Education</a>
-									</li>
-									<li>
-										<a href="#">Health Coaching</a>
-									</li>
-									<li>
-										<a href="#">Learning</a>
-									</li>
-									<li>
-										<a href="#">Online</a>
-									</li>
-									<li>
-										<a href="#">Academics</a>
-									</li>
-									<li>
-										<a href="#">Admission</a>
-									</li>
-									<li>
-										<a href="#">Student</a>
-									</li>
-									<li>
-										<a href="#">Graduation</a>
-									</li>
-								</ul>
-							</div> --}}
 
 							<div class="sidebar-widget popular-post">
 								<h3 class="widget-title">Popular Posts</h3>
@@ -310,33 +326,7 @@
 								</div>
 							</div>
 
-							{{-- <div class="sidebar-widget tags">
-								<h3>Tags</h3>
 
-								<ul>
-									<li>
-										<a href="#">Education</a>
-									</li>
-									<li>
-										<a href="#">College</a>
-									</li>
-									<li>
-										<a href="#">College</a>
-									</li>
-									<li>
-										<a href="#">Math</a>
-									</li>
-									<li>
-										<a href="#">Design</a>
-									</li>
-									<li>
-										<a href="#">Learning</a>
-									</li>
-									<li>
-										<a href="#">Learning</a>
-									</li>
-								</ul>
-							</div> --}}
 						</div>
 					</div>
 				</div>
@@ -345,168 +335,7 @@
 		<!-- End Shop Area -->
 
 		<!-- Start Product View One Area -->
-        <div class="modal fade product-view-one" id="product-view-one">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <button type="button" class="close" data-bs-dismiss="modal">
-                        <span aria-hidden="true">
-							<i class="bx bx-x"></i>
-						</span>
-					</button>
 
-                    <div class="row align-items-center">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="product-view-one-image">
-								<div id="big" class="owl-carousel owl-theme">
-									<div class="item">
-									<img src="assets/img/shop/shop-img-1.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-2.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-3.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-4.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-5.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-6.jpg" alt="Image">
-									</div>
-								</div>
-
-								<div id="thumbs" class="owl-carousel owl-theme">
-									<div class="item">
-									<img src="assets/img/shop/shop-img-1.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-2.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-3.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-4.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-5.jpg" alt="Image">
-									</div>
-									<div class="item">
-									<img src="assets/img/shop/shop-img-6.jpg" alt="Image">
-									</div>
-								</div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-md-6">
-                            <div class="product-content">
-                                <h3>
-									<a href="#">transform: scaleY(1);</a>
-								</h3>
-
-                                <div class="price">
-									<del>$59.00</del> <span class="new-price">$39.00</span>
-								</div>
-
-                                <div class="product-review">
-                                    <div class="rating">
-										<i class="bx bxs-star"></i>
-										<i class="bx bxs-star"></i>
-										<i class="bx bxs-star"></i>
-										<i class="bx bxs-star"></i>
-										<i class="bx bxs-star"></i>
-                                    </div>
-                                    <a href="#" class="rating-count">3 reviews</a>
-								</div>
-
-                                <ul class="product-info">
-                                    <li>
-										<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At magnam ad reprehenderit fuga nam, non odit necessitatibus facilis beatae temporibus</p>
-									</li>
-                                    <li>
-										<span>Availability:</span> <a href="#">In stock (7 items)</a>
-									</li>
-                                    <li>
-										<span>Product Type:</span> <a href="#">Book</a>
-									</li>
-								</ul>
-
-                                <div class="product-color-switch">
-									<h4>Color:</h4>
-
-                                    <ul>
-                                        <li>
-											<a href="#" title="Black" class="color-black"></a>
-										</li>
-                                        <li>
-											<a href="#" title="White" class="color-white"></a>
-										</li>
-                                        <li class="active">
-											<a href="#" title="Green" class="color-green"></a>
-										</li>
-                                        <li>
-											<a href="#" title="Yellow Green" class="color-yellowgreen"></a>
-										</li>
-                                        <li>
-											<a href="#" title="Teal" class="color-teal"></a>
-										</li>
-                                    </ul>
-								</div>
-
-                                <div class="product-add-to-cart">
-                                    <div class="input-counter">
-                                        <span class="minus-btn">
-											<i class="bx bx-minus"></i>
-										</span>
-
-										<input type="text" value="1">
-
-                                        <span class="plus-btn">
-											<i class="bx bx-plus"></i>
-										</span>
-									</div>
-
-                                    <button type="submit" class="default-btn">
-										Add to Cart
-										<i class="flaticon-right"></i>
-									</button>
-								</div>
-
-								<div class="share-this-product">
-									<h3>Share this product</h3>
-
-									<ul>
-										<li>
-											<a href="#">
-												<i class="bx bxl-facebook"></i>
-											</a>
-										</li>
-										<li>
-											<a href="#">
-												<i class="bx bxl-twitter"></i>
-											</a>
-										</li>
-										<li>
-											<a href="#">
-												<i class="bx bxl-instagram"></i>
-											</a>
-										</li>
-										<li>
-											<a href="#">
-												<i class="bx bxl-linkedin"></i>
-											</a>
-										</li>
-									</ul>
-								</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 		<!-- End Product View One Area -->
 
 		<!-- Start Footer Top Area -->
