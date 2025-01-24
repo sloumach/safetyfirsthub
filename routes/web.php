@@ -1,11 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ShopController;
-use Illuminate\Support\Facades\Route;
 
 
 
@@ -13,7 +15,7 @@ require __DIR__.'/auth.php';
 
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'home')->name('home');
-    Route::get('/profiles', 'profile')->name('profiles');
+    Route::get('/profiles', 'profile')->name('profiles');//added par yassine page profile
 
     Route::get('/policy', 'policy')->name('policy');
     Route::get('/terms', 'terms')->name('terms');
@@ -26,17 +28,33 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/shop', 'index')->name('shop');
         Route::get('/cart', 'cart')->name('cart');
         Route::get('/wishlist', 'wishlist')->name('wishlist');
-    });
-    Route::controller(CourseController::class)->group(function () {
-        Route::get('/singlecourse', 'singlecourse')->name('singlecourse');
-        Route::get('/courses', 'index')->name('courses');
-    });
+        Route::post('/add-to-cart', 'addToCart')->name('add.to.cart');
 
+    });
+    Route::controller(PaymentController::class)->group(function () {
+        Route::get('/checkout', 'checkout')->name('checkout');
+        Route::post('/payment', 'payment')->name('payment');
+        Route::get('/pay', 'pay')->name('pay');
+
+    });
+});
+
+Route::controller(CourseController::class)->group(function () {
+    Route::get('/singlecourse/{id}', 'singlecourse')->name('singlecourse');
+    Route::get('/courses', 'index')->name('courses');
+});
+
+Route::group([ 'middleware' => ['auth','verified']], function () {
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
+
+    });
 });
 
 Route::controller(AdminController::class)->group(function () {
     Route::get('adminindex', 'index')->name('adminindex');
     Route::get('admincourses', 'courses')->name('admincourses');
+    Route::post('addcourse', 'addcourse')->name('addcourse');
 });
 
 

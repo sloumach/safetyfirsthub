@@ -2,8 +2,8 @@
     <!-- Menu For Mobile Device -->
     <div class="mobile-nav">
         <a href="index.html" class="logo">
-            <img src="assets/img/logo.png" class="main-logo" alt="Logo">
-            <img src="assets/img/logo-2.png" class="white-logo" alt="Logo">
+            <img src="{{ asset('assets/img/logo.png') }}" class="main-logo" alt="Logo">
+            <img src="{{ asset('assets/img/logo-2.png') }}" class="white-logo" alt="Logo">
         </a>
     </div>
 
@@ -12,8 +12,8 @@
         <div class="container-fluid">
             <nav class="navbar navbar-expand-md">
                 <a class="navbar-brand" href="index.html">
-                    <img src="assets/img/logo.png" class="main-logo" alt="Logo">
-                    <img src="assets/img/logo-2.png" class="white-logo" alt="Logo">
+                    <img src="{{ asset('assets/img/logo.png') }}" class="main-logo" alt="Logo">
+                    <img src="{{ asset('assets/img/logo-2.png') }}" class="white-logo" alt="Logo">
                 </a>
 
                 <div class="collapse navbar-collapse mean-menu">
@@ -202,7 +202,7 @@
                         <div class="cart-icon">
                             <a href="{{ route('cart') }}">
                                 <i class="flaticon-shopping-cart"></i>
-                                <span>0</span>
+                                <span>{{ $cartCount }}</span>
                             </a>
                         </div>
                         @guest

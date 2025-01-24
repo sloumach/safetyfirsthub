@@ -114,145 +114,55 @@
 
 				<div class="row">
                     <!-- ici on parcoure les courses -->
-					<div class="col-lg-4 col-md-6">
-						<div class="single-course">
-							<a href="single-course.html">
-								<img src="assets/img/course-img/course-img-1.jpg" alt="Image">
-							</a>
+                    @foreach ($courses as $course)
+                        <div class="col-lg-4 col-md-6">
+                            <div class="single-course">
+                                <a href="{{ route('singlecourse', ['id' => $course->id]) }}">
+                                    <img src="{{ asset('storage/' . $course->cover) }}" class="card-img-top" alt="Cover for {{ $course->category }}">
 
-							<div class="course-content">
-								<span class="price">$39</span>
-								<span class="tag">Education</span>
+                                </a>
 
-								<a href="single-course.html">
-									<h3>Developing strategies for online teaching and learning</h3>
-								</a>
+                                <div class="course-content">
+                                    <span class="price">$39</span>
+                                    <span class="tag">Education</span>
 
-								<ul class="rating">
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<span>0.5</span>
-										<a href="#">(1 rating)</a>
-									</li>
-								</ul>
+                                    <a href="{{ route('singlecourse', ['id' => $course->id]) }}">
 
-								<p>Lorem ipsum dolor sit amet, consectetur adip iscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+                                        <h3>Developing strategies for online teaching and learning</h3>
+                                    </a>
 
-								<ul class="lessons">
-									<li>0 Lessons</li>
-									<li class="float">44 Students</li>
-								</ul>
-							</div>
-						</div>
-					</div>
+                                    <ul class="rating">
+                                        <li>
+                                            <i class="bx bxs-star"></i>
+                                        </li>
+                                        <li>
+                                            <i class="bx bxs-star"></i>
+                                        </li>
+                                        <li>
+                                            <i class="bx bxs-star"></i>
+                                        </li>
+                                        <li>
+                                            <i class="bx bxs-star"></i>
+                                        </li>
+                                        <li>
+                                            <i class="bx bxs-star"></i>
+                                        </li>
+                                        <li>
+                                            <span>0.5</span>
+                                            <a href="#">(1 rating)</a>
+                                        </li>
+                                    </ul>
 
-					<div class="col-lg-4 col-md-6">
-						<div class="single-course">
-							<a href="single-course.html">
-								<img src="assets/img/course-img/course-img-2.jpg" alt="Image">
-							</a>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adip iscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
 
-							<div class="course-content">
-								<span class="price">$59</span>
-								<span class="tag">Accounting</span>
-
-								<a href="single-course.html">
-									<h3>Introduction to cybersecurity for teachers</h3>
-								</a>
-
-								<ul class="rating">
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<span>0.5</span>
-										<a href="#">(3 rating)</a>
-									</li>
-								</ul>
-
-								<p>Lorem ipsum dolor sit amet, consectetur adip iscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-
-								<ul class="lessons">
-									<li>0 Lessons</li>
-									<li class="float">24 Students</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-lg-4 col-md-6">
-						<div class="single-course">
-							<a href="single-course.html">
-								<img src="assets/img/course-img/course-img-3.jpg" alt="Image">
-							</a>
-
-							<div class="course-content">
-								<span class="price">$29</span>
-								<span class="tag">Language</span>
-
-								<a href="single-course.html">
-									<h3>English: spelling, punctuation, and grammar</h3>
-								</a>
-
-								<ul class="rating">
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<i class="bx bxs-star"></i>
-									</li>
-									<li>
-										<span>0.5</span>
-										<a href="#">(5 rating)</a>
-									</li>
-								</ul>
-
-								<p>Lorem ipsum dolor sit amet, consectetur adip iscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-
-								<ul class="lessons">
-									<li>0 Lessons</li>
-									<li class="float">39 Students</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
-
+                                    <ul class="lessons">
+                                        <li>0 Lessons</li>
+                                        <li class="float">44 Students</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                     <!-- pagination -->
 					<div class="col-lg-12 col-md-12">
                         <div class="pagination-area">

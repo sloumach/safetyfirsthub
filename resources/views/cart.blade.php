@@ -90,49 +90,43 @@
 												<th scope="col">Image</th>
 												<th scope="col">Product name</th>
 												<th scope="col">Price</th>
-												<th scope="col">Quantity</th>
 												<th scope="col">Total</th>
 											</tr>
 										</thead>
 
 										<tbody>
+                                            @if($courses->isEmpty())
+                                                <p>Your cart is empty.</p>
+                                            @else
                                             <!-- ici on parcoure le contenu de la cart	-->
-											<tr>
-												<td class="product-thumbnail">
-													<a href="#">
-														<img src="assets/img/cart/cart-img-1.jpg" alt="Image">
-													</a>
-												</td>
+                                            @foreach($courses as $course)
+                                                <tr>
+                                                    <td class="product-thumbnail">
+                                                        <a href="#">
+                                                            <img src="{{ asset('storage/' . $course->cover) }}" alt="Image">
+                                                        </a>
+                                                    </td>
 
-												<td class="product-name">
-													<a href="#">Book cover mockup</a>
-												</td>
+                                                    <td class="product-name">
+                                                        <a href="#">{{ $course->name }}</a>
+                                                    </td>
 
-												<td class="product-price">
-													<span class="unit-amount">$29.00</span>
-												</td>
+                                                    <td class="product-price">
+                                                        <span class="unit-amount">${{ $course->price }}</span>
+                                                    </td>
 
-												<td class="product-quantity">
-													<div class="input-counter">
-														<span class="minus-btn">
-															<i class='bx bx-minus' ></i>
-														</span>
-														<input type="text" value="1">
-														<span class="plus-btn">
-															<i class='bx bx-plus' ></i>
-														</span>
-													</div>
-												</td>
 
-												<td class="product-subtotal">
-													<span class="subtotal-amount">$29.00</span>
+                                                    <td class="product-subtotal">
+                                                        <span class="subtotal-amount">${{ $course->price }}</span>
 
-													<a href="#" class="remove">
-														<i class="bx bx-x"></i>
-													</a>
-												</td>
-											</tr>
+                                                        <a href="#" class="remove">
+                                                            <i class="bx bx-x"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
 
+                                            @endif
 
 										</tbody>
 									</table>
@@ -163,13 +157,12 @@
 						<h3 class="cart-checkout-title">Checkout summary</h3>
 						<div class="cart-totals">
 							<ul>
-								<li>Subtotal <span>$123.00</span></li>
-								<li>Shipping <span>$00.00</span></li>
-								<li>Total <span>$123.00</span></li>
-								<li><b>Payable Total</b> <span><b>$123.00</b></span></li>
+								<li>Subtotal <span>${{ $subtotal = $courses->sum('price'); }}</span></li>
+								<li>Total <span>${{ $subtotal = $courses->sum('price'); }}</span></li>
+								<li><b>Payable Total</b> <span><b>${{ $subtotal = $courses->sum('price'); }}</b></span></li>
 							</ul>
 
-							<a href="checkout.html" class="default-btn two">
+							<a href="{{ route('checkout') }}" class="default-btn two">
 								Buy now
 							</a>
 						</div>
