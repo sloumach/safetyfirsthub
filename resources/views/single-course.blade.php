@@ -5,35 +5,36 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<!-- Bootstrap Min CSS -->
-		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-		<!-- Owl Theme Default Min CSS -->
-		<link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
-		<!-- Owl Carousel Min CSS -->
-		<link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-		<!-- Owl Magnific Popup Min CSS -->
-		<link rel="stylesheet" href="assets/css/magnific-popup.min.css">
-		<!-- Animate Min CSS -->
-		<link rel="stylesheet" href="assets/css/animate.min.css">
-		<!-- Boxicons Min CSS -->
-		<link rel="stylesheet" href="assets/css/boxicons.min.css">
-		<!-- Flaticon CSS -->
-		<link rel="stylesheet" href="assets/css/flaticon.css">
-		<!-- Meanmenu Min CSS -->
-		<link rel="stylesheet" href="assets/css/meanmenu.min.css">
-		<!-- Nice Select Min CSS -->
-		<link rel="stylesheet" href="assets/css/nice-select.min.css">
-		<!-- Odometer Min CSS-->
-		<link rel="stylesheet" href="assets/css/odometer.min.css">
-		<!-- Style CSS -->
-		<link rel="stylesheet" href="assets/css/style.css">
-		<!-- Dark CSS -->
-		<link rel="stylesheet" href="assets/css/dark.css">
-		<!-- Responsive CSS -->
-		<link rel="stylesheet" href="assets/css/responsive.css">
+        <!-- Bootstrap Min CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+        <!-- Owl Theme Default Min CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/owl.theme.default.min.css') }}">
+        <!-- Owl Carousel Min CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
+        <!-- Owl Magnific Popup Min CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}">
+        <!-- Animate Min CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
+        <!-- Boxicons Min CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/boxicons.min.css') }}">
+        <!-- Flaticon CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
+        <!-- Meanmenu Min CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/meanmenu.min.css') }}">
+        <!-- Nice Select Min CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/nice-select.min.css') }}">
+        <!-- Odometer Min CSS-->
+        <link rel="stylesheet" href="{{ asset('assets/css/odometer.min.css') }}">
+        <!-- Style CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+        <!-- Dark CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/dark.css') }}">
+        <!-- Responsive CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 
-		<!-- Favicon -->
-		<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
+
 		<!-- Title -->
 		<title>Eduon - Online Courses & Training HTML Template</title>
     </head>
@@ -83,19 +84,19 @@
 							<h3>Leading the way with lifelong learning</h3>
 
 							<div class="row align-items-center">
-								<div class="col-lg-4 col-sm-4">
+								{{-- <div class="col-lg-4 col-sm-4">
 									<div class="course-rating">
-										<img src="assets/img/single-course/rating-img-1.jpg" alt="Image">
+										<img src="{{ asset('assets/img/single-course/rating-img-1.jpg') }}" alt="Image">
 
 										<h4><a href="#">Instructor:</a></h4>
 										<span>Jeremy Cioara</span>
 									</div>
-								</div>
+								</div> --}}
 
 								<div class="col-lg-4 col-sm-4">
 									<div class="course-rating pl-0 text-center">
 										<h4>Categories:</h4>
-										<span>Career Advice</span>
+										<span>{{ $course->category }}</span>
 									</div>
 								</div>
 
@@ -116,7 +117,7 @@
 									</div>
 								</div>
 							</div>
-							<img src="assets/img/single-course/single-course.jpg" alt="Image">
+							<img src="{{ asset('assets/img/single-course/single-course.jpg') }}" alt="Image">
 						</div>
 
 						<div class="tab single-course-tab">
@@ -124,12 +125,12 @@
 								<li>
 									<a href="#">Overview</a>
 								</li>
-								<li>
+								{{-- <li>
 									<a href="#">Curriculum</a>
 								</li>
 								<li>
 									<a href="#"> Instructor</a>
-								</li>
+								</li> --}}
 								<li>
 									<a href="#">Reviews</a>
 								</li>
@@ -289,7 +290,7 @@
 										<div class="row align-items-center">
 											<div class="col-lg-4">
 												<div class="advisor-img">
-													<img src="assets/img/instructor-img.jpg" alt="Image">
+													<img src="{{ asset('assets/img/instructor-img.jpg') }}" alt="Image">
 												</div>
 											</div>
 
@@ -392,7 +393,7 @@
 											<h3>Reviews</h3>
 											<ul class="course-reviews">
 												<li>
-													<img src="assets/img/course-reviews-img.jpg" alt="Image">
+													<img src="{{ asset('assets/img/course-reviews-img.jpg') }}" alt="Image">
 
 													<h3>Anna Dew</h3>
 													<span>Cover all my needs</span>
@@ -410,31 +411,31 @@
 						<div class="account-wrap">
 							<ul>
 								<li>
-									Price <span class="bold">$29.00</span>
+									Price <span class="bold">${{ $course->price }}</span>
 								</li>
-								<li>
+								{{-- <li>
 									Start <span>Sep 01, 2020</span>
 								</li>
 								<li>
 									End <span>Sep 02, 2020</span>
+								</li> --}}
+								<li>
+									Event Category <span>{{ $course->category }}</span>
 								</li>
 								<li>
-									Event Category <span>Education</span>
+									Total videos: <span>{{ $course->total_videos }}</span>
 								</li>
-								<li>
-									Total Slot: <span>100</span>
-								</li>
-								<li>
+								{{-- <li>
 									Booked Slot: <span>00</span>
-								</li>
-								<li>
+								</li> --}}
+								{{-- <li>
 									Website: <a href="#">www.eduon.com</a>
-								</li>
+								</li> --}}
 							</ul>
 
-							<a href="#" class="default-btn">Book now</a>
+							<a href="{{ route('singleproduct', ['id' => $course->id])  }}" class="default-btn">Book now</a>
 
-							<div class="social-content">
+							{{-- <div class="social-content">
 								<p>
 									Share this course
 									<i class="bx bxs-share-alt"></i>
@@ -462,7 +463,7 @@
 										</a>
 									</li>
 								</ul>
-							</div>
+							</div> --}}
 						</div>
 					</div>
 				</div>
@@ -471,7 +472,7 @@
 		<!-- End Single Course Area -->
 
 		<!-- Start Popular Courses Area -->
-		<section class="courses-area-style pb-70">
+		{{-- <section class="courses-area-style pb-70">
 			<div class="container">
 				<div class="section-title">
 					<h2>Related Courses</h2>
@@ -481,7 +482,7 @@
 					<div class="col-lg-4 col-md-6">
 						<div class="single-course">
 							<a href="single-course.html">
-								<img src="assets/img/course-img/course-img-1.jpg" alt="Image">
+								<img src="{{ asset('assets/img/course-img/course-img-1.jpg') }}" alt="Image">
 							</a>
 
 							<div class="course-content">
@@ -527,7 +528,7 @@
 					<div class="col-lg-4 col-md-6">
 						<div class="single-course">
 							<a href="single-course.html">
-								<img src="assets/img/course-img/course-img-2.jpg" alt="Image">
+								<img src="{{ asset('assets/img/course-img/course-img-2.jpg') }}" alt="Image">
 							</a>
 
 							<div class="course-content">
@@ -573,7 +574,7 @@
 					<div class="col-lg-4 col-md-6 offset-md-3 offset-lg-0">
 						<div class="single-course">
 							<a href="single-course.html">
-								<img src="assets/img/course-img/course-img-3.jpg" alt="Image">
+								<img src="{{ asset('assets/img/course-img/course-img-3.jpg') }}" alt="Image">
 							</a>
 
 							<div class="course-content">
@@ -617,7 +618,7 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> --}}
 		<!-- End Popular Courses Area -->
 
 		<!-- Start Footer Top Area -->
@@ -633,32 +634,33 @@
 
 
         <!-- Jquery Min JS -->
-        <script src="assets/js/jquery.min.js"></script>
+        <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
         <!-- Bootstrap Bundle Min JS -->
-        <script src="assets/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
         <!-- Meanmenu Min JS -->
-		<script src="assets/js/meanmenu.min.js"></script>
-		<!-- Owl Carousel Min JS -->
-		<script src="assets/js/owl.carousel.min.js"></script>
-		<!-- Wow Min JS -->
-        <script src="assets/js/wow.min.js"></script>
+        <script src="{{ asset('assets/js/meanmenu.min.js') }}"></script>
+        <!-- Owl Carousel Min JS -->
+        <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
+        <!-- Wow Min JS -->
+        <script src="{{ asset('assets/js/wow.min.js') }}"></script>
         <!-- Nice Select Min JS -->
-		<script src="assets/js/nice-select.min.js"></script>
+        <script src="{{ asset('assets/js/nice-select.min.js') }}"></script>
         <!-- Magnific Popup Min JS -->
-		<script src="assets/js/magnific-popup.min.js"></script>
-		<!-- jarallax Min JS -->
-		<script src="assets/js/jarallax.min.js"></script>
-		<!-- Appear Min JS -->
-        <script src="assets/js/appear.min.js"></script>
-		<!-- Odometer JS -->
-		<script src="assets/js/odometer.min.js"></script>
-		<!-- Form Validator Min JS -->
-		<script src="assets/js/form-validator.min.js"></script>
-		<!-- Contact JS -->
-		<script src="assets/js/contact-form-script.js"></script>
-		<!-- Ajaxchimp Min JS -->
-		<script src="assets/js/ajaxchimp.min.js"></script>
+        <script src="{{ asset('assets/js/magnific-popup.min.js') }}"></script>
+        <!-- Jarallax Min JS -->
+        <script src="{{ asset('assets/js/jarallax.min.js') }}"></script>
+        <!-- Appear Min JS -->
+        <script src="{{ asset('assets/js/appear.min.js') }}"></script>
+        <!-- Odometer JS -->
+        <script src="{{ asset('assets/js/odometer.min.js') }}"></script>
+        <!-- Form Validator Min JS -->
+        <script src="{{ asset('assets/js/form-validator.min.js') }}"></script>
+        <!-- Contact JS -->
+        <script src="{{ asset('assets/js/contact-form-script.js') }}"></script>
+        <!-- Ajaxchimp Min JS -->
+        <script src="{{ asset('assets/js/ajaxchimp.min.js') }}"></script>
         <!-- Custom JS -->
-		<script src="assets/js/custom.js"></script>
+        <script src="{{ asset('assets/js/custom.js') }}"></script>
+
     </body>
 </html>

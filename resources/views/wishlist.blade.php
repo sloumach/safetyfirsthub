@@ -88,7 +88,6 @@
 										<th scope="col">Image</th>
 										<th scope="col">Product name</th>
 										<th scope="col">Price</th>
-										<th scope="col">Quantity</th>
 										<th scope="col">Total</th>
 										<th scope="col">Add to cart</th>
 									</tr>
@@ -96,43 +95,46 @@
 
 								<tbody>
                                     <!-- ici on parcoure dans le wishlist	-->
-									<tr>
-										<td class="product-thumbnail">
-											<a href="#">
-												<img src="assets/img/cart/cart-img-1.jpg" alt="Image">
-											</a>
-										</td>
+                                    @foreach($wishlistedCourses as $wishlistItem)
+                                        <tr>
+                                            <td class="product-thumbnail">
+                                                <a href="#">
+                                                    <img src=" {{ asset('storage/' . $wishlistItem->course->cover) }}  " alt="Image">
+                                                </a>
+                                            </td>
 
-										<td class="product-name">
-											<a href="#">Book cover mockup</a>
-										</td>
+                                            <td class="product-name">
+                                                <a href="#">{{ $wishlistItem->course->name }}</a>
+                                            </td>
 
-										<td class="product-price">
-											<span class="unit-amount">$29.00</span>
-										</td>
+                                            <td class="product-price">
+                                                <span class="unit-amount">${{ $wishlistItem->course->price }}</span>
+                                            </td>
 
-										<td class="product-quantity">
-											<div class="input-counter">
-												<span class="minus-btn">
-													<i class='bx bx-minus' ></i>
-												</span>
-												<input type="text" value="1">
-												<span class="plus-btn">
-													<i class='bx bx-plus' ></i>
-												</span>
-											</div>
-										</td>
+                                            {{-- <td class="product-quantity">
+                                                <div class="input-counter">
+                                                    <span class="minus-btn">
+                                                        <i class='bx bx-minus' ></i>
+                                                    </span>
+                                                    <input type="text" value="1">
+                                                    <span class="plus-btn">
+                                                        <i class='bx bx-plus' ></i>
+                                                    </span>
+                                                </div>
+                                            </td> --}}
 
-										<td class="product-subtotal">
-											<span class="subtotal-amount">$29.00</span>
-										</td>
+                                            <td class="product-subtotal">
+                                                <span class="subtotal-amount">${{ $wishlistItem->course->price }}</span>
+                                            </td>
 
-										<td class="product-subtotal">
-											<a href="#" class="default-btn">
-												Add to cart
-											</a>
-										</td>
-									</tr>
+                                            <td class="product-subtotal">
+                                                <a href="#" class="default-btn">
+                                                    Add to cart
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
 
 								</tbody>
 							</table>

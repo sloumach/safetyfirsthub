@@ -56,7 +56,7 @@
                                     Add new course:
                                 </div>
                                 <div class="card-body">
-                                    <form action="" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('addcourse') }}" method="POST" enctype="multipart/form-data">
                                         <!-- Ajout du token CSRF pour la sécurité (obligatoire dans Laravel) -->
                                         @csrf
 
