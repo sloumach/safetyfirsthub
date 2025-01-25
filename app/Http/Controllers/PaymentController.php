@@ -21,8 +21,8 @@ class PaymentController extends Controller
     }
     public function payment(Request $request){
 
-        dd($request->subtotal);
-        $validatedData = $request->validate([
+        //dd($request->subtotal);
+        /* $validatedData = $request->validate([
             'first_name' => 'required|in:' . auth()->user()->first_name, // Empêche les modifications
             'last_name' => 'required|in:' . auth()->user()->last_name, // Empêche les modifications
             'country' => 'required|integer',
@@ -31,22 +31,25 @@ class PaymentController extends Controller
             'state' => 'required|string|max:255',
             'zip' => 'required|string|max:20',
             'subtotal' => 'required|numeric|min:0', // Vérifie que le subtotal est envoyé
-        ]);
+        ]); */
         // Récupération de l'utilisateur connecté
         $user = auth()->user();
 
         // Mise à jour des informations utilisateur
-        $user->update([
+        /* $user->update([
             'country_id' => $validatedData['country'],
             'street_address' => $validatedData['street_address'],
             'city' => $validatedData['city'],
             'state' => $validatedData['state'],
             'zip' => $validatedData['zip'],
-        ]);
+        ]); */
 
         // Redirection ou retour de la réponse
-        return redirect()->route('pay')->with('total', $validatedData['subtotal']);
+        return redirect()->route('pay')/* ->with('total', $validatedData['subtotal']) */;
 
         dd('ss');
+    }
+    public function pay (){
+        return view ('payment');
     }
 }
