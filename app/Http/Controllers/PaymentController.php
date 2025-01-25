@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use Stripe\StripeClient;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -51,5 +52,17 @@ class PaymentController extends Controller
     }
     public function pay (){
         return view ('payment');
+    }
+    public function charge (Request $request){
+
+
+        $stripe = new StripeClient(env('stripe_secret_key'));
+        $charge = $stripe->charges->create([
+            'amount' => $request->price,
+            'currency' => 'usd',
+            'source' => $request->token,
+            'description' => 'test payment safety',
+        ]);
+        dd($charge);
     }
 }

@@ -35,6 +35,7 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/checkout', 'checkout')->name('checkout');
         Route::post('/payment', 'payment')->name('payment');
         Route::get('/pay', 'pay')->name('pay');
+        Route::post('/charge', 'charge')->name('charge');
 
     });
 });
