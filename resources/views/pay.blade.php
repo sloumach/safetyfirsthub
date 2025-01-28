@@ -59,89 +59,85 @@
 
 
 
-		<!-- Start Contact Area -->
-		<section class="main-contact-area pb-100 mt-5">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<div class="contact-wrap contact-pages mb-0">
-							<div class="contact-form">
-								<div class="section-title">
-									<h2>Edit Profile</h2>
-
-								</div>
-								<form id="profile-form">
-            <div class="profile-section">
-                <div class="avatar-section">
-                    <div class="avatar-preview">
-                        <img src="default-avatar.jpg" alt="Avatar" id="avatar-preview">
-                        <div class="avatar-overlay">
-                            <span>Update Image</span>
+		<!-- Start Payment Area -->
+<section class="main-contact-area pb-100 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="contact-wrap contact-pages mb-0">
+                    <div class="contact-form">
+                        <div class="section-title">
+                            <h2>Payment Information</h2>
                         </div>
-                    </div>
-                    <input type="file" id="avatar-upload" name="avatar" accept="image/*">
-                </div>
-                <div class="form-section">
-                    <!-- Form fields remain the same -->
-                    <div class="form-group">
-                        <label for="full-name">Full Name</label>
-                        <input type="text" id="full-name" name="fullname" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="job-role">Job Role</label>
-                        <input type="text" id="job-role" name="jobrole" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required value="@gmail.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="company">Company Name</label>
-                        <input type="text" id="company" name="company" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="website">Company Website</label>
-                        <input type="url" id="website" name="website" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Address Line</label>
-                        <input type="text" id="address" name="address" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" name="city" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="postal-code">Postal Code</label>
-                        <input type="text" id="postal-code" name="postalCode" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="country">Country</label>
-                        <select id="country" name="country" required >
-                            <option value="Spain">Spain</option>
-                            <option value="USA">USA</option>
-                            <option value="Canada">Canada</option>
-                            <!-- Add more countries as needed -->
-                        </select>
+                        <form id="payment-form">
+                            <div class="payment-section">
+                                <div class="form-section">
+                                    <!-- Cardholder Name -->
+                                    <div class="form-group">
+                                        <label for="cardholder-name">Cardholder Name</label>
+                                        <input type="text" id="cardholder-name" name="cardholderName" required>
+                                    </div>
+
+                                    <!-- Card Number -->
+                                    <div class="form-group">
+                                        <label for="card-number">Card Number</label>
+                                        <input type="text" id="card-number" name="cardNumber" required maxlength="16">
+                                    </div>
+
+                                    <!-- Expiration Date -->
+                                    <div class="form-group">
+                                        <label for="expiration-date">Expiration Date</label>
+                                        <input type="text" id="expiration-date" name="expirationDate" placeholder="MM/YY" required>
+                                    </div>
+
+                                    <!-- CVV -->
+                                    <div class="form-group">
+                                        <label for="cvv">CVV</label>
+                                        <input type="text" id="cvv" name="cvv" required maxlength="3">
+                                    </div>
+
+                                    <!-- Billing Address -->
+                                    <div class="form-group">
+                                        <label for="billing-address">Billing Address</label>
+                                        <input type="text" id="billing-address" name="billingAddress" required>
+                                    </div>
+
+                                    <!-- City -->
+                                    <div class="form-group">
+                                        <label for="city">City</label>
+                                        <input type="text" id="city" name="city" required>
+                                    </div>
+
+                                    <!-- Postal Code -->
+                                    <div class="form-group">
+                                        <label for="postal-code">Postal Code</label>
+                                        <input type="text" id="postal-code" name="postalCode" required>
+                                    </div>
+
+                                    <!-- Country -->
+                                    <div class="form-group">
+                                        <label for="country">Country</label>
+                                        <select id="country" name="country" required>
+                                            <option value="Spain">Spain</option>
+                                            <option value="USA">USA</option>
+                                            <option value="Canada">Canada</option>
+                                            <!-- Add more countries as needed -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="action-buttons">
+                                <button type="button" id="cancel-button">CANCEL</button>
+                                <button type="submit" id="pay-button">PAY NOW</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="action-buttons">
-                <button type="button" id="cancel-button">CANCEL</button>
-                <button type="submit" id="update-button">UPDATE</button>
-            </div>
-        </form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- End Contact Area -->
+        </div>
+    </div>
+</section>
+<!-- End Payment Area -->
 
 	
 
