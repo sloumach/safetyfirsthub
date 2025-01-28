@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\Course;
 use Stripe\StripeClient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -51,18 +53,102 @@ class PaymentController extends Controller
         dd('ss');
     }
     public function pay (){
-        return view ('payment');
+
+        $cartCount = session('cart', []);
+        $courses = Course::whereIn('id', $cartCount)->get();
+        $totalPrice = $courses->sum('price');
+
+        //dd($totalPrice);
+        return view ('payment',compact('totalPrice'));
     }
-    public function charge (Request $request){
+    public function charge(Request $request)
+    {
+        $cartCount = session('cart', []); // Récupérer les IDs des cours dans le panier
+        $courses = Course::whereIn('id', $cartCount)->get(); // Obtenir les cours
+        $totalPrice = $courses->sum('price'); // Calculer le total
+
+        try {
+            // Initialiser le client Stripe
+            $stripe = new StripeClient(env('stripe_secret_key'));
+
+            // Créer un PaymentIntent
+            $paymentIntent = $stripe->paymentIntents->create([
+                'amount' => $totalPrice * 100, // Montant en cents
+                'currency' => 'usd',
+                'payment_method_types' => ['card'], // Type de paiement
+                'description' => 'Payment for ' . implode(', ', $courses->pluck('category')->toArray()), // Description
+            ]);
+            /* dd($paymentIntent->status);
+
+            // Si le paiement est validé (via webhook ou confirmation frontend), ajuster le rôle et associer les cours
+            if ($paymentIntent->status === 'succeeded') {
+                $user = Auth::user();
+
+                // Ajouter le rôle "student" si l'utilisateur ne l'a pas encore
+                $studentRole = Role::where('name', 'student')->first();
+
+                $user->roles()->sync([$studentRole->id]);
+
+                // Associer les cours achetés à l'utilisateur
+                foreach ($courses as $course) {
+                    $user->courses()->attach($course->id);
+                }
+
+                // Vider le panier après un achat réussi
+                session()->forget('cart');
+
+                // Retourner une réponse de succès
+                return response()->json(['success' => true, 'message' => 'Payment succeeded!']);
+            } */
+
+            // Retourner le client_secret pour gérer les actions frontend (3D Secure, etc.)
+            return response()->json([
+                'clientSecret' => $paymentIntent->client_secret,
+            ]);
+        } catch (\Exception $e) {
+            // Gérer les erreurs
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function syncPayment(Request $request)
+    {
+        try {
+            $paymentIntentId = $request->paymentIntentId;
+
+            $stripe = new StripeClient(env('stripe_secret_key'));
+            $paymentIntent = $stripe->paymentIntents->retrieve($paymentIntentId);
+
+            if ($paymentIntent->status === 'succeeded') {
+                $user = Auth::user();
+
+                // Ajouter le rôle "student"
+                $studentRole = Role::where('name', 'student')->first();
+                $user->roles()->syncWithPivotValues([$studentRole->id], [
+                    'updated_at' => now(),
+                ]);
+
+                // Associer les cours
+                $cartCount = session('cart', []);
+                $courses = Course::whereIn('id', $cartCount)->get();
+
+                foreach ($courses as $course) {
+                    $user->courses()->attach($course->id, [
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                // Vider le panier
+                session()->forget('cart');
+
+                return response()->json(['success' => true]);
+            }
+
+            return response()->json(['error' => 'Payment not succeeded'], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
 
-        $stripe = new StripeClient(env('stripe_secret_key'));
-        $charge = $stripe->charges->create([
-            'amount' => $request->price,
-            'currency' => 'usd',
-            'source' => $request->token,
-            'description' => 'test payment safety',
-        ]);
-        dd($charge);
-    }
 }

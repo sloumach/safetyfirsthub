@@ -89,8 +89,14 @@
 							<div class="row">
 								<div class="col-12">
 									<div class="form-group">
-										<label>Full name</label>
-										<input class="form-control" type="text" name="name">
+										<label>First name</label>
+										<input class="form-control" type="text" name="firstname">
+									</div>
+								</div>
+								<div class="col-12">
+									<div class="form-group">
+										<label>Last name</label>
+										<input class="form-control" type="text" name="lastname">
 									</div>
 								</div>
 

@@ -176,6 +176,11 @@
                                 </li>
                             </ul>
                         </li> --}}
+                        @if(Auth::check() && Auth::user()->hasRole('student'))
+                         <li class="nav-item">
+                            <a href="{{ route ('dashboard') }}" class="nav-link">Dashboard</a>
+                        </li>
+                        @endif
 
                         <li class="nav-item">
                             <a href="{{ route('contact') }}" class="nav-link">Contact</a>
