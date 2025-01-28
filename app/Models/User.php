@@ -19,8 +19,13 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'firstname',
+        'lastname',
         'email',
+        'phone',
+        'country',
+        'state',
+        'zipcode',
         'password',
     ];
 
@@ -56,6 +61,18 @@ class User extends Authenticatable implements MustVerifyEmail
     public function wishlists(): HasMany
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    // Relation avec les rôles
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    // Vérifie si l'utilisateur a un rôle spécifique
+    public function hasRole(string $role): bool
+    {
+        return $this->roles->contains('name', $role);
     }
 
 }

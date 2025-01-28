@@ -8,12 +8,14 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
 
 
 
 require __DIR__.'/auth.php';
 
 Route::controller(HomeController::class)->group(function () {
+
     Route::get('/', 'home')->name('home');
     Route::get('/profiles', 'profile')->name('profiles');//added par yassine page profile
 
@@ -24,6 +26,7 @@ Route::controller(HomeController::class)->group(function () {
 });
 
 Route::group([ 'middleware' => ['auth','verified']], function () {
+
     Route::controller(ShopController::class)->group(function () {
         Route::get('/shop', 'index')->name('shop');
         Route::get('/cart', 'cart')->name('cart');
@@ -31,27 +34,40 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::post('/add-to-cart', 'addToCart')->name('add.to.cart');
 
     });
+
     Route::controller(PaymentController::class)->group(function () {
         Route::get('/checkout', 'checkout')->name('checkout');
         Route::post('/payment', 'payment')->name('payment');
         Route::get('/pay', 'pay')->name('pay');
+        Route::post('/charge', 'charge')->name('charge');
+        Route::post('/sync-payment',  'syncPayment')->name('syncPayment');
+        Route::get('/success', 'success')->name('success');
 
     });
 });
 
+Route::group([ 'middleware' => ['auth','verified','role:student']], function () {
+
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/student/dashboard', 'index')->name('dashboard');
+    });
+});
+
 Route::controller(CourseController::class)->group(function () {
+
     Route::get('/singlecourse/{id}', 'singlecourse')->name('singlecourse');
     Route::get('/courses', 'index')->name('courses');
 });
 
 Route::group([ 'middleware' => ['auth','verified']], function () {
+
     Route::controller(ProductController::class)->group(function () {
         Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
-
     });
 });
 
 Route::controller(AdminController::class)->group(function () {
+
     Route::get('adminindex', 'index')->name('adminindex');
     Route::get('admincourses', 'courses')->name('admincourses');
     Route::post('addcourse', 'addcourse')->name('addcourse');
@@ -61,7 +77,7 @@ Route::controller(AdminController::class)->group(function () {
 
 
 
-Route::middleware('auth')->group(function () {
+/* Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -78,6 +94,9 @@ Route::group(['prefix' => 'user', 'middleware' => ['verified', '2fa.verify', 'ro
         Route::get('/templates/original-template/{slug}', 'viewOriginalTemplate');
     });
 });
+Route::middleware(['auth', 'role:student'])->group(function () {
+    Route::get('/course-content/{id}', [CourseController::class, 'show'])->name('course.content');
+}); */
 
 
 
