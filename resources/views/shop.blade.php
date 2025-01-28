@@ -109,7 +109,7 @@
 							<div class="row">
                                 <!-- ici on parcoure les courses	-->
                                 @foreach ($products as $product)
-                                    <div class="col-lg-4 col-sm-6">
+                                    <div class="col-lg-4 col-sm-6 mt-5">
                                         <div class="single-shop">
                                             <div class="shop-img">
                                                 <img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
@@ -130,14 +130,15 @@
                                                 </ul>
                                             </div>
 
-                                            <h3>transform: scaleY(1);</h3>
-                                            <span> <del>$49.00</del> $39.00</span>
+                                            <h3>{{ $product->name }}</h3>
+                                            <span> <del>$49.00</del> ${{ $product->price }}</span>
 
-                                            <a href="cart.html" class="default-btn">
-                                                Add to cart
+                                            <a href="{{ route('singleproduct', ['id' => $product->id])  }}" class="default-btn">
+                                                View course
                                             </a>
                                         </div>
 								    </div>
+
                                     <div class="modal fade product-view-one" id="product-view-one{{ $product->id }}">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -253,7 +254,7 @@
                                 @endforeach
 
                                 <!-- pagination	-->
-								<div class="col-lg-12 col-md-12">
+								{{-- <div class="col-lg-12 col-md-12">
 									<div class="pagination-area">
 										<!--
 										<a href="#" class="prev page-numbers">
@@ -269,7 +270,7 @@
 											<i class="bx bx-chevron-right"></i>
 										</a>
 									</div>
-								</div>
+								</div> --}}
 							</div>
 						</div>
 					</div>
@@ -278,7 +279,7 @@
 						<div class="widget-sidebar">
 
 
-							<div class="sidebar-widget popular-post">
+							{{-- <div class="sidebar-widget popular-post">
 								<h3 class="widget-title">Popular Posts</h3>
 
 								<div class="post-wrap">
@@ -324,7 +325,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> --}}
 
 
 						</div>

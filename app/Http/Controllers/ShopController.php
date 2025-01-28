@@ -26,7 +26,8 @@ class ShopController extends Controller
 
         // Vérifie si le tableau n'est pas vide
         if (empty($cartCount)) {
-            return view('cart');
+            $courses = collect(); // Crée une collection vide
+            return view('cart', compact('courses'));
         }
         // Récupère les cours correspondant aux IDs
         $courses = Course::whereIn('id', $cartCount)->get();

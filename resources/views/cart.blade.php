@@ -95,9 +95,9 @@
 										</thead>
 
 										<tbody>
-                                            @if($courses->isEmpty())
-                                                <p>Your cart is empty.</p>
-                                            @else
+                                            @if(!$courses->isEmpty())
+
+
                                             <!-- ici on parcoure le contenu de la cart	-->
                                             @foreach($courses as $course)
                                                 <tr>
@@ -141,12 +141,14 @@
 												<a href="#" class="default-btn">Apply coupon</a>
 											</div>
 										</div> --}}
+                                        @if(!$courses->isEmpty())
+                                            <div class="col-lg-4 col-sm-5 text-right">
+                                                <a href="#" class="default-btn update">
+                                                    Update cart
+                                                </a>
+                                            </div>
+                                        @endif
 
-										<div class="col-lg-4 col-sm-5 text-right">
-											<a href="#" class="default-btn update">
-												Update cart
-											</a>
-										</div>
 									</div>
 								</div>
 							</div>
