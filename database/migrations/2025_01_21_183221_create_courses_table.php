@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id(); // ID unique pour chaque cours
+            $table->string('name');
             $table->decimal('price', 8, 2); // Prix du cours
             $table->string('price_stripe'); // Produit du cours dans stripe
             $table->string('category'); // Catégorie du cours
