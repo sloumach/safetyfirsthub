@@ -81,55 +81,42 @@
                     </div>
                     <input type="file" id="avatar-upload" name="avatar" accept="image/*">
                 </div>
-                <div class="form-section">
-                    <!-- Form fields remain the same -->
-                    <div class="form-group">
-                        <label for="full-name">Full Name</label>
-                        <input type="text" id="full-name" name="fullname" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="job-role">Job Role</label>
-                        <input type="text" id="job-role" name="jobrole" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required value="@gmail.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="company">Company Name</label>
-                        <input type="text" id="company" name="company" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="website">Company Website</label>
-                        <input type="url" id="website" name="website" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Address Line</label>
-                        <input type="text" id="address" name="address" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" name="city" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="postal-code">Postal Code</label>
-                        <input type="text" id="postal-code" name="postalCode" required value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="country">Country</label>
-                        <select id="country" name="country" required >
-                            <option value="Spain">Spain</option>
-                            <option value="USA">USA</option>
-                            <option value="Canada">Canada</option>
-                            <!-- Add more countries as needed -->
-                        </select>
-                    </div>
-                </div>
-            </div>
+				<div class="form-section">
+    <div class="form-group">
+        <label for="first-name">First Name *</label>
+        <input type="text" id="first-name" name="firstname" required value="">
+    </div>
+    <div class="form-group">
+        <label for="last-name">Last Name *</label>
+        <input type="text" id="last-name" name="lastname" required value="">
+    </div>
+    <div class="form-group">
+        <label for="country">Country *</label>
+        <select id="country" name="country" required>
+            <option value="United Kingdom" selected>United Kingdom</option>
+            <option value="Spain">Spain</option>
+            <option value="USA">USA</option>
+            <option value="Canada">Canada</option>
+            <!-- Add more countries as needed -->
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="street-address">Street Address *</label>
+        <input type="text" id="street-address" name="streetaddress" required value="">
+    </div>
+    <div class="form-group">
+        <label for="city">Town / City *</label>
+        <input type="text" id="city" name="city" required value="">
+    </div>
+    <div class="form-group">
+        <label for="state">State *</label>
+        <input type="text" id="state" name="state" required value="">
+    </div>
+    <div class="form-group">
+        <label for="zip">Zip *</label>
+        <input type="text" id="zip" name="zip" required value="">
+    </div>
+</div>
             <div class="action-buttons">
                 <button type="button" id="cancel-button">CANCEL</button>
                 <button type="submit" id="update-button">UPDATE</button>
