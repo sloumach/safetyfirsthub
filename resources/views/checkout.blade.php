@@ -77,7 +77,7 @@
 		<!-- Start Checkout Area -->
 		<section class="checkout-area ptb-100">
 			<div class="container">
-                <form method="POST" action="{{ route('payment') }}">
+                <form method="POST" action="{{ route('charge') }}">
                     @csrf <!-- Protection CSRF -->
 
                     <div class="row">

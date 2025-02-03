@@ -6,6 +6,8 @@ use App\Models\Course;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Flasher\Toastr\Prime\ToastrFactory;
+
 
 class ShopController extends Controller
 {
@@ -49,13 +51,24 @@ class ShopController extends Controller
         return view('wishlist',compact('wishlistedCourses'));
     }
 
-    public function addToCart(Request $request){
+    public function addToCart(Request $request, ToastrFactory $flasher){
 
         $request->validate([
             'product_id' => 'required|exists:courses,id', // Vérifie que le produit existe
         ]);
+        $user = auth()->user();
+
         // Récupérer l'ID du produit depuis la requête
         $productId = $request->input('product_id');
+        if ($user && $user->courses->contains($productId)) {
+            $flasher->addWarning('You have already purchased this course.');
+            return response()->json([
+                'success' => false,
+                'message' => 'You have already purchased this course.',
+                'flasher_html' => $flasher->render(), // Générer le HTML de la notification
+
+            ], 400); // Code 400 pour indiquer une erreur côté client
+        }
 
         // Ajouter l'ID du produit à la session
         $cart = Session::get('cart', []);
@@ -64,10 +77,12 @@ class ShopController extends Controller
             $cart[] = $productId; // Ajouter l'ID au panier
             Session::put('cart', $cart); // Enregistrer dans la session
         }
+        $flasher->addSuccess('Product added to cart successfully!');
 
         return response()->json([
             'success' => true,
             'message' => 'Product added to cart successfully!',
+            'flasher_html' => $flasher->render(),
         ]);
     }
 

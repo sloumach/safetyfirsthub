@@ -11,7 +11,7 @@
     <div class="main-nav">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-md">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="#">
                     <img src="{{ asset('assets/img/logo.png') }}" class="main-logo" alt="Logo">
                     <img src="{{ asset('assets/img/logo-2.png') }}" class="white-logo" alt="Logo">
                 </a>
@@ -274,9 +274,9 @@
                         </div>
 
                         <div class="cart-icon">
-                            <a href="cart.html">
+                            <a href="{{ route('cart') }}">
                                 <i class="flaticon-shopping-cart"></i>
-                                <span>0</span>
+                                <span class="mob">0</span>
                             </a>
                         </div>
 

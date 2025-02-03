@@ -33,15 +33,19 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/wishlist', 'wishlist')->name('wishlist');
         Route::post('/add-to-cart', 'addToCart')->name('add.to.cart');
 
+
     });
 
     Route::controller(PaymentController::class)->group(function () {
+        Route::get('/success','successPage')->name('checkout.success');
+        Route::get('/cancel','cancelPage')->name('checkout.cancel');
+
         Route::get('/checkout', 'checkout')->name('checkout');
         Route::post('/payment', 'payment')->name('payment');
-        Route::get('/pay', 'pay')->name('pay');
+        /* Route::post('/pay', 'pay')->name('pay'); */
         Route::post('/charge', 'charge')->name('charge');
-        Route::post('/sync-payment',  'syncPayment')->name('syncPayment');
-        Route::get('/success', 'success')->name('success');
+        Route::get('/sync-payment',  'syncPayment')->name('syncPayment');
+        //Route::get('/success', 'success')->name('success');
 
     });
 });

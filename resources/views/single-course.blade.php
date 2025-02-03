@@ -410,9 +410,16 @@
 					<div class="col-lg-4">
 						<div class="account-wrap">
 							<ul>
-								<li>
-									Price <span class="bold">${{ $course->price }}</span>
+                                @if(auth()->user() && auth()->user()->courses->contains($course->id))
+                                <li>
+									Product: <span class="bold bg">Owned</span>
 								</li>
+                                @else
+                                <li>
+                                    Price <span class="bold">${{ $course->price }}</span>
+                                </li>
+                                @endif
+
 								{{-- <li>
 									Start <span>Sep 01, 2020</span>
 								</li>
@@ -433,7 +440,11 @@
 								</li> --}}
 							</ul>
 
-							<a href="{{ route('singleproduct', ['id' => $course->id])  }}" class="default-btn">Book now</a>
+							@if(auth()->user() && auth()->user()->courses->contains($course->id))
+                                <a href="{{ route('dashboard') }}" class="default-btn">Go to Dashboard</a>
+                            @else
+                                <a href="{{ route('singleproduct', ['id' => $course->id]) }}" class="default-btn">Book now</a>
+                            @endif
 
 							{{-- <div class="social-content">
 								<p>

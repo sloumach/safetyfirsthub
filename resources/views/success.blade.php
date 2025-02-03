@@ -36,6 +36,93 @@
 
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
+        <style>
+            /* Styles généraux */
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                text-align: center;
+                background-color: #f8f9fa;
+                padding: 20px;
+            }
+
+            .success-message {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                max-width: 500px;
+                width: 100%;
+            }
+
+            .checkmark {
+                color: #28a745;
+                font-size: 50px;
+                font-weight: bold;
+            }
+
+            h1 {
+                color: #333;
+                font-size: 24px;
+                margin-top: 10px;
+            }
+
+            p {
+                color: #666;
+                font-size: 16px;
+                margin: 10px 0;
+            }
+
+            .buttons {
+                margin-top: 20px;
+            }
+
+            .btn {
+                display: inline-block;
+                padding: 10px 20px;
+                font-size: 16px;
+                color: white;
+                background-color: #007bff;
+                text-decoration: none;
+                border-radius: 5px;
+                margin: 5px;
+                transition: background 0.3s ease;
+            }
+
+            .btn:hover {
+                background-color: #0056b3;
+            }
+
+            .btn-secondary {
+                background-color: #6c757d;
+            }
+
+            .btn-secondary:hover {
+                background-color: #545b62;
+            }
+
+            /* Responsive */
+            @media (max-width: 600px) {
+                .success-message {
+                    padding: 20px;
+                }
+
+                h1 {
+                    font-size: 20px;
+                }
+
+                p {
+                    font-size: 14px;
+                }
+
+                .btn {
+                    font-size: 14px;
+                    padding: 8px 16px;
+                }
+            }
+        </style>
 		<!-- Title -->
 		<title>Eduon - Online Courses & Training HTML Template</title>
     </head>
@@ -56,6 +143,18 @@
 			</div>
 		</div>
 		<!-- End Preloader Area -->
+        <div class="container">
+            <div class="success-message">
+                <i class="checkmark">&#10004;</i>
+                <h1>Payment Successful!</h1>
+<p>Thank you for your purchase. Your payment has been processed successfully.</p>
+<p>You can now access your user account or return to the homepage.</p>
+
+<div class="buttons">
+    <a href="{{ route('dashboard') }}" class="default-btn">Access My Dashboard</a>
+</div>
+            </div>
+        </div>
 
 
 
@@ -139,7 +238,7 @@
 </section>
 <!-- End Payment Area -->
 
-	
+
 
 		<!-- Start Footer Top Area -->
         @include('footer')
