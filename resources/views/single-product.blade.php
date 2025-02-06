@@ -91,10 +91,11 @@
                         <h3>{{ $product->name }}</h3>
 
                         <div class="price">
+                            <span>Price:</span>
                             <span class="new-price">${{ $product->price }}</span>
                         </div>
 
-                        <div class="product-review">
+                        {{-- <div class="product-review">
                             <div class="rating">
                                 <i class='bx bxs-star'></i>
                                 <i class='bx bxs-star'></i>
@@ -103,13 +104,13 @@
                                 <i class='bx bxs-star-half'></i>
                             </div>
                             <a href="#" class="rating-count">(5 reviews)</a>
-                        </div>
+                        </div> --}}
 
                         <p>{{ $product->description }}</p>
 
                         <ul class="product-summery">
                             {{-- <li>SUK <span>:132</span></li> --}}
-                            <li>Category <span>:Book cover</span></li>
+                            <li>Category <span>{{ $product->category }}</span></li>
                             {{-- <li>Tags <span>:Book</span></li> --}}
                             {{-- <li>10 in stock</li> --}}
                         </ul>
@@ -146,14 +147,14 @@
 										<i class='bx bx-plus' ></i>
 									</span>
 								</div>
-							</div> --}}
+						</div> --}}
                         @if (auth()->user() && auth()->user()->courses->contains($product->id))
                             <a href="{{ route('dashboard') }}" type="button" class="default-btn mt-5">
                                 Owned
                                 <i class="flaticon-right"></i>
                             </a>
                         @else
-                            <button type="button" class="default-btn add-to-cart" data-id="{{ $product->id }}">
+                            <button type="button" class="default-btn add-to-cart mt-5" data-id="{{ $product->id }}">
                                 Add to Cart
                                 <i class="flaticon-right"></i>
                             </button>
@@ -175,11 +176,11 @@
                                             Description
                                         </a>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         <a href="#">
                                             Reviews
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
 
@@ -192,7 +193,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="tabs_item">
+                                    {{-- <div class="tabs_item">
                                         <div class="products-details-tab-content">
                                             <div class="product-review-form">
                                                 <h3>Customer reviews</h3>
@@ -293,7 +294,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -521,48 +522,60 @@
     <script src="{{ asset('assets/js/ajaxchimp.min.js') }}"></script>
     <!-- Custom JS -->
     <script src="{{ asset('assets/js/custom.js') }}"></script>
-    <script>
-        let cartCountSpan = $('.cart-icon span'); // Le span du compteur de panier
-        console.log("Contenu brut du spasn:", cartCountSpan.text());
-    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script>
         $(document).on('click', '.add-to-cart', function() {
-            let productId = $(this).data('id'); // Récupérer l'ID du produit
-            let cartCountSpan = $('.cart-icon span'); // Le span du compteur de panier
+            let courseId = $(this).data('id'); // Récupérer l'ID du cours
+            let cartCountSpan = $('.cart-icon span'); // Sélectionne les compteurs du panier
 
             $.ajax({
-                url: "{{ route('add.to.cart') }}", // Route pour ajouter au panier
+                url: "{{ route('add.to.cart') }}",
                 type: "POST",
                 data: {
-                    _token: "{{ csrf_token() }}", // Protection CSRF
-                    product_id: productId,
+                    _token: "{{ csrf_token() }}",
+                    course_id: courseId, // Renommé pour être plus clair
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('body').append(response.flasher_html);
-
-                        // Mettre à jour le compteur du panier
-                        // Convertir en nombre entier et éviter les erreurs si vide
-                        let cartCountSpans = $('.cart-icon span'); // Sélectionne tous les compteurs
-                        cartCountSpans.each(function() {
-                            let currentCount = parseInt($(this).text().trim(), 10) ||
-                            0; // Convertir en nombre entier
-                            $(this).text(currentCount +
-                            1); // Mettre à jour chaque compteur individuellement
+                        Swal.fire({
+                            customClass: { confirmButton: "default-btn" },
+                            title: 'Added to the cart.',
+                            icon: 'success',
+                            confirmButtonText: 'Cart',
+                            showCloseButton: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location = "/student/dashboard";
+                            }
                         });
-                        //w9eft hne raka7t span cart
 
-                        /*  */
-                    } else {
-                        alert(response.message);
+                        // Mettre à jour dynamiquement le compteur du panier
+                        cartCountSpan.text(response.cart_count);
                     }
                 },
                 error: function(xhr) {
-                    console.error(xhr.responseText);
+                    let response = xhr.responseJSON;
+                    if (response && response.message) {
+                        Swal.fire({
+                            customClass: { confirmButton: "default-btn" },
+                            title: response.message,
+                            icon: 'warning',
+                            confirmButtonText: response.message === "Product already in your cart!" ? 'Cart' : 'Dashboard',
+                            showCloseButton: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location = response.message === "Product already in your cart!" ? "/cart" : "/dashboard";
+                            }
+                        });
+                    }
                 }
             });
         });
     </script>
+
 
 </body>
 

@@ -18,7 +18,6 @@ Route::controller(HomeController::class)->group(function () {
 
     Route::get('/', 'home')->name('home');
     Route::get('/profiles', 'profile')->name('profiles');//added par yassine page profile
-
     Route::get('/policy', 'policy')->name('policy');
     Route::get('/terms', 'terms')->name('terms');
     Route::get('/faq', 'faq')->name('faq');
@@ -32,6 +31,8 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/cart', 'cart')->name('cart');
         Route::get('/wishlist', 'wishlist')->name('wishlist');
         Route::post('/add-to-cart', 'addToCart')->name('add.to.cart');
+        Route::post('/remove-from-cart', 'removeFromCart')->name('remove.from.cart');
+
 
 
     });
@@ -48,6 +49,10 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         //Route::get('/success', 'success')->name('success');
 
     });
+
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
+    });
 });
 
 Route::group([ 'middleware' => ['auth','verified','role:student']], function () {
@@ -63,12 +68,6 @@ Route::controller(CourseController::class)->group(function () {
     Route::get('/courses', 'index')->name('courses');
 });
 
-Route::group([ 'middleware' => ['auth','verified']], function () {
-
-    Route::controller(ProductController::class)->group(function () {
-        Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
-    });
-});
 
 Route::controller(AdminController::class)->group(function () {
 
