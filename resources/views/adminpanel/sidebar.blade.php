@@ -32,6 +32,11 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>courses</span></a>
     </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ route('adminfinanceindex') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>finances</span></a>
+    </li>
 
  {{--    <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">

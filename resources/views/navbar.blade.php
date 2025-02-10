@@ -176,13 +176,14 @@
                                 </li>
                             </ul>
                         </li> --}}
+                        @if(Auth::check() && Auth::user()->hasRole('student'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 Dashboard
                                 <i class="bx bx-chevron-down"></i>
                             </a>
                             <ul class="dropdown-menu">
-                                @if(Auth::check() && Auth::user()->hasRole('student'))
+
                                 <li class="nav-item">
                                     <a href="{{ route ('dashboard') }}" class="nav-link">Courses</a>
                                 </li>
@@ -192,10 +193,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route ('dashboard') }}" class="nav-link">Certificates</a>
                                 </li>
-                                @endif
+
 
                             </ul>
                         </li>
+                        @endif
                         <li class="nav-item">
                             <a href="{{ route('contact') }}" class="nav-link">Contact</a>
                         </li>

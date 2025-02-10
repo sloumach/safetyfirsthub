@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -147,18 +151,25 @@
     <!-- End Preloader Area -->
     <div class="container">
         <div class="success-message">
-            <i class="checkmark">&#10004;</i>
-            <h1>Payment Successful!</h1>
-            <p>Thank you for your purchase. Your payment has been processed successfully.</p>
-            <p>You can now access your user account or return to the homepage.</p>
+            <i class="crossmark">&#10008;</i>
+            <h1>Payment Failed!</h1>
+            <p>Unfortunately, your payment could not be processed.</p>
+            <p>Please check your payment details and try again, or contact support for assistance.</p>
 
             <div class="buttons">
-                <a href="{{ route('dashboard') }}" class="default-btn">Access My Dashboard</a>
+                <a href="{{ route('courses') }}" class="default-btn">Try Again</a>
             </div>
         </div>
     </div>
 
 
+
+
+
+
+    <!-- Start Footer Top Area -->
+
+    <!-- End Footer Bottom Area -->
 
     <!-- Start Go Top Area -->
     <div class="go-top">

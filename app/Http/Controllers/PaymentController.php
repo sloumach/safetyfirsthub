@@ -2,61 +2,96 @@
 
 namespace App\Http\Controllers;
 
-use Stripe\Stripe;
-use App\Models\Role;
+use App\Services\PaymentService;
 use App\Models\Course;
-use Stripe\StripeClient;
-use Stripe\Checkout\Session;
-
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Stripe\Checkout\Session as CheckoutSession;
-
+use Illuminate\Support\Facades\Log;
+use App\Events\CoursePurchased;
 
 class PaymentController extends Controller
 {
-    public function checkout(){
-        $cartCount = session('cart', []);
-        if (empty($cartCount)) {
-            //à afficher une notification
-            return redirect()->back();
+    protected $paymentService;
+
+    public function __construct(PaymentService $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
+
+    public function checkout()
+    {
+        try {
+            $cartCount = session('cart', []);
+            if (empty($cartCount)) {
+                return redirect()->back()->with('error', 'Your cart is empty.');
+            }
+
+            $courses = Course::whereIn('id', $cartCount)->get();
+            $subtotal = $courses->sum('price');
+
+            return view('checkout', compact('subtotal'));
+        } catch (\Exception $e) {
+            Log::error("Error in checkout: " . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred during checkout.');
         }
-
-        $courses = Course::whereIn('id', $cartCount)->get();
-        $subtotal = $courses->sum('price');
-
-        return view('checkout',compact('subtotal'));
     }
-    public function payment(Request $request){
 
-        //dd($request->subtotal);
-        /* $validatedData = $request->validate([
-            'first_name' => 'required|in:' . auth()->user()->first_name, // Empêche les modifications
-            'last_name' => 'required|in:' . auth()->user()->last_name, // Empêche les modifications
-            'country' => 'required|integer',
-            'street_address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'zip' => 'required|string|max:20',
-            'subtotal' => 'required|numeric|min:0', // Vérifie que le subtotal est envoyé
-        ]); */
-        // Récupération de l'utilisateur connecté
-        $user = auth()->user();
+    public function charge(Request $request)
+    {
+        try {
+            $cartCount = session('cart', []);
+            $courses = Course::whereIn('id', $cartCount)->get();
+            $totalPrice = $courses->sum('price');
 
-        // Mise à jour des informations utilisateur
-        /* $user->update([
-            'country_id' => $validatedData['country'],
-            'street_address' => $validatedData['street_address'],
-            'city' => $validatedData['city'],
-            'state' => $validatedData['state'],
-            'zip' => $validatedData['zip'],
-        ]); */
+            $checkoutUrl = $this->paymentService->createCheckoutSession($courses, $totalPrice);
+            if (!$checkoutUrl) {
+                return redirect()->back()->with('error', 'Failed to initiate payment.');
+            }
 
-        // Redirection ou retour de la réponse
-        return redirect()->route('pay')/* ->with('total', $validatedData['subtotal']) */;
-
-        dd('ss');
+            return redirect($checkoutUrl);
+        } catch (\Exception $e) {
+            Log::error("Error in charge: " . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while processing the payment.');
+        }
     }
+
+    public function syncPayment(Request $request)
+    {
+        try {
+            $sessionId = $request->query('session_id');
+            $paymentStatus = $this->paymentService->processPayment($sessionId);
+
+            if ($paymentStatus === 'failed') {
+                return redirect()->route('checkout.cancel')->with('error', 'Payment failed.');
+            }
+
+            // Assigner le rôle "student" si ce n'est pas déjà fait
+            $user = Auth::user();
+            $studentRole = Role::where('name', 'student')->first();
+            if ($studentRole && !$user->roles()->where('name', 'student')->exists()) {
+                $user->roles()->syncWithoutDetaching([$studentRole->id]);
+            }
+
+            return redirect()->route('checkout.success')->with('success', 'Payment successful.');
+        } catch (\Exception $e) {
+            Log::error("Error in syncPayment: " . $e->getMessage());
+            return redirect()->route('checkout.cancel')->with('error', 'An error occurred while syncing the payment.');
+        }
+    }
+
+    public function successPage()
+    {
+        return view('success');
+    }
+
+    public function cancelPage()
+    {
+        return view('failed');
+    }
+
+
+
     /* public function pay (){
 
         $cartCount = session('cart', []);
@@ -66,53 +101,7 @@ class PaymentController extends Controller
         //dd($totalPrice);
         return view ('payment',compact('totalPrice'));
     } */
-
-    public function successPage()
-    {
-        return view('success');
-        dd('successPage');
-        // Page de succès (paiement validé)
-
-    }
-
-    public function cancelPage()
-    {
-        return view('failed');
-        dd('cancelPage');
-        // Page d’annulation (paiement annulé)
-
-    }
-
-    public function charge(Request $request)
-    {
-        Stripe::setApiKey(env('stripe_secret_key'));
-
-        $cartCount = session('cart', []); // Récupérer les IDs des cours dans le panier
-        $courses = Course::whereIn('id', $cartCount)->get(); // Obtenir les cours
-        $totalPrice = $courses->sum('price'); // Calculer le total
-        $session = CheckoutSession::create([
-            'payment_method_types' => ['card'],
-
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => 'usd',
-                    'unit_amount' => $totalPrice*100,
-                    'product_data' => [
-                        'name' => 'Mon produit / service'
-                    ],
-                ],
-                'quantity' => 1,
-            ]],
-            'mode' => 'payment',
-            'success_url' => route('syncPayment').'?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => route('checkout.cancel'),
-        ]);
-
-        // Redirige vers l'URL de la session
-        return redirect($session->url, 303);
-
-    }
-    public function syncPayment(Request $request)
+    /* public function syncPayment2(Request $request)
     {
         Stripe::setApiKey(env('stripe_secret_key'));
 
@@ -132,37 +121,33 @@ class PaymentController extends Controller
 
         // Ajouter à la session pour éviter de traiter le paiement plusieurs fois
         session()->push('processed_payments', $request->query('session_id'));
-        dd('clean'.$request->query('session_id'));
         $cartCount = session('cart', []);
         $courses = Course::whereIn('id', $cartCount)->get();
 
-                $user = Auth::user();
+        $user = Auth::user();
 
-                // Ajouter le rôle "student"
-                $studentRole = Role::where('name', 'student')->first();
-                $user->roles()->syncWithPivotValues([$studentRole->id], [
-                    'updated_at' => now(),
-                ]);
+        // Ajouter le rôle "student"
+        $studentRole = Role::where('name', 'student')->first();
+        $user->roles()->syncWithPivotValues([$studentRole->id], [
+            'updated_at' => now(),
+        ]);
 
-                // Associer les cours
-                $cartCount = session('cart', []);
-                $courses = Course::whereIn('id', $cartCount)->get();
+        // Associer les cours
+        $cartCount = session('cart', []);
+        $courses = Course::whereIn('id', $cartCount)->get();
 
-                foreach ($courses as $course) {
-                    $user->courses()->attach($course->id, [
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
+        foreach ($courses as $course) {
+            $user->courses()->attach($course->id, [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
-                // Vider le panier
-                session()->forget('cart');
-                return view('success'); //ici retourner à une route pas un view et vérifier en haut de ecette methode //a faire le blade success
-                dd('success');
-                return response()->json(['success' => true]);
+        // Vider le panier
+        session()->forget('cart');
+        return view('success'); //ici retourner à une route pas un view et vérifier en haut de ecette methode //a faire le blade success
 
-    }
-
+    } */
     /* public function charge(Request $request)
     {
         $cartCount = session('cart', []); // Récupérer les IDs des cours dans le panier

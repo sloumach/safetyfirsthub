@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id(); // ID unique pour chaque cours
             $table->string('name');
             $table->decimal('price', 8, 2); // Prix du cours
-            $table->string('price_stripe'); // Produit du cours dans stripe
+            $table->string('price_stripe')->nullable(); // Produit du cours dans stripe
             $table->string('category'); // Catégorie du cours
             $table->integer('total_videos'); // Nombre total de vidéos
             $table->text('description'); // Description du cours

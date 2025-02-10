@@ -11,7 +11,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 
 
-
 require __DIR__.'/auth.php';
 
 Route::controller(HomeController::class)->group(function () {
@@ -68,15 +67,19 @@ Route::controller(CourseController::class)->group(function () {
     Route::get('/courses', 'index')->name('courses');
 });
 
-
 Route::controller(AdminController::class)->group(function () {
 
     Route::get('adminindex', 'index')->name('adminindex');
+    Route::get('adminfinanceindex', 'finance')->name('adminfinanceindex');
     Route::get('admincourses', 'courses')->name('admincourses');
     Route::post('addcourse', 'addcourse')->name('addcourse');
+    // Route pour mettre à jour un cours
+    Route::post('/admin/course/update/{id}', 'updateCourse')->name('update.course');
+
+    // Route pour supprimer un cours
+    Route::delete('/admin/course/delete/{id}','deleteCourse')->name('delete.course');
+
 });
-
-
 
 
 
