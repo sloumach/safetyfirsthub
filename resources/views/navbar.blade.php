@@ -11,7 +11,7 @@
     <div class="main-nav">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-md">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="#">
                     <img src="{{ asset('assets/img/logo.png') }}" class="main-logo" alt="Logo">
                     <img src="{{ asset('assets/img/logo-2.png') }}" class="white-logo" alt="Logo">
                 </a>
@@ -177,11 +177,27 @@
                             </ul>
                         </li> --}}
                         @if(Auth::check() && Auth::user()->hasRole('student'))
-                         <li class="nav-item">
-                            <a href="{{ route ('dashboard') }}" class="nav-link">Dashboard</a>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                Dashboard
+                                <i class="bx bx-chevron-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+
+                                <li class="nav-item">
+                                    <a href="{{ route ('dashboard') }}" class="nav-link">Courses</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route ('dashboard') }}" class="nav-link">Exams</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route ('dashboard') }}" class="nav-link">Certificates</a>
+                                </li>
+
+
+                            </ul>
                         </li>
                         @endif
-
                         <li class="nav-item">
                             <a href="{{ route('contact') }}" class="nav-link">Contact</a>
                         </li>
@@ -274,9 +290,9 @@
                         </div>
 
                         <div class="cart-icon">
-                            <a href="cart.html">
+                            <a href="{{ route('cart') }}">
                                 <i class="flaticon-shopping-cart"></i>
-                                <span>0</span>
+                                <span class="mob">0</span>
                             </a>
                         </div>
 

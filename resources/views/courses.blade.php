@@ -124,14 +124,14 @@
 
                                 <div class="course-content">
                                     <span class="price">$39</span>
-                                    <span class="tag">Education</span>
+                                    <span class="tag">{{ $course->category }}</span>
 
                                     <a href="{{ route('singlecourse', ['id' => $course->id]) }}">
 
-                                        <h3>Developing strategies for online teaching and learning</h3>
+                                        <h3>{{ $course->name }}</h3>
                                     </a>
 
-                                    <ul class="rating">
+                                    {{-- <ul class="rating">
                                         <li>
                                             <i class="bx bxs-star"></i>
                                         </li>
@@ -151,13 +151,13 @@
                                             <span>0.5</span>
                                             <a href="#">(1 rating)</a>
                                         </li>
-                                    </ul>
+                                    </ul> --}}
 
-                                    <p>Lorem ipsum dolor sit amet, consectetur adip iscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+                                    <p>{{ $course->short_description }}</p>
 
                                     <ul class="lessons">
-                                        <li>0 Lessons</li>
-                                        <li class="float">44 Students</li>
+                                        {{-- <li>0 Lessons</li> --}}
+                                        <li class="float">{{ $course->students }} Students</li>
                                     </ul>
                                 </div>
                             </div>

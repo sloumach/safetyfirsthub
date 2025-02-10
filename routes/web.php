@@ -11,14 +11,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 
 
-
 require __DIR__.'/auth.php';
 
 Route::controller(HomeController::class)->group(function () {
 
     Route::get('/', 'home')->name('home');
     Route::get('/profiles', 'profile')->name('profiles');//added par yassine page profile
-
     Route::get('/policy', 'policy')->name('policy');
     Route::get('/terms', 'terms')->name('terms');
     Route::get('/faq', 'faq')->name('faq');
@@ -32,17 +30,27 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/cart', 'cart')->name('cart');
         Route::get('/wishlist', 'wishlist')->name('wishlist');
         Route::post('/add-to-cart', 'addToCart')->name('add.to.cart');
+        Route::post('/remove-from-cart', 'removeFromCart')->name('remove.from.cart');
+
+
 
     });
 
     Route::controller(PaymentController::class)->group(function () {
+        Route::get('/success','successPage')->name('checkout.success');
+        Route::get('/cancel','cancelPage')->name('checkout.cancel');
+
         Route::get('/checkout', 'checkout')->name('checkout');
         Route::post('/payment', 'payment')->name('payment');
-        Route::get('/pay', 'pay')->name('pay');
+        /* Route::post('/pay', 'pay')->name('pay'); */
         Route::post('/charge', 'charge')->name('charge');
-        Route::post('/sync-payment',  'syncPayment')->name('syncPayment');
-        Route::get('/success', 'success')->name('success');
+        Route::get('/sync-payment',  'syncPayment')->name('syncPayment');
+        //Route::get('/success', 'success')->name('success');
 
+    });
+
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
     });
 });
 
@@ -59,21 +67,19 @@ Route::controller(CourseController::class)->group(function () {
     Route::get('/courses', 'index')->name('courses');
 });
 
-Route::group([ 'middleware' => ['auth','verified']], function () {
-
-    Route::controller(ProductController::class)->group(function () {
-        Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
-    });
-});
-
 Route::controller(AdminController::class)->group(function () {
 
     Route::get('adminindex', 'index')->name('adminindex');
+    Route::get('adminfinanceindex', 'finance')->name('adminfinanceindex');
     Route::get('admincourses', 'courses')->name('admincourses');
     Route::post('addcourse', 'addcourse')->name('addcourse');
+    // Route pour mettre à jour un cours
+    Route::post('/admin/course/update/{id}', 'updateCourse')->name('update.course');
+
+    // Route pour supprimer un cours
+    Route::delete('/admin/course/delete/{id}','deleteCourse')->name('delete.course');
+
 });
-
-
 
 
 

@@ -7,6 +7,6 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     public function index (){
-        dd('test');
+        dd('test'); // w9eft hne dashboard
     }
 }
