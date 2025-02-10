@@ -7,6 +7,8 @@ use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
+
+
 class ShopController extends Controller
 {
     //
@@ -23,7 +25,7 @@ class ShopController extends Controller
     public function cart () {
         // Récupère les IDs depuis la session
         $cartCount = session('cart', []); // Par défaut, retourne un tableau vide si 'cart' est inexistant
-
+        /* dd($cartCount); */
         // Vérifie si le tableau n'est pas vide
         if (empty($cartCount)) {
             $courses = collect(); // Crée une collection vide
@@ -49,25 +51,70 @@ class ShopController extends Controller
         return view('wishlist',compact('wishlistedCourses'));
     }
 
-    public function addToCart(Request $request){
-
+    public function addToCart(Request $request)
+    {
         $request->validate([
-            'product_id' => 'required|exists:courses,id', // Vérifie que le produit existe
+            'course_id' => 'required|exists:courses,id', // Vérifie que le cours existe
         ]);
-        // Récupérer l'ID du produit depuis la requête
-        $productId = $request->input('product_id');
 
-        // Ajouter l'ID du produit à la session
-        $cart = Session::get('cart', []);
-        // Vérifier si l'ID n'est pas déjà présent dans le panier
-        if (!in_array($productId, $cart)) {
-            $cart[] = $productId; // Ajouter l'ID au panier
-            Session::put('cart', $cart); // Enregistrer dans la session
+        $user = auth()->user();
+        $courseId = $request->input('course_id');
+
+        // Vérifier si l'utilisateur a déjà acheté le cours
+        if ($user && $user->courses->contains($courseId)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You have already purchased this course.',
+            ], 400); // Code 400 pour indiquer une erreur côté client
         }
+
+        // Gestion du panier en session
+        $cart = Session::get('cart', []);
+
+        if (in_array($courseId, $cart)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product already in your cart!',
+                'cart_count' => count($cart), // Retourner le nombre d'éléments dans le panier
+            ], 400);
+        }
+
+        // Ajouter le cours au panier
+        session()->push('cart', $courseId);
 
         return response()->json([
             'success' => true,
             'message' => 'Product added to cart successfully!',
+            'cart_count' => count(session('cart', [])), // Retourne le nouveau nombre d'éléments
+        ]);
+    }
+
+    public function removeFromCart(Request $request)
+    {
+        $request->validate([
+            'course_id' => 'required|exists:courses,id', // Vérifie que le cours existe
+        ]);
+
+        $courseId = $request->input('course_id');
+        $cart = Session::get('cart', []);
+
+        // Vérifier si le cours est bien dans le panier
+        if (!in_array($courseId, $cart)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Course not found in cart.',
+                'cart_count' => count($cart),
+            ], 400);
+        }
+
+        // Supprimer le cours du panier
+        $cart = array_filter($cart, fn($id) => $id != $courseId);
+        Session::put('cart', $cart);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Course removed from cart successfully!',
+            'cart_count' => count($cart),
         ]);
     }
 

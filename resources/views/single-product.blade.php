@@ -1,118 +1,121 @@
 <!DOCTYPE html>
 <html lang="zxx">
-    <head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- Bootstrap Min CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-        <!-- Owl Theme Default Min CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/owl.theme.default.min.css') }}">
-        <!-- Owl Carousel Min CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
-        <!-- Owl Magnific Popup Min CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}">
-        <!-- Animate Min CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
-        <!-- Boxicons Min CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/boxicons.min.css') }}">
-        <!-- Flaticon CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
-        <!-- Meanmenu Min CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/meanmenu.min.css') }}">
-        <!-- Nice Select Min CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/nice-select.min.css') }}">
-        <!-- Odometer Min CSS-->
-        <link rel="stylesheet" href="{{ asset('assets/css/odometer.min.css') }}">
-        <!-- Style CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-        <!-- Dark CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/dark.css') }}">
-        <!-- Responsive CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<!-- Favicon -->
-		<link rel="icon" type="image/png" href="assets/img/favicon.png">
-		<!-- Title -->
-		<title>Eduon - Online Courses & Training HTML Template</title>
-    </head>
-    <body>
-		<!-- Start Preloader Area -->
-		<div class="loader-wrapper">
-			<div class="loader">
-				<div class="dot-wrap">
-					<span class="dot"></span>
-					<span class="dot"></span>
-					<span class="dot"></span>
-					<span class="dot"></span>
-				</div>
-			</div>
-		</div>
-		<!-- End Preloader Area -->
+    <!-- Bootstrap Min CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <!-- Owl Theme Default Min CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/owl.theme.default.min.css') }}">
+    <!-- Owl Carousel Min CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
+    <!-- Owl Magnific Popup Min CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}">
+    <!-- Animate Min CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
+    <!-- Boxicons Min CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/boxicons.min.css') }}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
+    <!-- Meanmenu Min CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/meanmenu.min.css') }}">
+    <!-- Nice Select Min CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/nice-select.min.css') }}">
+    <!-- Odometer Min CSS-->
+    <link rel="stylesheet" href="{{ asset('assets/css/odometer.min.css') }}">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <!-- Dark CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/dark.css') }}">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 
-		<!-- Start Navbar Area -->
-		@include('navbar')
-		<!-- End Navbar Area -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <!-- Title -->
+    <title>Eduon - Online Courses & Training HTML Template</title>
+</head>
 
-		<!-- Start Page Title Area -->
-		<div class="page-title-area bg-23">
-			<div class="container">
-				<div class="page-title-content">
-					<h2>Single product</h2>
-					<ul>
-						<li>
-							<a href="index.html">
-								Home
-							</a>
-						</li>
+<body>
+    <!-- Start Preloader Area -->
+    <div class="loader-wrapper">
+        <div class="loader">
+            <div class="dot-wrap">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+    </div>
+    <!-- End Preloader Area -->
 
-						<li class="active">Single product</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<!-- End Page Title Area -->
+    <!-- Start Navbar Area -->
+    @include('navbar')
+    <!-- End Navbar Area -->
 
-		<!-- Start Product Details Area -->
-		<section class="product-details-area ptb-100">
-			<div class="container">
-				<div class="row align-items-center">
-					<div class="col-lg-6 col-md-12">
-						<div class="product-details-image">
-							<img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
-						</div>
-					</div>
+    <!-- Start Page Title Area -->
+    <div class="page-title-area bg-23">
+        <div class="container">
+            <div class="page-title-content">
+                <h2>Single product</h2>
+                <ul>
+                    <li>
+                        <a href="index.html">
+                            Home
+                        </a>
+                    </li>
 
-					<div class="col-lg-6 col-md-12">
-						<div class="product-details-desc">
-							<h3>{{ $product->name }}</h3>
+                    <li class="active">Single product</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- End Page Title Area -->
 
-							<div class="price">
-								<span class="new-price">${{ $product->price }}</span>
-							</div>
+    <!-- Start Product Details Area -->
+    <section class="product-details-area ptb-100">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12">
+                    <div class="product-details-image">
+                        <img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
+                    </div>
+                </div>
 
-							<div class="product-review">
-								<div class="rating">
-									<i class='bx bxs-star'></i>
-									<i class='bx bxs-star'></i>
-									<i class='bx bxs-star'></i>
-									<i class='bx bxs-star'></i>
-									<i class='bx bxs-star-half'></i>
-								</div>
-								<a href="#" class="rating-count">(5 reviews)</a>
-							</div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="product-details-desc">
+                        <h3>{{ $product->name }}</h3>
 
-							<p>{{ $product->description }}</p>
+                        <div class="price">
+                            <span>Price:</span>
+                            <span class="new-price">${{ $product->price }}</span>
+                        </div>
 
-							<ul class="product-summery">
-								{{-- <li>SUK <span>:132</span></li> --}}
-								<li>Category <span>:Book cover</span></li>
-								{{-- <li>Tags <span>:Book</span></li> --}}
-								{{-- <li>10 in stock</li> --}}
-							</ul>
+                        {{-- <div class="product-review">
+                            <div class="rating">
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star-half'></i>
+                            </div>
+                            <a href="#" class="rating-count">(5 reviews)</a>
+                        </div> --}}
 
-							{{-- <ul class="social-wrap">
+                        <p>{{ $product->description }}</p>
+
+                        <ul class="product-summery">
+                            {{-- <li>SUK <span>:132</span></li> --}}
+                            <li>Category <span>{{ $product->category }}</span></li>
+                            {{-- <li>Tags <span>:Book</span></li> --}}
+                            {{-- <li>10 in stock</li> --}}
+                        </ul>
+
+                        {{-- <ul class="social-wrap">
 								<li>
 									<span>Share:</span>
 								</li>
@@ -144,148 +147,170 @@
 										<i class='bx bx-plus' ></i>
 									</span>
 								</div>
-							</div> --}}
-
-							<button type="button" class="default-btn add-to-cart mt-5" data-id="{{ $product->id }}">
+						</div> --}}
+                        @if (auth()->user() && auth()->user()->courses->contains($product->id))
+                            <a href="{{ route('dashboard') }}" type="button" class="default-btn mt-5">
+                                Owned
+                                <i class="flaticon-right"></i>
+                            </a>
+                        @else
+                            <button type="button" class="default-btn add-to-cart mt-5" data-id="{{ $product->id }}">
                                 Add to Cart
                                 <i class="flaticon-right"></i>
                             </button>
-						</div>
-					</div>
+                        @endif
+                        {{-- <button type="button" class="default-btn add-to-cart mt-5" data-id="{{ $product->id }}">
+                                Add to Cart
+                                <i class="flaticon-right"></i>
+                            </button> --}}
+                    </div>
+                </div>
 
-					<div class="col-lg-12 col-md-12">
-						<div class="tab products-details-tab">
-							<div class="row">
-								<div class="col-lg-12 col-md-12">
-									<ul class="tabs">
-										<li>
-											<a href="#">
-												Description
-											</a>
-										</li>
-										<li>
-											<a href="#">
-												Reviews
-											</a>
-										</li>
-									</ul>
-								</div>
+                <div class="col-lg-12 col-md-12">
+                    <div class="tab products-details-tab">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12">
+                                <ul class="tabs">
+                                    <li>
+                                        <a href="#">
+                                            Description
+                                        </a>
+                                    </li>
+                                    {{-- <li>
+                                        <a href="#">
+                                            Reviews
+                                        </a>
+                                    </li> --}}
+                                </ul>
+                            </div>
 
-								<div class="col-lg-12 col-md-12">
-									<div class="tab_content">
-										<div class="tabs_item">
-											<div class="products-details-tab-content">
-												<h3 class="mb-2">Description</h3>
-												<p>{{ $product->description }}</p>
-											</div>
-										</div>
+                            <div class="col-lg-12 col-md-12">
+                                <div class="tab_content">
+                                    <div class="tabs_item">
+                                        <div class="products-details-tab-content">
+                                            <h3 class="mb-2">Description</h3>
+                                            <p>{{ $product->description }}</p>
+                                        </div>
+                                    </div>
 
-										<div class="tabs_item">
-											<div class="products-details-tab-content">
-												<div class="product-review-form">
-													<h3>Customer reviews</h3>
+                                    {{-- <div class="tabs_item">
+                                        <div class="products-details-tab-content">
+                                            <div class="product-review-form">
+                                                <h3>Customer reviews</h3>
 
-													<div class="review-title">
-														<div class="rating">
-															<i class='bx bxs-star'></i>
-															<i class='bx bxs-star'></i>
-															<i class='bx bxs-star'></i>
-															<i class='bx bxs-star'></i>
-															<i class='bx bxs-star'></i>
-														</div>
-														<p>Based on 2 reviews</p>
-													</div>
+                                                <div class="review-title">
+                                                    <div class="rating">
+                                                        <i class='bx bxs-star'></i>
+                                                        <i class='bx bxs-star'></i>
+                                                        <i class='bx bxs-star'></i>
+                                                        <i class='bx bxs-star'></i>
+                                                        <i class='bx bxs-star'></i>
+                                                    </div>
+                                                    <p>Based on 2 reviews</p>
+                                                </div>
 
-													<div class="review-comments">
-														<div class="review-item">
-															<div class="rating">
-																<i class='bx bxs-star'></i>
-																<i class='bx bxs-star'></i>
-																<i class='bx bxs-star'></i>
-																<i class='bx bxs-star'></i>
-																<i class='bx bxs-star'></i>
-															</div>
-															<h3>Good</h3>
-															<span><strong>Admin</strong> on <strong>July 21, 2020</strong></span>
-															<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                                                <div class="review-comments">
+                                                    <div class="review-item">
+                                                        <div class="rating">
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                        </div>
+                                                        <h3>Good</h3>
+                                                        <span><strong>Admin</strong> on <strong>July 21,
+                                                                2020</strong></span>
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                                                            do eiusmod tempor incididunt ut labore et dolore magna
+                                                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
+                                                        </p>
 
-															<a href="#" class="review-report-link">Reply</a>
-														</div>
+                                                        <a href="#" class="review-report-link">Reply</a>
+                                                    </div>
 
-														<div class="review-item">
-															<div class="rating">
-																<i class='bx bxs-star'></i>
-																<i class='bx bxs-star'></i>
-																<i class='bx bxs-star'></i>
-																<i class='bx bxs-star'></i>
-																<i class='bx bxs-star'></i>
-															</div>
-															<h3>Good</h3>
-															<span><strong>Admin</strong> on <strong>July 21, 2020</strong></span>
-															<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                                                    <div class="review-item">
+                                                        <div class="rating">
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                        </div>
+                                                        <h3>Good</h3>
+                                                        <span><strong>Admin</strong> on <strong>July 21,
+                                                                2020</strong></span>
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                                                            do eiusmod tempor incididunt ut labore et dolore magna
+                                                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
+                                                        </p>
 
-															<a href="#" class="review-report-link">Reply</a>
-														</div>
-													</div>
+                                                        <a href="#" class="review-report-link">Reply</a>
+                                                    </div>
+                                                </div>
 
-													<div class="review-form">
-														<h3>Write a Review</h3>
+                                                <div class="review-form">
+                                                    <h3>Write a Review</h3>
 
-														<form>
-															<div class="row">
-																<div class="col-lg-6 col-md-6">
-																	<div class="form-group">
-																		<label>Name</label>
-																		<input type="text" id="name" name="name" class="form-control">
-																	</div>
-																</div>
+                                                    <form>
+                                                        <div class="row">
+                                                            <div class="col-lg-6 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>Name</label>
+                                                                    <input type="text" id="name"
+                                                                        name="name" class="form-control">
+                                                                </div>
+                                                            </div>
 
-																<div class="col-lg-6 col-md-6">
-																	<div class="form-group">
-																		<label>Email</label>
-																		<input type="email" id="email" name="email" class="form-control">
-																	</div>
-																</div>
+                                                            <div class="col-lg-6 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>Email</label>
+                                                                    <input type="email" id="email"
+                                                                        name="email" class="form-control">
+                                                                </div>
+                                                            </div>
 
-																<div class="col-lg-12 col-md-12">
-																	<div class="form-group">
-																		<label>Review title</label>
-																		<input type="text" id="review-title" name="review-title" class="form-control">
-																	</div>
-																</div>
+                                                            <div class="col-lg-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label>Review title</label>
+                                                                    <input type="text" id="review-title"
+                                                                        name="review-title" class="form-control">
+                                                                </div>
+                                                            </div>
 
-																<div class="col-lg-12 col-md-12">
-																	<div class="form-group">
-																		<label>Body of review (1500)</label>
-																		<textarea name="review-body" id="review-body" cols="30" rows="8" class="form-control"></textarea>
-																	</div>
-																</div>
+                                                            <div class="col-lg-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label>Body of review (1500)</label>
+                                                                    <textarea name="review-body" id="review-body" cols="30" rows="8" class="form-control"></textarea>
+                                                                </div>
+                                                            </div>
 
-																<div class="col-lg-12 col-md-12">
-																	<button type="submit" class="btn default-btn two">Submit Review</button>
-																</div>
-															</div>
-														</form>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- End Product Details Area -->
+                                                            <div class="col-lg-12 col-md-12">
+                                                                <button type="submit"
+                                                                    class="btn default-btn two">Submit Review</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> --}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Product Details Area -->
 
-		<!-- Start Related Product Area -->
+    <!-- Start Related Product Area -->
 
-		<!-- End Related Product Area -->
+    <!-- End Related Product Area -->
 
-		<!-- Start Product View One Area -->
-        <div class="modal fade product-view-one" id="product-view-one">
+    <!-- Start Product View One Area -->
+    {{-- <div class="modal fade product-view-one" id="product-view-one">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <button type="button" class="close" data-bs-dismiss="modal">
@@ -408,11 +433,19 @@
 											<i class="bx bx-plus"></i>
 										</span>
 									</div>
-
-                                    <button type="button" class="default-btn add-to-cart" data-id="{{ $product->id }}">
+                                    @if (auth()->user() && auth()->user()->courses->contains($product->id))
+                                    <a href="{{ route('dashboard') }}" type="button" class="default-btn " >
+                                        Owned
+                                        <i class="flaticon-right"></i>
+                                    </a>
+                                    @else
+                                    <button type="button" class="default-btn " >
                                         Add to Cart
                                         <i class="flaticon-right"></i>
                                     </button>
+                                    @endif
+
+
 
 								</div>
 
@@ -447,75 +480,103 @@
                     </div>
                 </div>
             </div>
-        </div>
-		<!-- End Product View One Area -->
+        </div> --}}
+    <!-- End Product View One Area -->
 
-		<!-- Start Footer Top Area -->
-        @include('footer')
-		<!-- End Footer Bottom Area -->
+    <!-- Start Footer Top Area -->
+    @include('footer')
+    <!-- End Footer Bottom Area -->
 
-		<!-- Start Go Top Area -->
-		<div class="go-top">
-			<i class='bx bx-chevrons-up'></i>
-			<i class='bx bx-chevrons-up'></i>
-		</div>
-		<!-- End Go Top Area -->
+    <!-- Start Go Top Area -->
+    <div class="go-top">
+        <i class='bx bx-chevrons-up'></i>
+        <i class='bx bx-chevrons-up'></i>
+    </div>
+    <!-- End Go Top Area -->
 
-        <!-- Jquery Min JS -->
-        <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
-        <!-- Bootstrap Bundle Min JS -->
-        <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-        <!-- Meanmenu Min JS -->
-        <script src="{{ asset('assets/js/meanmenu.min.js') }}"></script>
-        <!-- Owl Carousel Min JS -->
-        <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
-        <!-- Wow Min JS -->
-        <script src="{{ asset('assets/js/wow.min.js') }}"></script>
-        <!-- Nice Select Min JS -->
-        <script src="{{ asset('assets/js/nice-select.min.js') }}"></script>
-        <!-- Magnific Popup Min JS -->
-        <script src="{{ asset('assets/js/magnific-popup.min.js') }}"></script>
-        <!-- Jarallax Min JS -->
-        <script src="{{ asset('assets/js/jarallax.min.js') }}"></script>
-        <!-- Appear Min JS -->
-        <script src="{{ asset('assets/js/appear.min.js') }}"></script>
-        <!-- Odometer JS -->
-        <script src="{{ asset('assets/js/odometer.min.js') }}"></script>
-        <!-- Form Validator Min JS -->
-        <script src="{{ asset('assets/js/form-validator.min.js') }}"></script>
-        <!-- Contact JS -->
-        <script src="{{ asset('assets/js/contact-form-script.js') }}"></script>
-        <!-- Ajaxchimp Min JS -->
-        <script src="{{ asset('assets/js/ajaxchimp.min.js') }}"></script>
-        <!-- Custom JS -->
-        <script src="{{ asset('assets/js/custom.js') }}"></script>
+    <!-- Jquery Min JS -->
+    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <!-- Bootstrap Bundle Min JS -->
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Meanmenu Min JS -->
+    <script src="{{ asset('assets/js/meanmenu.min.js') }}"></script>
+    <!-- Owl Carousel Min JS -->
+    <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
+    <!-- Wow Min JS -->
+    <script src="{{ asset('assets/js/wow.min.js') }}"></script>
+    <!-- Nice Select Min JS -->
+    <script src="{{ asset('assets/js/nice-select.min.js') }}"></script>
+    <!-- Magnific Popup Min JS -->
+    <script src="{{ asset('assets/js/magnific-popup.min.js') }}"></script>
+    <!-- Jarallax Min JS -->
+    <script src="{{ asset('assets/js/jarallax.min.js') }}"></script>
+    <!-- Appear Min JS -->
+    <script src="{{ asset('assets/js/appear.min.js') }}"></script>
+    <!-- Odometer JS -->
+    <script src="{{ asset('assets/js/odometer.min.js') }}"></script>
+    <!-- Form Validator Min JS -->
+    <script src="{{ asset('assets/js/form-validator.min.js') }}"></script>
+    <!-- Contact JS -->
+    <script src="{{ asset('assets/js/contact-form-script.js') }}"></script>
+    <!-- Ajaxchimp Min JS -->
+    <script src="{{ asset('assets/js/ajaxchimp.min.js') }}"></script>
+    <!-- Custom JS -->
+    <script src="{{ asset('assets/js/custom.js') }}"></script>
 
-        <script>
-            $(document).on('click', '.add-to-cart', function() {
-                let productId = $(this).data('id'); // Récupérer l'ID du produit
-                let cartCountSpan = $('.cart-icon span'); // Le span du compteur de panier
-                $.ajax({
-                    url: "{{ route('add.to.cart') }}", // Route pour ajouter au panier
-                    type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}", // Protection CSRF
-                        product_id: productId,
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Mettre à jour le compteur du panier
-                            let currentCount = parseInt(cartCountSpan.text());
-                            cartCountSpan.text(currentCount + 1);
-                        } else {
-                            alert(response.message);
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        $(document).on('click', '.add-to-cart', function() {
+            let courseId = $(this).data('id'); // Récupérer l'ID du cours
+            let cartCountSpan = $('.cart-icon span'); // Sélectionne les compteurs du panier
+
+            $.ajax({
+                url: "{{ route('add.to.cart') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    course_id: courseId, // Renommé pour être plus clair
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            customClass: { confirmButton: "default-btn" },
+                            title: 'Added to the cart.',
+                            icon: 'success',
+                            confirmButtonText: 'Cart',
+                            showCloseButton: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location = "/student/dashboard";
+                            }
+                        });
+
+                        // Mettre à jour dynamiquement le compteur du panier
+                        cartCountSpan.text(response.cart_count);
                     }
-                });
+                },
+                error: function(xhr) {
+                    let response = xhr.responseJSON;
+                    if (response && response.message) {
+                        Swal.fire({
+                            customClass: { confirmButton: "default-btn" },
+                            title: response.message,
+                            icon: 'warning',
+                            confirmButtonText: response.message === "Product already in your cart!" ? 'Cart' : 'Dashboard',
+                            showCloseButton: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location = response.message === "Product already in your cart!" ? "/cart" : "/dashboard";
+                            }
+                        });
+                    }
+                }
             });
-        </script>
+        });
+    </script>
 
-    </body>
+
+</body>
+
 </html>

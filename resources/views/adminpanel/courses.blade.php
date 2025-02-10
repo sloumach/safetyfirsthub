@@ -56,53 +56,174 @@
                                     Add new course:
                                 </div>
                                 <div class="card-body">
-                                    <form action="{{ route('addcourse') }}" method="POST" enctype="multipart/form-data">
-                                        <!-- Ajout du token CSRF pour la sécurité (obligatoire dans Laravel) -->
+                                    <form action="{{ route('addcourse') }}" method="POST"
+                                        enctype="multipart/form-data">
                                         @csrf
 
                                         <!-- Champ pour le prix -->
                                         <div class="form-group">
-                                          <label for="price">Price</label>
-                                          <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="Enter course price" required>
+                                            <label for="price">Price</label>
+                                            <input type="number" step="0.01" class="form-control" id="price"
+                                                name="price" placeholder="Enter course price" required>
+                                        </div>
+                                        <!-- Champ pour le prix -->
+                                        <div class="form-group">
+                                            <label for="name">name</label>
+                                            <input type="text"  class="form-control" id="name"
+                                                name="name" placeholder="Enter course name" required>
                                         </div>
 
                                         <!-- Champ pour la catégorie -->
                                         <div class="form-group">
-                                          <label for="category">Category</label>
-                                          <input type="text" class="form-control" id="category" name="category" placeholder="Enter course category" required>
+                                            <label for="category">Category</label>
+                                            <input type="text" class="form-control" id="category" name="category"
+                                                placeholder="Enter course category" required>
                                         </div>
 
                                         <!-- Champ pour le nombre total de vidéos -->
                                         <div class="form-group">
-                                          <label for="total_videos">Total Videos</label>
-                                          <input type="number" class="form-control" id="total_videos" name="total_videos" placeholder="Enter total number of videos" required>
+                                            <label for="total_videos">Total Videos</label>
+                                            <input type="number" class="form-control" id="total_videos"
+                                                name="total_videos" placeholder="Enter total number of videos" required>
                                         </div>
 
-                                        <!-- Champ pour la description -->
+                                        <!-- Champ pour la description courte -->
                                         <div class="form-group">
-                                          <label for="description">Description</label>
-                                          <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter course description" required></textarea>
+                                            <label for="short_description">Short Description</label>
+                                            <textarea class="form-control" id="short_description" name="short_description" rows="2"
+                                                placeholder="Enter a short course description" required></textarea>
                                         </div>
+
+                                        <!-- Champ pour la description détaillée -->
+                                        <div class="form-group">
+                                            <label for="description">Full Description</label>
+                                            <textarea class="form-control" id="description" name="description" rows="3"
+                                                placeholder="Enter full course description" required></textarea>
+                                        </div>
+
+                                        <!-- Champ pour le nombre d'étudiants inscrits -->
+                                        <div class="form-group">
+                                            <label for="students">Students</label>
+                                            <input type="number" class="form-control" id="students" name="students"
+                                                value="0" readonly> <!-- Valeur par défaut à 0 -->
+                                        </div>
+
                                         <!-- Champ pour l'image de couverture -->
                                         <div class="form-group">
                                             <label for="cover">Upload Course Cover</label>
-                                            <input type="file" class="form-control-file" id="cover" name="cover" accept="image/*" required>
-                                          </div>
-
-                                        <!-- Champ pour l'URL -->
-                                        {{-- <div class="form-group">
-                                            <label for="file">Upload Course Video</label>
-                                            <input type="file" class="form-control-file" id="file" name="file" accept="video/*" required>
-                                          </div> --}}
+                                            <input type="file" class="form-control-file" id="cover"
+                                                name="cover" accept="image/*" required>
+                                        </div>
 
                                         <!-- Bouton de soumission -->
                                         <button type="submit" class="btn btn-primary">Submit</button>
-                                      </form>
+                                    </form>
+
 
                                 </div>
                             </div>
+
+
+                        </div>
+                        <div class="col-lg-6">
+                            <h3>Courses List</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Category</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($courses as $course)
+                                        <tr>
+                                            <td>{{ $course->name }}</td>
+                                            <td>${{ $course->price }}</td>
+                                            <td>{{ $course->category }}</td>
+                                            <td>
+                                                <!-- Button Edit (ouvre le modal) -->
+                                                <button class="btn btn-warning btn-sm edit-btn"
+                                                    data-id="{{ $course->id }}"
+                                                    data-name="{{ $course->name }}"
+                                                    data-price="{{ $course->price }}"
+                                                    data-category="{{ $course->category }}"
+                                                    data-total_videos="{{ $course->total_videos }}"
+                                                    data-short_description="{{ $course->short_description }}"
+                                                    data-description="{{ $course->description }}">
+                                                    Edit
+                                                </button>
+
+                                                <!-- Button Delete -->
+                                                <form action="{{ route('delete.course', $course->id) }}" method="POST" style="display:inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('Are you sure you want to delete this course?')">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- MODAL POUR L'ÉDITION -->
+                        <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editCourseModalLabel">Edit Course</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="editCourseForm" action="" method="POST">
+                                            @csrf
+                                            <input type="hidden" id="edit-course-id" name="course_id">
+
+                                            <div class="form-group">
+                                                <label for="edit-name">Course Name</label>
+                                                <input type="text" class="form-control" id="edit-name" name="name" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="edit-price">Price</label>
+                                                <input type="number" step="0.01" class="form-control" id="edit-price" name="price" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="edit-category">Category</label>
+                                                <input type="text" class="form-control" id="edit-category" name="category" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="edit-total-videos">Total Videos</label>
+                                                <input type="number" class="form-control" id="edit-total-videos" name="total_videos" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="edit-short-description">Short Description</label>
+                                                <textarea class="form-control" id="edit-short-description" name="short_description" rows="2" required></textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="edit-description">Full Description</label>
+                                                <textarea class="form-control" id="edit-description" name="description" rows="3" required></textarea>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-success">Update Course</button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                            </div>
+                        </div>
+
+                    </div>
 
                 </div>
                 <!-- /.container-fluid -->
@@ -160,6 +281,33 @@
 
     <!-- Custom scripts for all pages-->
     <script src="adminassets/js/sb-admin-2.min.js"></script>
+    <script>
+        $(document).on('click', '.edit-btn', function() {
+            let courseId = $(this).data('id');
+            let name = $(this).data('name');
+            let price = $(this).data('price');
+            let category = $(this).data('category');
+            let totalVideos = $(this).data('total_videos');
+            let shortDescription = $(this).data('short_description');
+            let description = $(this).data('description');
+
+            // Remplir les champs du formulaire dans le modal
+            $('#edit-course-id').val(courseId);
+            $('#edit-name').val(name);
+            $('#edit-price').val(price);
+            $('#edit-category').val(category);
+            $('#edit-total-videos').val(totalVideos);
+            $('#edit-short-description').val(shortDescription);
+            $('#edit-description').val(description);
+
+            // Définir l'action du formulaire avec l'ID du cours
+            $('#editCourseForm').attr('action', '/admin/course/update/' + courseId);
+
+            // Ouvrir le modal
+            $('#editCourseModal').modal('show');
+        });
+    </script>
+
 
 </body>
 

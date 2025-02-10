@@ -2,57 +2,97 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
+use App\Services\PaymentService;
 use App\Models\Course;
-use Stripe\StripeClient;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Events\CoursePurchased;
 
 class PaymentController extends Controller
 {
-    public function checkout(){
-        $cartCount = session('cart', []);
-        if (empty($cartCount)) {
-            //à afficher une notification
-            return redirect()->back();
+    protected $paymentService;
+
+    public function __construct(PaymentService $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
+
+    public function checkout()
+    {
+        try {
+            $cartCount = session('cart', []);
+            if (empty($cartCount)) {
+                return redirect()->back()->with('error', 'Your cart is empty.');
+            }
+
+            $courses = Course::whereIn('id', $cartCount)->get();
+            $subtotal = $courses->sum('price');
+
+            return view('checkout', compact('subtotal'));
+        } catch (\Exception $e) {
+            Log::error("Error in checkout: " . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred during checkout.');
         }
-
-        $courses = Course::whereIn('id', $cartCount)->get();
-        $subtotal = $courses->sum('price');
-
-        return view('checkout',compact('subtotal'));
     }
-    public function payment(Request $request){
 
-        //dd($request->subtotal);
-        /* $validatedData = $request->validate([
-            'first_name' => 'required|in:' . auth()->user()->first_name, // Empêche les modifications
-            'last_name' => 'required|in:' . auth()->user()->last_name, // Empêche les modifications
-            'country' => 'required|integer',
-            'street_address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'zip' => 'required|string|max:20',
-            'subtotal' => 'required|numeric|min:0', // Vérifie que le subtotal est envoyé
-        ]); */
-        // Récupération de l'utilisateur connecté
-        $user = auth()->user();
+    public function charge(Request $request)
+    {
+        try {
+            $cartCount = session('cart', []);
+            $courses = Course::whereIn('id', $cartCount)->get();
+            $totalPrice = $courses->sum('price');
 
-        // Mise à jour des informations utilisateur
-        /* $user->update([
-            'country_id' => $validatedData['country'],
-            'street_address' => $validatedData['street_address'],
-            'city' => $validatedData['city'],
-            'state' => $validatedData['state'],
-            'zip' => $validatedData['zip'],
-        ]); */
+            $checkoutUrl = $this->paymentService->createCheckoutSession($courses, $totalPrice);
+            if (!$checkoutUrl) {
+                return redirect()->back()->with('error', 'Failed to initiate payment.');
+            }
 
-        // Redirection ou retour de la réponse
-        return redirect()->route('pay')/* ->with('total', $validatedData['subtotal']) */;
-
-        dd('ss');
+            return redirect($checkoutUrl);
+        } catch (\Exception $e) {
+            Log::error("Error in charge: " . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while processing the payment.');
+        }
     }
-    public function pay (){
+
+    public function syncPayment(Request $request)
+    {
+        try {
+            $sessionId = $request->query('session_id');
+            $paymentStatus = $this->paymentService->processPayment($sessionId);
+
+            if ($paymentStatus === 'failed') {
+                return redirect()->route('checkout.cancel')->with('error', 'Payment failed.');
+            }
+
+            // Assigner le rôle "student" si ce n'est pas déjà fait
+            $user = Auth::user();
+            $studentRole = Role::where('name', 'student')->first();
+            if ($studentRole && !$user->roles()->where('name', 'student')->exists()) {
+                $user->roles()->syncWithoutDetaching([$studentRole->id]);
+            }
+
+            return redirect()->route('checkout.success')->with('success', 'Payment successful.');
+        } catch (\Exception $e) {
+            Log::error("Error in syncPayment: " . $e->getMessage());
+            return redirect()->route('checkout.cancel')->with('error', 'An error occurred while syncing the payment.');
+        }
+    }
+
+    public function successPage()
+    {
+        return view('success');
+    }
+
+    public function cancelPage()
+    {
+        return view('failed');
+    }
+
+
+
+    /* public function pay (){
 
         $cartCount = session('cart', []);
         $courses = Course::whereIn('id', $cartCount)->get();
@@ -60,8 +100,55 @@ class PaymentController extends Controller
 
         //dd($totalPrice);
         return view ('payment',compact('totalPrice'));
-    }
-    public function charge(Request $request)
+    } */
+    /* public function syncPayment2(Request $request)
+    {
+        Stripe::setApiKey(env('stripe_secret_key'));
+
+        if (!$request->query('session_id')) {
+            return redirect()->route('checkout.cancel');
+        }
+
+        $session = Session::retrieve($request->query('session_id'));
+
+        if (!$session || $session->payment_status !== 'paid') {
+            return redirect()->route('checkout.cancel')->with('error', 'Paiement non confirmé.');
+        }
+
+        if (session()->has('processed_payments') && in_array($request->query('session_id'), session('processed_payments'))) {
+            return redirect()->route('checkout.cancel')->with('error', 'Paiement non confirmé.');
+        }
+
+        // Ajouter à la session pour éviter de traiter le paiement plusieurs fois
+        session()->push('processed_payments', $request->query('session_id'));
+        $cartCount = session('cart', []);
+        $courses = Course::whereIn('id', $cartCount)->get();
+
+        $user = Auth::user();
+
+        // Ajouter le rôle "student"
+        $studentRole = Role::where('name', 'student')->first();
+        $user->roles()->syncWithPivotValues([$studentRole->id], [
+            'updated_at' => now(),
+        ]);
+
+        // Associer les cours
+        $cartCount = session('cart', []);
+        $courses = Course::whereIn('id', $cartCount)->get();
+
+        foreach ($courses as $course) {
+            $user->courses()->attach($course->id, [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Vider le panier
+        session()->forget('cart');
+        return view('success'); //ici retourner à une route pas un view et vérifier en haut de ecette methode //a faire le blade success
+
+    } */
+    /* public function charge(Request $request)
     {
         $cartCount = session('cart', []); // Récupérer les IDs des cours dans le panier
         $courses = Course::whereIn('id', $cartCount)->get(); // Obtenir les cours
@@ -78,7 +165,7 @@ class PaymentController extends Controller
                 'payment_method_types' => ['card'], // Type de paiement
                 'description' => 'Payment for ' . implode(', ', $courses->pluck('category')->toArray()), // Description
             ]);
-            /* dd($paymentIntent->status);
+            dd($paymentIntent->status);
 
             // Si le paiement est validé (via webhook ou confirmation frontend), ajuster le rôle et associer les cours
             if ($paymentIntent->status === 'succeeded') {
@@ -99,7 +186,7 @@ class PaymentController extends Controller
 
                 // Retourner une réponse de succès
                 return response()->json(['success' => true, 'message' => 'Payment succeeded!']);
-            } */
+            }
 
             // Retourner le client_secret pour gérer les actions frontend (3D Secure, etc.)
             return response()->json([
@@ -148,7 +235,7 @@ class PaymentController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
-    }
+    } */
 
 
 }

@@ -81,7 +81,7 @@
 				<div class="row">
 					<div class="col-lg-8">
 						<div class="single-course-content">
-							<h3>Leading the way with lifelong learning</h3>
+							<h3>{{ $course->name }}</h3>
 
 							<div class="row align-items-center">
 								{{-- <div class="col-lg-4 col-sm-4">
@@ -93,14 +93,14 @@
 									</div>
 								</div> --}}
 
-								<div class="col-lg-4 col-sm-4">
+								<div class="col-lg-6 col-sm-4">
 									<div class="course-rating pl-0 text-center">
 										<h4>Categories:</h4>
 										<span>{{ $course->category }}</span>
 									</div>
 								</div>
 
-								<div class="col-lg-4 col-sm-4">
+								{{-- <div class="col-lg-4 col-sm-4">
 									<div class="course-rating star pl-0">
 										<h4>Reviews</h4>
 
@@ -115,10 +115,9 @@
 											<a href="#" class="rating-count">2 reviews</a>
 										</div>
 									</div>
-								</div>
+								</div> --}}
 							</div>
-							<img src="{{ asset('assets/img/single-course/single-course.jpg') }}" alt="Image">
-						</div>
+                            <img src="{{ asset('storage/' . $course->cover) }}" alt="Image">						</div>
 
 						<div class="tab single-course-tab">
 							<ul class="tabs">
@@ -130,23 +129,23 @@
 								</li>
 								<li>
 									<a href="#"> Instructor</a>
-								</li> --}}
+								</li>
 								<li>
 									<a href="#">Reviews</a>
-								</li>
+								</li> --}}
 							</ul>
 
 							<div class="tab_content">
 								<div class="tabs_item">
 									<h3>Course Description</h3>
 
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has svived not only five centuries, but also the leap into electronic typesetting, remaining essentially.</p>
+									<p>{{ $course->description }}</p>
 
-									<h3>Certification Online</h3>
+									{{-- <h3>Certification Online</h3> --}}
 
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis  sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+									{{-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis  sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p> --}}
 
-									<h3>What you’ll learn?</h3>
+{{-- 									<h3>What you’ll learn?</h3>
 
 									<ul class="course-list">
 										<li>
@@ -170,7 +169,7 @@
 									<h3>Who This Course is for</h3>
 
 									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis  sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-								</div>
+ --}}								</div>
 
 								<div class="tabs_item">
 									<div class="curriculum-content">
@@ -410,9 +409,16 @@
 					<div class="col-lg-4">
 						<div class="account-wrap">
 							<ul>
-								<li>
-									Price <span class="bold">${{ $course->price }}</span>
+                                @if(auth()->user() && auth()->user()->courses->contains($course->id))
+                                <li>
+									Product: <span class="bold bg">Owned</span>
 								</li>
+                                @else
+                                <li>
+                                    Price <span class="bold">${{ $course->price }}</span>
+                                </li>
+                                @endif
+
 								{{-- <li>
 									Start <span>Sep 01, 2020</span>
 								</li>
@@ -433,7 +439,11 @@
 								</li> --}}
 							</ul>
 
-							<a href="{{ route('singleproduct', ['id' => $course->id])  }}" class="default-btn">Book now</a>
+							@if(auth()->user() && auth()->user()->courses->contains($course->id))
+                                <a href="{{ route('dashboard') }}" class="default-btn">Go to Dashboard</a>
+                            @else
+                                <a href="{{ route('singleproduct', ['id' => $course->id]) }}" class="default-btn">Book now</a>
+                            @endif
 
 							{{-- <div class="social-content">
 								<p>
