@@ -1126,84 +1126,8 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
-
-		<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			// Check localStorage first
-			const hidePopup = localStorage.getItem('hideNewsletterPopup');
-
-			// Get modal element
-			const modalElement = document.getElementById('exampleModal');
-
-			// Remove any existing modal backdrops and cleanup
-			const cleanupModal = () => {
-				const backdrop = document.querySelector('.modal-backdrop');
-				if (backdrop) {
-					backdrop.remove();
-				}
-				document.body.classList.remove('modal-open');
-				document.body.style.removeProperty('padding-right');
-			};
-
-			// Initial cleanup
-			cleanupModal();
-
-			// If popup should be hidden, prevent it from showing
-			if (hidePopup === 'true') {
-				// Remove modal completely from DOM
-				if (modalElement) {
-					modalElement.remove();
-				}
-				return; // Exit early
-			}
-
-			// Only setup modal if we should show it
-			if (!hidePopup && modalElement) {
-				// Prevent automatic initialization
-				modalElement.setAttribute('data-bs-backdrop', 'static');
-				
-				let modalInstance = null;
-				
-				setTimeout(function() {
-					try {
-						// Create modal instance only once
-						modalInstance = new bootstrap.Modal(modalElement, {
-							backdrop: true,
-							keyboard: true
-						});
-						
-						// Show the modal
-						modalInstance.show();
-
-						// Add event listener for when modal is hidden
-						modalElement.addEventListener('hidden.bs.modal', function () {
-							cleanupModal();
-						});
-
-					} catch (error) {
-						console.error('Modal error:', error);
-					}
-				}, 2000); 
-
-				// Handle checkbox
-				const checkbox = document.getElementById('dontShowAgain');
-				if (checkbox) {
-					checkbox.addEventListener('change', function() {
-						if (this.checked) {
-							localStorage.setItem('hideNewsletterPopup', 'true');
-							// Hide and remove modal
-							if (modalInstance) {
-								modalInstance.hide();
-								setTimeout(() => {
-									modalElement.remove();
-									cleanupModal();
-								}, 300);
-							}
-						}
-					});
-				}
-			}
-		});
-		</script>
+		
+		<script src="assets/js/popup.js"></script> 
+		
     </body>
 </html>
