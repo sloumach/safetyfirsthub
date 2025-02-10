@@ -1183,7 +1183,7 @@
 					} catch (error) {
 						console.error('Modal error:', error);
 					}
-				}, 2000);
+				}, 2000); 
 
 				// Handle checkbox
 				const checkbox = document.getElementById('dontShowAgain');
