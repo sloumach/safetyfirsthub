@@ -114,6 +114,12 @@
                                             <input type="file" class="form-control-file" id="cover"
                                                 name="cover" accept="image/*" required>
                                         </div>
+                                        <!-- Champ pour la vidéo -->
+                                        <div class="form-group">
+                                            <label for="video">Upload Course Video</label>
+                                            <input type="file" class="form-control-file" id="video" name="video" accept="video/*" required>
+                                        </div>
+
 
                                         <!-- Bouton de soumission -->
                                         <button type="submit" class="btn btn-primary">Submit</button>
