@@ -46,20 +46,52 @@ class AdminController extends Controller
                 'short_description' => 'required|string|max:500',
                 'description' => 'required|string|max:2000',
                 'cover' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+                'video' => 'required|file|mimes:mp4,mov,avi|max:50000', // 50MB max
             ]);
 
-            $course = $this->courseService->createCourse($validatedData);
+            // Sauvegarde de l'image de couverture
+            $coverPath = $request->file('cover')->store('courses/covers', 'private');
 
-            if (!$course) {
-                return redirect()->back()->with('error', 'Failed to add course.');
+            if (!$request->hasFile('video')) {
+                dd("Aucun fichier vidéo reçu");
             }
+
+            // Teste si le fichier est lisible
+            $file = $request->file('video');
+            if (!$file->isValid()) {
+                dd("Le fichier vidéo n'est pas valide", $file->getErrorMessage());
+            }
+
+            // Vérifie la taille du fichier
+            if ($file->getSize() > 50000000) {
+                dd("Le fichier est trop volumineux");
+            }
+
+            // Sauvegarde de la vidéo
+            $videoPath = $request->file('video')->store('courses/videos', 'private');
+            dd("Vidéo stockée avec succès à l'emplacement : " . $videoPath);
+
+            // Création du cours
+            Course::create([
+                'name' => $validatedData['name'],
+                'price' => $validatedData['price'],
+                'category' => $validatedData['category'],
+                'total_videos' => $validatedData['total_videos'],
+                'short_description' => $validatedData['short_description'],
+                'description' => $validatedData['description'],
+                'cover' => $coverPath,
+                'video' => $videoPath, // Enregistre le chemin sécurisé de la vidéo
+                'students' => 0,
+            ]);
 
             return redirect()->back()->with('success', 'Course added successfully!');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             Log::error("Error in addCourse: " . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while adding the course.');
         }
     }
+
 
     public function updateCourse(Request $request, $id)
     {

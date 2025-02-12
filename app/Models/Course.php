@@ -20,6 +20,7 @@ class Course extends Model
         'short_description', // Nouvelle colonne
         'description',
         'cover',
+        'video',
         'students', // Nouvelle colonne
     ];
 

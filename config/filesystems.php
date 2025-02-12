@@ -44,6 +44,11 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
+        'private' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private'), // Stocke les fichiers dans storage/app/private
+            'visibility' => 'private', // Empêche l'accès direct
+        ],
 
         's3' => [
             'driver' => 's3',
