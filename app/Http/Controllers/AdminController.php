@@ -136,10 +136,18 @@ class AdminController extends Controller
                 ->get();
 
             return view('adminpanel.finances', compact('salesByCourse', 'revenueByCourse', 'students'));
-        } catch (\Exception $e) {
+            } catch (\Exception $e) {
             Log::error("Error in finance: " . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while fetching financial data.');
         }
+    }
+    public function usersManagement()
+    {
+        $users = User::with(['roles', 'courses'])
+            ->orderBy('created_at', 'desc')
+            ->get(['id', 'firstname','lastname', 'email', 'created_at']);
+
+        return view('adminpanel.usersmanagement', compact('users'));
     }
 }
 

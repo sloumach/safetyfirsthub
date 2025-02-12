@@ -37,6 +37,11 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>finances</span></a>
     </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ route('usersManagement') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Users Management</span></a>
+    </li>
 
  {{--    <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
