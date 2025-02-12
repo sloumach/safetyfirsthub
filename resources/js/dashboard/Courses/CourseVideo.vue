@@ -6,7 +6,7 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><router-link to="/dashboard/courses">Courses</router-link></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ course?.title }}</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ course?.name || course?.title }}</li>
                         </ol>
                     </nav>
                 </div>
@@ -22,16 +22,22 @@
                                 controls
                                 autoplay
                             >
-                                <source :src="course?.videoUrl" type="video/mp4">
+                                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="card-body">
-                            <h2 class="card-title">{{ course?.title }}</h2>
+                            <h2 class="card-title">{{ course?.name || course?.title }}</h2>
                             <p class="card-text">{{ course?.description }}</p>
                             <div class="course-meta">
-                                <span class="badge bg-primary me-2">{{ course?.duration }}</span>
-                                <span class="text-muted"><i class="fas fa-users"></i> {{ course?.students }} students</span>
+                                <span class="badge bg-primary me-2">{{ course?.duration || '2h 30min' }}</span>
+                                <span class="text-muted"><i class="fas fa-users"></i> {{ course?.students || 0 }} students</span>
+                            </div>
+                            <div class="course-instructor">
+                                <span class="text-muted">Instructor: {{ course?.instructor || 'Instructor' }}</span>
+                            </div>
+                            <div class="course-price mt-2">
+                                <span class="badge bg-success">{{ course?.price ? `$${course.price}` : 'Free' }}</span>
                             </div>
                         </div>
                     </div>
@@ -44,6 +50,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import axios from 'axios'
 
 export default {
     name: 'CourseVideo',
@@ -52,17 +59,20 @@ export default {
         const course = ref(null)
         const videoPlayer = ref(null)
 
-        onMounted(() => {
-            // In a real application, you would fetch the course data from an API
-            // This is just mock data for demonstration
-            course.value = {
-                id: parseInt(route.params.id),
-                title: 'Introduction to Programming',
-                description: 'Learn the fundamentals of programming in this introductory course.',
-                duration: '2h 30min',
-                videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-                students: 1234
+        const fetchCourse = async () => {
+            try {
+                const response = await axios.get(`/api/courses/${route.params.id}`)
+                const courses = response.data.data || response.data
+                course.value = Array.isArray(courses) 
+                    ? courses.find(c => c.id === parseInt(route.params.id))
+                    : courses
+            } catch (error) {
+                console.error('Error fetching course:', error)
             }
+        }
+
+        onMounted(() => {
+            fetchCourse()
         })
 
         return {
@@ -77,6 +87,17 @@ export default {
 .course-video-container {
     background-color: #f8f9fa;
     min-height: 100vh;
+}
+
+.course-image-container {
+    margin-bottom: 20px;
+}
+
+.course-image-container img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 15px;
 }
 
 .video-container {
@@ -100,4 +121,9 @@ export default {
 .card {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-</style> 
+
+.course-instructor,
+.course-price {
+    margin-top: 1rem;
+}
+</style>

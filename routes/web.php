@@ -61,8 +61,8 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
 Route::group(['middleware' => ['auth', 'verified', 'role:student']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/courses', [DashboardController::class, 'index']);
-    Route::get('/dashboard/{any?}', [DashboardController::class, 'index'])
-        ->where('any', '.*');
+    Route::get('/api/courses', [DashboardController::class, 'getCourses'])->name('api.courses');
+    Route::get('/api/courses/{id}', [DashboardController::class, 'getCourses'])->name('api.course.show');
 });
 
 Route::controller(CourseController::class)->group(function () {
@@ -86,6 +86,7 @@ Route::controller(AdminController::class)->group(function () {
 
 });
 
+
 /* Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -106,6 +107,9 @@ Route::group(['prefix' => 'user', 'middleware' => ['verified', '2fa.verify', 'ro
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/course-content/{id}', [CourseController::class, 'show'])->name('course.content');
 }); */
+
+
+
 
 
 

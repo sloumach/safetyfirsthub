@@ -6,17 +6,22 @@
             <div class="col" v-for="course in courses" :key="course.id">
                 <div class="card h-100 course-card">
                     <div class="course-image position-relative">
-                        <img :src="course.thumbnail" :alt="course.title" class="card-img-top">
+                        <img 
+                            :src="course.cover || 'https://placehold.co/600x400/003366/ffffff?text=Course'" 
+                            :alt="course.name"
+                            class="card-img-top"
+                            @error="handleImageError"
+                        >
                         <div class="course-overlay d-flex align-items-center justify-content-center">
-                            <span class="badge duration-badge">{{ course.duration }}</span>
+                            <span class="badge duration-badge">{{ course.total_videos }} videos</span>
                         </div>
                     </div>
                     <div class="card-body text-center">
-                        <h5 class="card-title fw-bold">{{ course.title }}</h5>
+                        <h5 class="card-title fw-bold">{{ course.name }}</h5>
                         <p class="card-text text-muted">{{ course.description }}</p>
                     </div>
                     <div class="card-footer bg-white border-0 d-flex flex-column align-items-center">
-                        <span class="text-muted"><i class="fas fa-users"></i> {{ course.students }} students</span>
+                        <span class="text-muted"><i class="fas fa-users"></i> {{ course.students || 0 }} students</span>
                         <button @click="navigateToVideo(course.id)" class="btn custom-btn w-75 mt-3">
                             Start Learning
                         </button>
@@ -30,49 +35,45 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 export default {
     name: 'Courses',
     setup() {
         const router = useRouter()
-        const courses = ref([
-            {
-                id: 1,
-                title: 'Introduction to Programming',
-                description: 'Learn the fundamentals of programming in this introductory course.',
-                duration: '2h 30min',
-                thumbnail: 'https://placehold.co/600x400/003366/ffffff?text=Programming+101',
-                students: 1234
-            },
-            {
-                id: 2,
-                title: 'Web Development Basics',
-                description: 'Master the basics of HTML, CSS, and JavaScript.',
-                duration: '3h 15min',
-                thumbnail: 'https://placehold.co/600x400/003366/ffffff?text=Web+Dev',
-                students: 856
-            },
-            {
-                id: 3,
-                title: 'Advanced JavaScript',
-                description: 'Deep dive into advanced JavaScript concepts and modern ES6+ features.',
-                duration: '4h 45min',
-                thumbnail: 'https://placehold.co/600x400/003366/ffffff?text=Advanced+JS',
-                students: 567
+        const courses = ref([])
+
+        const handleImageError = (e) => {
+            e.target.src = 'https://placehold.co/600x400/003366/ffffff?text=Course'
+        }
+
+        const fetchCourses = async () => {
+            try {
+                const response = await axios.get('/api/courses')
+                courses.value = response.data
+                console.log('Courses data:', courses.value)
+            } catch (error) {
+                console.error('Error details:', {
+                    message: error.message,
+                    response: error.response,
+                    status: error.response?.status,
+                    data: error.response?.data
+                })
             }
-        ])
+        }
 
         const navigateToVideo = (courseId) => {
             router.push(`/dashboard/courses/${courseId}/video`)
         }
 
         onMounted(() => {
-            console.log('Courses component mounted.')
+            fetchCourses()
         })
 
         return {
             courses,
-            navigateToVideo
+            navigateToVideo,
+            handleImageError
         }
     }
 }
