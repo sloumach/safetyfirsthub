@@ -185,13 +185,13 @@
                             <ul class="dropdown-menu">
 
                                 <li class="nav-item">
-                                    <a href="{{ route ('dashboard') }}" class="nav-link">Courses</a>
+                                    <a href="{{ url('/dashboard/courses') }}" class="nav-link">Courses</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route ('dashboard') }}" class="nav-link">Exams</a>
+                                    <a href="{{ url('/dashboard/exams') }}" class="nav-link">Exams</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route ('dashboard') }}" class="nav-link">Certificates</a>
+                                    <a href="{{ route('dashboard') }}" class="nav-link active">Certificates</a>
                                 </li>
 
 
