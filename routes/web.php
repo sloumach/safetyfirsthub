@@ -59,10 +59,14 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
 });
 
 Route::group(['middleware' => ['auth', 'verified', 'role:student']], function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/courses', [DashboardController::class, 'index']);
+    //dashboard routes
+    Route::get('/dashboard/{any?}', [DashboardController::class, 'index'])
+    ->where('any', '.*')
+    ->name('dashboard');
+    //api routes
     Route::get('/api/courses', [DashboardController::class, 'getCourses'])->name('api.courses');
-    Route::get('/api/courses/{id}', [DashboardController::class, 'getCourses'])->name('api.course.show');
+    Route::get('/api/courses/{id}', [DashboardController::class, 'getCourse'])->name('api.course.show');
+    
 });
 
 Route::controller(CourseController::class)->group(function () {

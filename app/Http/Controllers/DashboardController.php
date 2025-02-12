@@ -48,10 +48,13 @@ class DashboardController extends Controller
     public function getCourse($id)
     {
         try {
+
             $course = Course::findOrFail($id);
             $coverUrl = $course->cover ? asset('storage/' . $course->cover) : null;
-            
+            $email = auth()->user()->email;
+            dd($email);
             return response()->json([
+                'email' => $email,
                 'id' => $course->id,
                 'name' => $course->name,
                 'description' => $course->description,
