@@ -1,7 +1,7 @@
 <template>
     <div class="courses-container">
         <h2 class="text-2xl font-bold mb-4 text-center">Explore Our Courses</h2>
-        
+
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <div class="col" v-for="course in courses" :key="course.id">
                 <div class="card h-100 course-card">
