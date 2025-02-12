@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\PaymentController;
@@ -16,7 +17,6 @@ require __DIR__.'/auth.php';
 Route::controller(HomeController::class)->group(function () {
 
     Route::get('/', 'home')->name('home');
-    Route::get('/profiles', 'profile')->name('profiles');//added par yassine page profile
     Route::get('/policy', 'policy')->name('policy');
     Route::get('/terms', 'terms')->name('terms');
     Route::get('/faq', 'faq')->name('faq');
@@ -52,6 +52,10 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
     Route::controller(ProductController::class)->group(function () {
         Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
     });
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/profiles', 'profile')->name('profiles');//added par yassine page profile
+
+    });
 });
 
 Route::group(['middleware' => ['auth', 'verified', 'role:student']], function () {
@@ -71,6 +75,7 @@ Route::controller(AdminController::class)->group(function () {
 
     Route::get('adminindex', 'index')->name('adminindex');
     Route::get('adminfinanceindex', 'finance')->name('adminfinanceindex');
+    Route::get('usersmanagement', 'usersManagement')->name('usersManagement');
     Route::get('admincourses', 'courses')->name('admincourses');
     Route::post('addcourse', 'addcourse')->name('addcourse');
     // Route pour mettre à jour un cours
