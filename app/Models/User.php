@@ -55,7 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function courses()
     {
-        return $this->belongsToMany(Course::class, 'course_user');
+        return $this->belongsToMany(Course::class, 'course_user')->withPivot('created_at');
     }
 
     public function wishlists(): HasMany
