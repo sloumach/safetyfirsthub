@@ -54,11 +54,11 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
     });
 });
 
-Route::group([ 'middleware' => ['auth','verified','role:student']], function () {
-
-    Route::controller(DashboardController::class)->group(function () {
-        Route::get('/student/dashboard', 'index')->name('dashboard');
-    });
+Route::group(['middleware' => ['auth', 'verified', 'role:student']], function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/courses', [DashboardController::class, 'index']);
+    Route::get('/dashboard/{any?}', [DashboardController::class, 'index'])
+        ->where('any', '.*');
 });
 
 Route::controller(CourseController::class)->group(function () {
@@ -80,8 +80,6 @@ Route::controller(AdminController::class)->group(function () {
     Route::delete('/admin/course/delete/{id}','deleteCourse')->name('delete.course');
 
 });
-
-
 
 /* Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
