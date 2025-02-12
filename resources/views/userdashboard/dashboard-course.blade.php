@@ -24,15 +24,13 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-
-                        <courses :courses="{{ json_encode($courses) }}"></courses>
-
+                        <courses></courses>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+    @include('footer')
     <!-- Include JavaScript files (jQuery, Bootstrap, etc.) -->
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
