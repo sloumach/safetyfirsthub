@@ -65,7 +65,10 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
     ->name('dashboard');
     //api routes
     Route::get('/api/courses', [DashboardController::class, 'getCourses'])->name('api.courses');
-    Route::get('/api/courses/{id}', [DashboardController::class, 'getCourse'])->name('api.course.show');
+    Route::get('/api/course/{id}', [DashboardController::class, 'getCourse'])->name('api.course');
+    Route::get('/api/courses/{id}', [DashboardController::class, 'streamVideo'])->name('api.course.show');
+    Route::get('/storage/private-cover/{filename}', [DashboardController::class, 'serveCover'])
+    ->name('cover.access');
     
 });
 
