@@ -53,23 +53,23 @@ class AdminController extends Controller
             $coverPath = $request->file('cover')->store('courses/covers', 'private');
 
             if (!$request->hasFile('video')) {
-                dd("Aucun fichier vidéo reçu");
+                
             }
 
             // Teste si le fichier est lisible
             $file = $request->file('video');
             if (!$file->isValid()) {
-                dd("Le fichier vidéo n'est pas valide", $file->getErrorMessage());
+                
             }
 
             // Vérifie la taille du fichier
             if ($file->getSize() > 50000000) {
-                dd("Le fichier est trop volumineux");
+                
             }
 
             // Sauvegarde de la vidéo
             $videoPath = $request->file('video')->store('courses/videos', 'private');
-            dd("Vidéo stockée avec succès à l'emplacement : " . $videoPath);
+            
 
             // Création du cours
             Course::create([
