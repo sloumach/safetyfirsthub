@@ -10,6 +10,8 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminExamsController;
+
 
 
 require __DIR__.'/auth.php';
@@ -69,7 +71,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
     Route::get('/api/courses/{id}', [DashboardController::class, 'streamVideo'])->name('api.course.show');
     Route::get('/storage/private-cover/{filename}', [DashboardController::class, 'serveCover'])
     ->name('cover.access');
-    
+
 });
 
 Route::controller(CourseController::class)->group(function () {
@@ -90,6 +92,33 @@ Route::controller(AdminController::class)->group(function () {
 
     // Route pour supprimer un cours
     Route::delete('/admin/course/delete/{id}','deleteCourse')->name('delete.course');
+
+});
+
+Route::middleware([])->group(function () {
+    // Gestion des examens
+    Route::get('/admin/exams', [AdminExamsController::class, 'listExams'])->name('admin.exams');
+    Route::get('/admin/exams/create', [AdminExamsController::class, 'createExam'])->name('admin.exams.create');
+    Route::post('/admin/exams/store', [AdminExamsController::class, 'storeExam'])->name('admin.exams.store');
+    Route::get('/admin/exams/{id}/edit', [AdminExamsController::class, 'editExam'])->name('admin.exams.edit');
+    Route::post('/admin/exams/{id}/update', [AdminExamsController::class, 'updateExam'])->name('admin.exams.update');
+    Route::delete('/admin/exams/{id}/delete', [AdminExamsController::class, 'deleteExam'])->name('admin.exams.delete');
+    // Accéder aux questions d'un examen spécifique
+    Route::get('/admin/exams/{exam_id}/questions', [AdminExamsController::class, 'listQuestions'])->name('admin.exams.questions');
+    // Activer/Désactiver un examen
+    Route::put('/admin/exams/{id}/toggle', [AdminExamsController::class, 'toggleExamStatus'])->name('admin.exams.toggle');
+    // Ajouter une nouvelle question
+    Route::post('/admin/exams/{exam_id}/questions/store', [AdminExamsController::class, 'storeQuestion'])->name('admin.exams.questions.store');
+    // Supprimer une question
+    Route::delete('/admin/questions/{id}/delete', [AdminExamsController::class, 'deleteQuestion'])->name('admin.questions.delete');
+    // Afficher la page Ajouter une nouvelle question
+    Route::get('/admin/exams/{exam_id}/questions/create', [AdminExamsController::class, 'createQuestion'])->name('admin.questions.create');
+    // Modifier une question
+    Route::get('/admin/questions/{id}/edit', [AdminExamsController::class, 'editQuestion'])->name('admin.questions.edit');
+    Route::put('/admin/questions/{id}/update', [AdminExamsController::class, 'updateQuestion'])->name('admin.questions.update');
+
+
+
 
 });
 
