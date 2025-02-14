@@ -42,6 +42,11 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Users Management</span></a>
     </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ route('admin.exams') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Exams</span></a>
+    </li>
 
  {{--    <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
