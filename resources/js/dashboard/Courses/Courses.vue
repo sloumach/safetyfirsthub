@@ -6,12 +6,13 @@
             <div class="col" v-for="course in courses" :key="course.id">
                 <div class="card h-100 course-card">
                     <div class="course-image position-relative">
+                        <!-- Display course cover image -->
                         <img 
                             :src="course.cover || 'https://placehold.co/600x400/003366/ffffff?text=Course'" 
                             :alt="course.name"
                             class="card-img-top"
                             @error="handleImageError"
-                        >
+                        />
                         <div class="course-overlay d-flex align-items-center justify-content-center">
                             <span class="badge duration-badge">{{ course.total_videos }} videos</span>
                         </div>
@@ -51,14 +52,13 @@ export default {
             try {
                 const response = await axios.get('/api/courses')
                 courses.value = response.data
-                console.log('Courses data:', courses.value)
             } catch (error) {
-                console.error('Error details:', {
-                    message: error.message,
-                    response: error.response,
-                    status: error.response?.status,
-                    data: error.response?.data
-                })
+                // console.error('Error details:', {
+                //     message: error.message,
+                //     response: error.response,
+                //     status: error.response?.status,
+                //     data: error.response?.data
+                // })
             }
         }
 
@@ -78,6 +78,7 @@ export default {
     }
 }
 </script>
+
 
 <style scoped>
 .courses-container {
