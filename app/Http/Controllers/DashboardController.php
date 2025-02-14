@@ -31,12 +31,14 @@ class DashboardController extends Controller
     {
         try {
             $user    = auth()->user();
+            
             $courses = $user->courses->map(function ($course) {
+                $coverUrl = $course->cover ? $this->getcoverurl(basename($course->cover)) : null;
                 return [
                     'id'           => $course->id,
                     'name'         => $course->name,
                     'description'  => $course->description,
-                    'cover'        => $course->cover ? asset('storage/' . $course->cover) : null,
+                    'cover'        => $coverUrl,
                     'total_videos' => $course->total_videos,
                     'students'     => $course->students ?? 0,
                 ];
@@ -72,6 +74,7 @@ class DashboardController extends Controller
             'students'     => $course->students ?? 0,
             'instructor'   => 'John Doe',
             'price'        => 'Free',
+            'email'        => $user->email,
         ]);
     } catch (\Exception $e) {
         return response()->json(['error' => 'Course not found'], 404);
