@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Courses from '../dashboard/Courses/Courses.vue'
 import CourseVideo from '../dashboard/Courses/CourseVideo.vue'
+import Exams from '../dashboard/Exams/Exams.vue'
+import ExamDetails from '../dashboard/Exams/ExamDetails.vue'
 
 const routes = [
     {
@@ -16,6 +18,16 @@ const routes = [
         path: '/dashboard/courses/:id/video',
         name: 'course-video',
         component: CourseVideo
+    },
+    {
+        path: '/dashboard/exams',
+        name: 'exams',
+        component: Exams
+    },
+    {
+        path: '/dashboard/exams/:id',
+        name: 'exam-details',
+        component: ExamDetails
     }
 ]
 
