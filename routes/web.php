@@ -74,12 +74,15 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/exams/available', [UserExamsController::class, 'availableExams'])->name('user.exams.available');
-    Route::post('/exams/{exam_id}/start', [UserExamsController::class, 'startExam'])->name('user.exams.start');
+    //Route::get('/exams/available/{id}', [UserExamsController::class, 'availableExams'])->name('user.exams.available');
+    Route::post('/exams/start/{exam_id}', [UserExamsController::class, 'startExam'])->name('exam.start');
     Route::get('/exams/{exam_id}', [UserExamsController::class, 'showExam'])->name('user.exams.show');
     Route::post('/exams/{exam_id}/submit', [UserExamsController::class, 'submitExam'])->name('user.exams.submit');
     Route::get('/exams/{exam_id}/results', [UserExamsController::class, 'examResults'])->name('user.exams.results');
     Route::get('/exams/history', [UserExamsController::class, 'userExamHistory'])->name('user.exams.history');
+    Route::get('/exams/{session_id}/question', [UserExamsController::class, 'getNextQuestion'])->name('exam.question');
+    Route::post('/exams/{session_id}/answer', [UserExamsController::class, 'submitAnswer'])->name('exam.answer');
+
 });
 
 Route::controller(AdminController::class)->group(function () {
