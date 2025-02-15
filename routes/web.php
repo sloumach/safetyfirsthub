@@ -9,8 +9,10 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserExamsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminExamsController;
+
 
 
 
@@ -24,6 +26,11 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('/faq', 'faq')->name('faq');
     Route::get('/contact', 'contact')->name('contact');
 });
+Route::controller(CourseController::class)->group(function () {
+
+    Route::get('/singlecourse/{id}', 'singlecourse')->name('singlecourse');
+    Route::get('/courses', 'index')->name('courses');
+});
 
 Route::group([ 'middleware' => ['auth','verified']], function () {
 
@@ -33,30 +40,22 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/wishlist', 'wishlist')->name('wishlist');
         Route::post('/add-to-cart', 'addToCart')->name('add.to.cart');
         Route::post('/remove-from-cart', 'removeFromCart')->name('remove.from.cart');
-
-
-
     });
-
     Route::controller(PaymentController::class)->group(function () {
         Route::get('/success','successPage')->name('checkout.success');
         Route::get('/cancel','cancelPage')->name('checkout.cancel');
-
         Route::get('/checkout', 'checkout')->name('checkout');
         Route::post('/payment', 'payment')->name('payment');
         /* Route::post('/pay', 'pay')->name('pay'); */
         Route::post('/charge', 'charge')->name('charge');
         Route::get('/sync-payment',  'syncPayment')->name('syncPayment');
         //Route::get('/success', 'success')->name('success');
-
     });
-
     Route::controller(ProductController::class)->group(function () {
         Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
     });
     Route::controller(UserController::class)->group(function () {
         Route::get('/profiles', 'profile')->name('profiles');//added par yassine page profile
-
     });
 });
 
@@ -74,10 +73,13 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
 
 });
 
-Route::controller(CourseController::class)->group(function () {
-
-    Route::get('/singlecourse/{id}', 'singlecourse')->name('singlecourse');
-    Route::get('/courses', 'index')->name('courses');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/exams/available', [UserExamsController::class, 'availableExams'])->name('user.exams.available');
+    Route::post('/exams/{exam_id}/start', [UserExamsController::class, 'startExam'])->name('user.exams.start');
+    Route::get('/exams/{exam_id}', [UserExamsController::class, 'showExam'])->name('user.exams.show');
+    Route::post('/exams/{exam_id}/submit', [UserExamsController::class, 'submitExam'])->name('user.exams.submit');
+    Route::get('/exams/{exam_id}/results', [UserExamsController::class, 'examResults'])->name('user.exams.results');
+    Route::get('/exams/history', [UserExamsController::class, 'userExamHistory'])->name('user.exams.history');
 });
 
 Route::controller(AdminController::class)->group(function () {
