@@ -12,7 +12,7 @@ class ExamUser extends Pivot
 {
     use HasFactory;
 
-    protected $table = 'exam_user';
+    protected $table = 'exam_users';
 
     protected $fillable = [
         'user_id',

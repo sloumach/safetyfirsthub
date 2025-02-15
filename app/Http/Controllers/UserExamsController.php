@@ -6,6 +6,8 @@ use App\Models\Exam;
 use App\Models\ExamUser;
 use App\Models\Question;
 use App\Models\UserAnswer;
+use App\Models\Choice;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,49 +20,57 @@ class UserExamsController extends Controller
      * Lancer un examen pour l'utilisateur.
      */
     public function startExam($course_id)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        // Vérifier si l'utilisateur a acheté ce cours
-        if (!$user->courses->contains($course_id)) {
-            return response()->json(['error' => 'You do not have access to this course'], 403);
-        }
+    // Vérifier si l'utilisateur a acheté ce cours
+    if (!$user->courses->contains($course_id)) {
+        return response()->json(['error' => 'You do not have access to this course'], 403);
+    }
 
-        // Sélectionner un examen actif pour ce cours
-        $exam = Exam::where('course_id', $course_id)
-                    ->where('is_active', true)
-                    ->inRandomOrder()
-                    ->first();
+    // Sélectionner un examen actif pour ce cours
+    $exam = Exam::where('course_id', $course_id)
+                ->where('is_active', true)
+                ->inRandomOrder()
+                ->first();
 
-        if (!$exam) {
-            return response()->json(['error' => 'No exams available for this course'], 404);
-        }
+    if (!$exam) {
+        dd('No exams available for this course');
+        return response()->json(['error' => 'No exams available for this course'], 404);
+    }
 
-        // Vérifier si l'utilisateur a déjà terminé cet examen
-        $existingSession = ExamUser::where('user_id', $user->id)
-                                   ->where('exam_id', $exam->id)
-                                   ->where('status', 'completed')
-                                   ->first();
+    // Vérifier si l'utilisateur a déjà une session pour cet examen (toute session existante)
+    $examSession = ExamUser::where('user_id', $user->id)
+                           ->where('exam_id', $exam->id)
+                           ->first();
 
-        if ($existingSession) {
-            return response()->json(['error' => 'You have already completed this exam.'], 403);
-        }
+    // Si l'utilisateur a déjà terminé cet examen, on empêche de recommencer
+    if ($examSession && $examSession->status === 'completed') {
+        return response()->json(['error' => 'You have already completed this exam.'], 403);
+    }
 
-        // Créer une session d'examen s'il n'en a pas encore
-        $examSession = ExamUser::firstOrCreate(
-            ['user_id' => $user->id, 'exam_id' => $exam->id, 'status' => 'in_progress'],
-            ['started_at' => now()]
-        );
-
-        return response()->json([
-            'session_id' => $examSession->id,
+    // Si l'utilisateur n'a PAS encore de session active, on en crée une nouvelle
+    if (!$examSession) {
+        $examSession = DB::table('exam_users')->insertGetId([
+            'user_id' => $user->id,
             'exam_id' => $exam->id,
-            'title' => $exam->title,
-            'description' => $exam->description,
-            'duration' => $exam->duration,
-            'passing_score' => $exam->passing_score
+            'status' => 'in_progress',
+            'started_at' => now(),
+            'created_at' => now(), // Si timestamps sont activés
+            'updated_at' => now(),
         ]);
     }
+
+    return response()->json([
+        'session_id' => $examSession,
+        'exam_id' => $exam->id,
+        'title' => $exam->title,
+        'description' => $exam->description,
+        'duration' => $exam->duration,
+        'passing_score' => $exam->passing_score
+    ]);
+}
+
 
 
     /**
@@ -90,87 +100,62 @@ class UserExamsController extends Controller
 
 
      public function submitAnswer(Request $request, $session_id)
-     {
-         $examSession = ExamUser::findOrFail($session_id);
+{
+    $examSession = ExamUser::findOrFail($session_id);
 
-         if ($examSession->status === 'completed') {
-             return response()->json(['error' => 'Exam is already completed'], 403);
-         }
+    if ($examSession->status === 'completed') {
+        return response()->json(['error' => 'Exam is already completed'], 403);
+    }
 
-         $validatedData = $request->validate([
-             'question_id' => 'required|exists:questions,id',
-             'choice_id' => 'required|exists:choices,id',
-         ]);
+    // Autoriser `choice_id` à être null
+    $validatedData = $request->validate([
+        'question_id' => 'required|exists:questions,id',
+        'choice_id' => 'nullable|exists:choices,id', // ✅ Autorise `null`
+    ]);
 
-         // Stocker la réponse de l'utilisateur
-         $userAnswers = json_decode($examSession->user_answers, true) ?? [];
-         $userAnswers[$validatedData['question_id']] = $validatedData['choice_id'];
+    // Si `choice_id` est `null`, la réponse est fausse
+    $is_correct = false;
+    if ($validatedData['choice_id']) {
+        $is_correct = Choice::where('id', $validatedData['choice_id'])->where('is_correct', true)->exists();
+    }
 
-         // Vérifier si la réponse est correcte
-         $isCorrect = Choice::where('id', $validatedData['choice_id'])->where('is_correct', true)->exists();
+    // Enregistrer la réponse de l'utilisateur
+    UserAnswer::create([
+        'user_id' => auth()->id(),
+        'exam_id' => $examSession->exam_id,
+        'question_id' => $validatedData['question_id'],
+        'choice_id' => $validatedData['choice_id'],
+        'is_correct' => $is_correct,
+    ]);
 
-         // Sauvegarde la réponse
-         UserAnswer::updateOrCreate(
-             [
-                 'user_id' => $examSession->user_id,
-                 'exam_id' => $examSession->exam_id,
-                 'question_id' => $validatedData['question_id']
-             ],
-             [
-                 'choice_id' => $validatedData['choice_id'],
-                 'is_correct' => $isCorrect
-             ]
-         );
+    // Passer à la question suivante
+    return response()->json(['message' => 'Answer saved']);
+}
 
-         // Vérifier si c'était la dernière question
-         $totalQuestions = Question::where('exam_id', $examSession->exam_id)->count();
-         $answeredQuestions = count($userAnswers);
-
-         if ($answeredQuestions >= $totalQuestions) {
-             // ✅ 1. Calculer le score final
-             $correctAnswers = UserAnswer::where('exam_id', $examSession->exam_id)
-                                         ->where('user_id', $examSession->user_id)
-                                         ->where('is_correct', true)
-                                         ->count();
-
-             $score = round(($correctAnswers / $totalQuestions) * 100);
-
-             // ✅ 2. Déterminer si l'examen est réussi ou échoué
-             $status = $score >= $examSession->exam->passing_score ? 'passed' : 'failed';
-
-             // ✅ 3. Mettre à jour la session d'examen
-             $examSession->update([
-                 'status' => 'completed',
-                 'score' => $score,
-                 'completed_at' => now(),
-             ]);
-
-             return response()->json([
-                 'message' => 'Exam completed.',
-                 'exam_completed' => true,
-                 'score' => $score,
-                 'status' => $status,
-             ]);
-         }
-
-         return response()->json([
-             'message' => 'Answer saved',
-             'next_question' => route('exam.question', ['session_id' => $examSession->id])
-         ]);
-     }
 
 
 
     /**
      * Afficher le résultat d'un examen.
      */
-    public function examResults($exam_id)
-    {
-        $user = Auth::user();
-        $examUser = ExamUser::where('user_id', $user->id)->where('exam_id', $exam_id)->firstOrFail();
+    public function examResults($exam_session_id)
+{
+    $user = Auth::user();
 
-        return view('exams.results', compact('examUser'));
-    }
+    // Vérifier si l'utilisateur a bien une session terminée pour cet examen
+    $examUser = ExamUser::where('user_id', $user->id)
+                        ->where('id', $exam_session_id)
+                        ->where('status', 'completed')
+                        ->firstOrFail();
+
+    return response()->json([
+        'message' => 'Exam completed successfully.',
+        'score' => $examUser->score,
+        'status' => $examUser->score >= $examUser->exam->passing_score ? 'passed' : 'failed',
+        'passing_score' => $examUser->exam->passing_score,
+    ]);
+}
+
 
     /**
      * Afficher les examens déjà passés par l'utilisateur.
@@ -207,6 +192,8 @@ class UserExamsController extends Controller
 
         // Vérifier si toutes les questions ont été répondues
         if (!$nextQuestion) {
+            $examUser->status = 'completed';
+            $examUser->save();
             return response()->json([
                 'message' => 'Exam completed. Redirecting to results.',
                 'exam_completed' => true
