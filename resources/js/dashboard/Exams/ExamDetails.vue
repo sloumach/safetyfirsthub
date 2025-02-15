@@ -8,8 +8,8 @@
       <!-- Quiz Content: Question on Left, Responses on Right -->
       <div class="quiz-content">
         <!-- Question (Left Side) -->
-        <div class="question">
-          <p class="question-text"><b>{{ currentQuestion.text }}</b></p>
+        <div class="question"> 
+          <p class="question-text" style="margin-bottom: 31px; font-size: 20px;"><b>{{ currentQuestion.text }}</b></p>
         </div>
   
         <!-- Responses (Right Side) -->
@@ -43,8 +43,10 @@
   import { ref, onMounted } from "vue";
   
   export default {
-    name: "QuizComponent",
+    name: "ExamDetails",
     setup() {
+        const examDetails = ref(null); // To store the fetched exam data
+        const courseId = 1; // Example course ID (this could be dynamic if needed)
       const questions = [
         {
           text: "Which option best describes your job role?",
@@ -71,6 +73,15 @@
       const timer = ref(30);
       let interval;
   
+      const getExamData = async (examId) => {
+      try {
+        const response = await axios.get(`http://localhost:8000/dashboard/exams/${examId}`);
+        examDetails.value = response.data; // Assuming the response contains the exam data
+        console.log(examDetails.value); // Log the exam details
+      } catch (error) {
+        console.error("Error fetching exam data:", error);
+      }
+    };
       const nextQuestion = () => {
         if (answers.value[currentQuestionIndex.value] === undefined) {
           answers.value[currentQuestionIndex.value] = "No Answer";
@@ -94,12 +105,14 @@
             timer.value--;
           } else {
             clearInterval(interval);
+            nextQuestion(); 
           }
         }, 1000);
       };
   
       onMounted(() => {
         startTimer();
+        getExamData(1);
       });
   
       return {
@@ -108,6 +121,7 @@
         answers,
         nextQuestion,
         timer,
+        examDetails
       };
     },
   };
@@ -182,7 +196,7 @@
   }
   
   .response-radio:checked + .circle {
-    background-color: #21bf73;
+    background-color: var(--main-color);
   }
   
   .response-radio:checked + .circle::after {
@@ -205,7 +219,7 @@
   
   .btn-success {
     padding: 8px 20px;
-    background-color: #21bf73;
+    background-color: var(--main-color) !important;
     border: none;
     color: white;
     font-size: 16px;
@@ -213,14 +227,14 @@
   }
   
   .btn-success:hover {
-    background-color: #1a9b5f;
+    background-color: var(--main-color) !important;
   }
   
   .timer {
     position: absolute;
     top: 10px;
-    right: 10px;
-    background-color: #21bf73;
+    right: 30px;
+    background-color: var(--main-color) !important;
     color: white;
     border-radius: 50%;
     width: 50px;
@@ -243,7 +257,14 @@
       text-align: center;
       margin-bottom: 20px;
     }
-  
+    .timer {
+    position: fixed; /* Keeps it always visible */
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
     .options-container {
       width: 100%;
     }
