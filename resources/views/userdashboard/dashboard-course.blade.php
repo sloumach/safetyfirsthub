@@ -1,45 +1,117 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="zxx">
+    <head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
-    @vite(['resources/js/app.js'])
-    <!-- Include your CSS files here -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/boxicons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
+		<!-- Bootstrap Min CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+		<!-- Owl Theme Default Min CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/owl.theme.default.min.css') }}">
+		<!-- Owl Carousel Min CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
+		<!-- Owl Magnific Popup Min CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}">
+		<!-- Animate Min CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
+		<!-- Boxicons Min CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/boxicons.min.css') }}">
+		<!-- Flaticon CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
+		<!-- Meanmenu Min CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/meanmenu.min.css') }}">
+		<!-- Nice Select Min CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/nice-select.min.css') }}">
+		<!-- Odometer Min CSS-->
+		<link rel="stylesheet" href="{{ asset('assets/css/odometer.min.css') }}">
+		<!-- Style CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+		<!-- Dark CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/dark.css') }}">
+		<!-- Responsive CSS -->
+		<link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
+        @vite(['resources/js/app.js'])
+		<!-- Favicon -->
+		<link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
+		<!-- Title -->
+		<title>Eduon - Online Courses & Training HTML Template</title>
+    </head>
+    <body>
 
-</head>
-<body >
-    @include('navbar')
+        <!-- Start Navbar Area -->
+        @include('navbar')
+        <!-- End Navbar Area -->
+		<!-- Start Preloader Area -->
+		<div class="loader-wrapper">
+			<div class="loader">
+				<div class="dot-wrap">
+					<span class="dot"></span>
+					<span class="dot"></span>
+					<span class="dot"></span>
+					<span class="dot"></span>
+				</div>
+			</div>
+		</div>
+		<!-- End Preloader Area -->
 
-    <!-- Dashboard Content -->
-    <div id="app">
+
+
+		<!-- Start Page Title Area -->
+		<section id="app" class="courses-area-style ptb-100">
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <courses></courses>
+                        <exams></exams>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    @include('footer')
-    <!-- Include JavaScript files (jQuery, Bootstrap, etc.) -->
-    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/js/meanmenu.min.js') }}"></script>
-    <script src="{{ asset('assets/js/custom.js') }}"></script>
+    </section>
 
-    <!-- If in production, load additional app.js -->
-    @if(app()->environment('production'))
-        <script src="{{ asset('build/assets/app.js') }}" defer></script>
-    @endif
-</body>
+		<!-- End Popular Courses Area -->
+
+		<!-- Start Footer Top Area -->
+		@include('footer')
+		<!-- End Footer Bottom Area -->
+
+		<!-- Start Go Top Area -->
+		<div class="go-top">
+			<i class='bx bx-chevrons-up'></i>
+			<i class='bx bx-chevrons-up'></i>
+		</div>
+		<!-- End Go Top Area -->
+
+
+        <!-- Jquery Min JS -->
+        <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+        <!-- Bootstrap Bundle Min JS -->
+        <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+        <!-- Meanmenu Min JS -->
+		<script src="{{ asset('assets/js/meanmenu.min.js') }}"></script>
+		<!-- Owl Carousel Min JS -->
+		<script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
+		<!-- Wow Min JS -->
+        <script src="{{ asset('assets/js/wow.min.js') }}"></script>
+        <!-- Nice Select Min JS -->
+		<script src="{{ asset('assets/js/nice-select.min.js') }}"></script>
+        <!-- Magnific Popup Min JS -->
+		<script src="{{ asset('assets/js/magnific-popup.min.js') }}"></script>
+		<!-- jarallax Min JS -->
+		<script src="{{ asset('assets/js/jarallax.min.js') }}"></script>
+		<!-- Appear Min JS -->
+        <script src="{{ asset('assets/js/appear.min.js') }}"></script>
+		<!-- Odometer JS -->
+		<script src="{{ asset('assets/js/odometer.min.js') }}"></script>
+		<!-- Form Validator Min JS -->
+		<script src="{{ asset('assets/js/form-validator.min.js') }}"></script>
+		<!-- Contact JS -->
+		<script src="{{ asset('assets/js/contact-form-script.js') }}"></script>
+		<!-- Ajaxchimp Min JS -->
+		<script src="{{ asset('assets/js/ajaxchimp.min.js') }}"></script>
+        <!-- Custom JS -->
+		<script src="{{ asset('assets/js/custom.js') }}"></script>
+    </body>
 </html>

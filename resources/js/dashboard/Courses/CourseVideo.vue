@@ -22,13 +22,13 @@
                         <div class="video-container">
                             <!-- First Watermark (Top-Left) -->
                             <div v-if="!showPreview" :class="['watermark', 'watermark-top-left', { 'watermark-fullscreen': isFullScreen }]">
-    {{ watermarkText }}
-</div>
+                                {{ watermarkText }}
+                            </div>
 
-<!-- Bottom-Right Watermark -->
-<div v-if="!showPreview" :class="['watermark', 'watermark-bottom-right', { 'watermark-fullscreen': isFullScreen }]">
-    {{ watermarkText }}
-</div>
+                            <!-- Bottom-Right Watermark -->
+                            <div v-if="!showPreview" :class="['watermark', 'watermark-bottom-right', { 'watermark-fullscreen': isFullScreen }]">
+                                {{ watermarkText }}
+                            </div>
 
                             <!-- Preview Image & Play Button -->
                             <div v-if="showPreview" class="video-overlay" @click="playVideo">
@@ -335,5 +335,13 @@ watch(() => route.params.id, async (newId, oldId) => {
 .course-instructor,
 .course-price {
     margin-top: 0.5rem; /* Reduced margin */
+}
+
+
+@media (max-width: 576px) {
+    .course-video-container {
+        min-height: 48vh;
+    }
+
 }
 </style>
