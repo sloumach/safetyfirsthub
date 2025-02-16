@@ -14,6 +14,8 @@ class UserAnswer extends Model
         'user_id',
         'exam_id',
         'question_id',
+
+        'exam_user_id',
         'choice_id',
         'is_correct',
     ];
