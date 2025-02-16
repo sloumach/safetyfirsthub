@@ -82,6 +82,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exams/history', [UserExamsController::class, 'userExamHistory'])->name('user.exams.history');
     Route::get('/exams/{session_id}/question', [UserExamsController::class, 'getNextQuestion'])->name('exam.question');
     Route::post('/exams/{session_id}/answer', [UserExamsController::class, 'submitAnswer'])->name('exam.answer');
+    Route::post('/exams/{session_id}/complete', [UserExamsController::class, 'markExamAsCompleted'])->name('exam.complete');
+
 
 });
 
