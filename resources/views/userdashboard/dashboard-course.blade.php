@@ -36,6 +36,8 @@
 		<link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
 		<!-- Title -->
 		<title>Eduon - Online Courses & Training HTML Template</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+		
     </head>
     <body>
 
@@ -58,7 +60,7 @@
 
 
 		<!-- Start Page Title Area -->
-		<section id="app" class="courses-area-style ptb-100">
+		<section id="app" class="courses-area-style custom-padding">
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">

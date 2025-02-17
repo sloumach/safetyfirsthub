@@ -1,5 +1,5 @@
 <template>
-  <div class="courses-container">
+  <div class="courses-container exams-section">
     <h2 class="text-2xl font-bold mb-4 text-center">Explore Exams</h2>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -147,14 +147,31 @@ export default {
 }
 
 .custom-btn {
-  border-radius: 30px;
-  padding: 0.6rem 1.5rem;
-  background-color: var(--main-color);
-  border: none;
-  color: white;
+    border-radius: 30px;
+    padding: 0.6rem 1.5rem;
+    background-color: var(--main-color);
+    border: 2px solid var(--main-color);
+    color: white;
+    transition: all 0.3s ease;
 }
 
 .custom-btn:hover {
-  background-color: darken(var(--main-color), 10%);
+    background-color: white;
+    color: var(--main-color);
+    border: 2px solid var(--main-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.exams-section {
+    padding-top: 100px !important;
+    padding-bottom: 100px !important;
+}
+
+@media (max-width: 576px) {
+    .exams-section {
+        padding-top: 105px !important;
+        padding-bottom: 100px !important;
+    }
 }
 </style>
