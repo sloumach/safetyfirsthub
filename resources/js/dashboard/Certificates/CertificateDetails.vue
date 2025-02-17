@@ -74,7 +74,7 @@ export default {
 
     return {
       currentDate,
-      // qrValue,
+    //   qrValue,
       downloadCertificate
     }
   }
