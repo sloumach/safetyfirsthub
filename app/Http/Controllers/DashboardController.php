@@ -32,10 +32,10 @@ class DashboardController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             $courses = $user->courses->map(function ($course) use ($user) {
                 $coverUrl = $course->cover ? $this->getcoverurl(basename($course->cover)) : null;
-    
+
                 // 🔹 Vérifier si l'utilisateur a réussi au moins un examen pour ce cours
                 $examcheck = ExamUser::where('user_id', $user->id)
                     ->whereHas('exam', function ($query) use ($course) {
@@ -44,7 +44,7 @@ class DashboardController extends Controller
                     ->whereColumn('score', '>=', 'exams.passing_score') // ✅ Vérifier si le score est suffisant
                     ->join('exams', 'exam_users.exam_id', '=', 'exams.id') // ✅ Joindre pour accéder à `passing_score`
                     ->exists();
-    
+
                 return [
                     'id'           => $course->id,
                     'name'         => $course->name,
@@ -55,14 +55,14 @@ class DashboardController extends Controller
                     'examcheck'    => $examcheck, // ✅ Vérification basée sur le score minimum requis
                 ];
             });
-    
+
             return response()->json($courses, 200);
-    
+
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch courses'], 500);
         }
     }
-    
+
 
     public function getCourse($id)
 {
@@ -71,7 +71,7 @@ class DashboardController extends Controller
 
         // Vérifier si l'utilisateur a acheté ce cours
         $course = $user->courses()->where('course_id', $id)->first();
-        
+
         if (!$course) {
             return response()->json(['error' => 'You do not have access to this course'], 403);
         }
@@ -109,12 +109,12 @@ class DashboardController extends Controller
     public function streamVideo($id)
     {
         $user = auth()->user();
-        
+
         $course = $user->courses()->where('course_id', $id)->first();
 
         // Vérifier si l'utilisateur a acheté le cours
         if (!$user->courses->contains($course->id)) {
-            
+
             abort(403, 'Unauthorized access to this course.');
         }
 
@@ -145,7 +145,7 @@ class DashboardController extends Controller
     {
         return URL::temporarySignedRoute('cover.access', now()->addMinutes(30), ['filename' => $filename]);
     }
-    
+
 
     public function serveCover($filename)
     {
@@ -166,6 +166,42 @@ class DashboardController extends Controller
         // Retourner l'image
         return response()->file(Storage::disk('private')->path($path));
     }
+    public function getPassedExams()
+{
+    try {
+        $user = auth()->user();
+
+        // Récupérer les examens réussis par l'utilisateur
+        $passedExams = ExamUser::where('user_id', $user->id)
+            ->whereColumn('score', '>=', 'exams.passing_score') // ✅ Vérifie si le score est suffisant
+            ->join('exams', 'exam_users.exam_id', '=', 'exams.id') // ✅ Joindre la table exams pour récupérer les détails
+            ->join('courses', 'exams.course_id', '=', 'courses.id') // ✅ Joindre la table courses pour récupérer le nom du cours
+            ->select(
+                'exam_users.id as exam_user_id',
+                'exams.id as exam_id',
+                'exams.title as exam_title',
+                'exams.passing_score',
+                'exam_users.score',
+                'exam_users.completed_at',
+                'courses.id as course_id',
+                'courses.name as course_name',
+                'courses.cover as course_cover'
+            )
+            ->get();
+
+        // ✅ Ajouter l'URL du cover si disponible
+        $passedExams->transform(function ($exam) {
+            $exam->course_cover = $exam->course_cover ? $this->getcoverurl(basename($exam->course_cover)) : null;
+            return $exam;
+        });
+
+        return response()->json($passedExams, 200);
+
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to fetch passed exams'], 500);
+    }
+}
+
 
 
 
