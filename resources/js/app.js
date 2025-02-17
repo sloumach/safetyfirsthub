@@ -5,6 +5,7 @@ import Alpine from 'alpinejs'
 import App from './App.vue'
 import Courses from './dashboard/Courses/Courses.vue'
 import Exams from './dashboard/Exams/Exams.vue'
+import Certificates from './dashboard/Certificates/Certificates.vue'
 import axios from 'axios'
 
 window.Alpine = Alpine
@@ -16,4 +17,5 @@ const app = createApp(App)
 app.use(router)
 app.component('courses', Courses)
 app.component('exams', Exams)
+app.component('certificates', Certificates)
 app.mount('#app')

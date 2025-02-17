@@ -67,6 +67,7 @@
                     <div class="p-6 text-gray-900">
                         <courses></courses>
                         <exams></exams>
+                        <certificates></certificates>
                     </div>
                 </div>
             </div>
