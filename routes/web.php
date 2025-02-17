@@ -12,6 +12,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserExamsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminExamsController;
+use App\Http\Controllers\CertificateController;
+
 
 
 
@@ -128,6 +130,14 @@ Route::middleware([])->group(function () {
 
 
 });
+
+
+Route::middleware([])->group(function () {
+    Route::post('/certificates/generate/{exam_user_id}', [CertificateController::class, 'generateCertificate'])->name('certificates.generate');
+    Route::get('/certificates/{certificate_url}/scan', [CertificateController::class, 'scanCertificate'])->name('certificates.scan'); // ✅ Nouvelle route
+    Route::get('/certificates/{certificate_url}/view', [CertificateController::class, 'viewCertificate'])->name('certificates.view');
+});
+
 
 
 /* Route::middleware('auth')->group(function () {
