@@ -1,43 +1,69 @@
 <template>
-    <div class="container">
-        <!-- Timer -->
-        <div class="timer">
-            <span>{{ timer }}</span>
-        </div>
-
-        <!-- Quiz Content -->
-        <div class="quiz-content">
-            <!-- Question -->
-            <div v-if="currentQuestion" class="question">
-                <p class="question-text">
-                    <b>{{ currentQuestion.text }}</b>
-                </p>
-            </div>
-
-            <!-- Choices -->
-            <div v-if="currentQuestion" class="options-container">
-                <label v-for="(option, index) in currentQuestion.choices" :key="option.id" class="option-item">
-                    <input type="radio" :name="'question-' + currentQuestionIndex" :value="option.id"
-                        v-model="userAnswers[currentQuestionIndex]" class="response-radio" />
-                    <span class="circle"></span>
-                    <span>{{ option.text }}</span>
-                </label>
+    <section class="exam-section">
+        <div v-if="hasAttemptsExhausted" class="container">
+            <div class="attempts-exhausted">
+                <i class="fas fa-exclamation-circle warning-icon"></i>
+                <h2>Exam Attempts Exhausted</h2>
+                <p>You have used all your allowed attempts for this exam.</p>
+                <button @click="$router.push('/dashboard/exams')" class="btn btn-primary return-btn">
+                    Return to Exams
+                </button>
             </div>
         </div>
-
-        <!-- Next Button -->
-        <div class="button-container">
-            <button @click="nextQuestion" class="btn btn-success" :disabled="!userAnswers[currentQuestionIndex]">
-                Next
-            </button>
+        <div v-else-if="noQuestionsAvailable" class="container">
+            <div class="attempts-exhausted">
+                <i class="fas fa-exclamation-circle warning-icon"></i>
+                <h2>No Questions Available</h2>
+                <p>This exam currently has no questions available. Please try another exam.</p>
+                <button @click="$router.push('/dashboard/exams')" class="btn btn-primary return-btn">
+                    Return to Exams
+                </button>
+            </div>
         </div>
-    </div>
+        <div v-else class="container">
+            <!-- Timer -->
+            <div class="timer">
+                <span>{{ timer }}</span>
+            </div>
+
+            <!-- Quiz Content -->
+            <div class="quiz-content">
+                <!-- Question -->
+                <div v-if="currentQuestion" class="question">
+                    <div class="question-header">
+                        <i class="fas fa-question-circle question-icon"></i>
+                        <p class="question-text">
+                            <b>{{ capitalizeFirstLetter(currentQuestion.text) }}</b>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Choices -->
+                <div v-if="currentQuestion" class="options-container">
+                    <label v-for="(option, index) in currentQuestion.choices" :key="option.id" class="option-item">
+                        <input type="radio" :name="'question-' + currentQuestionIndex" :value="option.id"
+                            v-model="userAnswers[currentQuestionIndex]" class="response-radio" />
+                        <span class="circle"></span>
+                        <span>{{ option.text }}</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Next Button -->
+            <div class="button-container">
+                <button @click="nextQuestion" class="btn btn-success" :disabled="!userAnswers[currentQuestionIndex]">
+                    Next
+                </button>
+            </div>
+        </div>
+    </section>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
+import Swal from 'sweetalert2';
 
 const route = useRoute();
 const router = useRouter();
@@ -50,24 +76,47 @@ const timer = ref(10);
 let timerInterval = null;
 let isActive = true; // Prevents background API calls
 let axiosSource = axios.CancelToken.source(); // Create a cancel token
+const hasAttemptsExhausted = ref(false);
+const noQuestionsAvailable = ref(false);
 
 // Fetch the next question
 const fetchNextQuestion = async () => {
-    if (!isActive) return; // Si le composant est désactivé, ne pas continuer
+    if (!isActive) return;
 
     try {
         const response = await axios.get(`/exams/${sessionId.value}/question`);
 
         if (response.data.exam_completed) {
-            if (response.data.retry_allowed) {
-                alert(`Exam failed. You have ${response.data.attempts_left ?? 0} attempts left.`);
+            const score = response.data.score ?? 0;
+            const passingScore = response.data.passing_score || 60;
+
+            if (score >= passingScore) {
+                await Swal.fire({
+                    title: 'Congratulations! 🎉',
+                    text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6'
+                });
             } else {
-                alert(`Échec. Votre score est de ${response.data.score ?? 0}%, alors que le minimum requis est ${response.data.passing_score ?? 0}%. Vous ne pouvez plus réessayer.`);
+                if (response.data.retry_allowed) {
+                    await Swal.fire({
+                        title: 'Exam Failed',
+                        text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${response.data.attempts_left || 0} attempts left.`,
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6'
+                    });
+                } else {
+                    await Swal.fire({
+                        title: 'Exam Failed',
+                        text: `Your score is ${score}%, while ${passingScore}% was required. You cannot retry.`,
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6'
+                    });
+                }
             }
-            router.push("/dashboard");
+            router.push("/dashboard/exams");
             return;
         }
-
 
         currentQuestion.value = response.data.question;
         startTimer();
@@ -92,11 +141,11 @@ const startTimer = () => {
 
 // Submit Answer
 const submitAnswer = async () => {
-    if (!isActive) return; // Prevent submitting after leaving
+    if (!isActive) return;
 
     const selectedChoice = userAnswers.value[currentQuestionIndex.value] ?? null;
     try {
-        await axios.post(
+        const answerResponse = await axios.post(
             `/exams/${sessionId.value}/answer`,
             {
                 question_id: currentQuestion.value.id,
@@ -104,14 +153,56 @@ const submitAnswer = async () => {
             },
             { cancelToken: axiosSource.token }
         );
+        // Check if this is the last question
+        const nextQuestionResponse = await axios.get(`/exams/${sessionId.value}/question`);
 
-        currentQuestionIndex.value++;
-        fetchNextQuestion();
+        if (nextQuestionResponse.data.exam_completed) {
+            try {
+                const resultsResponse = await axios.get(`/exams/${sessionId.value}/results`);
+            
+                const score = resultsResponse.data.score;
+                const passingScore = resultsResponse.data.passing_score || 60;
+                const attemptsLeft = resultsResponse.data.attempts_left || 0;
+
+                if (score >= passingScore) {
+                    await Swal.fire({
+                        title: 'Congratulations! 🎉',
+                        text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6'
+                    });
+                } else {
+                    if (resultsResponse.data.retry_allowed) {
+                        await Swal.fire({
+                            title: 'Exam Failed',
+                            text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${attemptsLeft} attempts left.`,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6'
+                        });
+                    } else {
+                        await Swal.fire({
+                            title: 'Exam Failed',
+                            text: `Your score is ${score}%, while ${passingScore}% was required. You cannot retry.`,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6'
+                        });
+                    }
+                }
+                router.push("/dashboard/exams");
+                return;
+            } catch (resultsError) {
+                console.error('Error fetching results:', resultsError);
+            }
+        } else {
+            currentQuestionIndex.value++;
+            currentQuestion.value = nextQuestionResponse.data.question;
+            startTimer();
+        }
     } catch (error) {
         if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message);
+        
         } else {
-            console.error("Error submitting answer:", error);
+            console.error("Error in submit answer flow:", error);
         }
     }
 };
@@ -130,9 +221,19 @@ const calculateScore = async () => {
         const { score, status, passing_score } = response.data;
 
         if (status === "passed") {
-            alert(`🎉 Félicitations ! Vous avez réussi l'examen avec un score de ${score}% (Minimum requis: ${passing_score}%)`);
+            await Swal.fire({
+                title: 'Congratulations! 🎉',
+                text: `Vous avez réussi l'examen avec un score de ${score}% (Minimum requis: ${passing_score}%)`,
+                icon: 'success',
+                confirmButtonColor: '#3085d6'
+            });
         } else {
-            alert(`❌ Échec. Votre score est de ${score}%, alors que le minimum requis est ${passing_score}%. Réessayez plus tard.`);
+            await Swal.fire({
+                title: 'Exam Failed ❌',
+                text: `Votre score est de ${score}%, alors que le minimum requis est ${passing_score}%. Réessayez plus tard.`,
+                icon: 'error',
+                confirmButtonColor: '#3085d6'
+            });
         }
 
         router.push("/dashboard/exams"); // Redirect after exam
@@ -151,8 +252,13 @@ const handleTabChange = async () => {
     if (sessionId.value) {
       try {
         await axios.post(`/exams/${sessionId.value}/complete`);
-        alert("Your exam session has been closed.");
-        router.push("/dashboard"); // Redirection
+        await Swal.fire({
+            title: 'Session Closed',
+            text: 'Your exam session has been closed.',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6'
+        });
+        router.push("/dashboard/exams"); // Redirection
       } catch (error) {
         console.error("Error marking exam as completed:", error);
       }
@@ -160,23 +266,16 @@ const handleTabChange = async () => {
   }
 };
 
-window.addEventListener("beforeunload", async (event) => {
-  if (sessionId.value) {
-    try {
-      await axios.post(`/exams/${sessionId.value}/complete`);
-    } catch (error) {
-      console.error("Error marking exam as completed:", error);
-    }
-  }
-  event.preventDefault(); // Empêche certaines fermetures immédiates
-  event.returnValue = ""; // Message système pour certains navigateurs
-});
-
 window.addEventListener("popstate", async () => {
   if (sessionId.value) {
     try {
       await axios.post(`/exams/${sessionId.value}/complete`);
-      alert("Exam session closed due to navigation attempt.");
+      await Swal.fire({
+          title: 'Session Closed',
+          text: 'Exam session closed due to navigation attempt.',
+          icon: 'warning',
+          confirmButtonColor: '#3085d6'
+      });
       router.push("/dashboard"); // Redirection forcée
     } catch (error) {
       console.error("Error marking exam as completed:", error);
@@ -188,8 +287,13 @@ window.addEventListener("blur", async () => {
   if (sessionId.value) {
     try {
       await axios.post(`/exams/${sessionId.value}/complete`);
-      alert("Exam session closed due to application switch.");
-      router.push("/dashboard");
+      await Swal.fire({
+          title: 'Session Closed',
+          text: 'Exam session closed due to application switch.',
+          icon: 'warning',
+          confirmButtonColor: '#3085d6'
+      });
+      router.push("/dashboard/exams");
     } catch (error) {
       console.error("Error marking exam as completed:", error);
     }
@@ -200,8 +304,13 @@ window.addEventListener("offline", async () => {
   if (sessionId.value) {
     try {
       await axios.post(`/exams/${sessionId.value}/complete`);
-      alert("Exam session closed due to internet disconnection.");
-      router.push("/dashboard");
+      await Swal.fire({
+          title: 'Session Closed',
+          text: 'Exam session closed due to internet disconnection.',
+          icon: 'warning',
+          confirmButtonColor: '#3085d6'
+      });
+      router.push("/dashboard/exams");
     } catch (error) {
       console.error("Error marking exam as completed:", error);
     }
@@ -216,8 +325,13 @@ const resetInactivityTimer = () => {
     if (sessionId.value) {
       try {
         await axios.post(`/exams/${sessionId.value}/complete`);
-        alert("Exam session closed due to inactivity.");
-        router.push("/dashboard");
+        await Swal.fire({
+            title: 'Session Closed',
+            text: 'Exam session closed due to inactivity.',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6'
+        });
+        router.push("/dashboard/exams");
       } catch (error) {
         console.error("Error marking exam as completed:", error);
       }
@@ -235,24 +349,47 @@ resetInactivityTimer();
 // Start Exam Session
 onMounted(async () => {
     try {
-        axiosSource = axios.CancelToken.source(); // Reset cancel token
+        axiosSource = axios.CancelToken.source();
         const response = await axios.post(`/exams/start/${route.params.id}`, null, {
             cancelToken: axiosSource.token,
         });
 
         sessionId.value = response.data.session_id;
-        console.log(response.data);
-        console.log("test");
+
         fetchNextQuestion();
     } catch (error) {
         if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message);
+
         } else {
-            console.error("Error starting exam:", error);
+            if (error.response && error.response.status === 404) {
+                noQuestionsAvailable.value = true;
+            } else if (error.response && error.response.status === 403) {
+                hasAttemptsExhausted.value = true;
+            } else {
+                console.error("Error starting exam:", error);
+                await Swal.fire({
+                    title: 'Error',
+                    text: 'An error occurred while starting the exam. Please try again later.',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+                router.push("/dashboard/exams");
+            }
         }
     }
     document.addEventListener("visibilitychange", handleTabChange);
 
+    // Handle refresh attempts (Ctrl+R or F5)
+    window.addEventListener('keydown', async (e) => {
+        if ((e.ctrlKey && e.key === 'r') || e.key === 'F5') {
+            if (sessionId.value) {
+                await axios.post(`/exams/${sessionId.value}/complete`);
+            }
+            // Let the refresh happen naturally
+            return true;
+        }
+    });
 });
 
 // Clean up when leaving the page
@@ -267,6 +404,20 @@ onUnmounted(() => {
     document.removeEventListener("visibilitychange", handleTabChange);
 
 });
+
+// Add this function to capitalize first letter
+const capitalizeFirstLetter = (string) => {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+// Instead, add this to handle refresh cleanup
+window.addEventListener('unload', async () => {
+    if (sessionId.value) {
+        // Using navigator.sendBeacon for more reliable cleanup during page unload
+        navigator.sendBeacon(`/exams/${sessionId.value}/complete`);
+    }
+});
 </script>
 
 <style scoped>
@@ -278,6 +429,18 @@ onUnmounted(() => {
 
 body {
     background-color: #333;
+}
+
+.exam-section {
+    padding-top: 100px !important;
+    padding-bottom: 100px !important;
+}
+
+@media (max-width: 576px) {
+    .exam-section {
+        padding-top: 105px !important;
+        padding-bottom: 100px !important;
+    }
 }
 
 .container {
@@ -416,5 +579,67 @@ body {
         justify-content: center;
         width: 100%;
     }
+}
+
+.question-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.question-icon {
+    font-size: 24px;
+    color: var(--main-color);
+}
+
+.question-text {
+    font-size: 20px;
+    color: white;
+    margin: 0;
+}
+
+.options-container {
+    margin-top: 30px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.attempts-exhausted {
+    text-align: center;
+    padding: 2rem;
+}
+
+.warning-icon {
+    font-size: 3rem;
+    color: #f0ad4e;
+    margin-bottom: 1rem;
+}
+
+.attempts-exhausted h2 {
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.attempts-exhausted p {
+    color: #ddd;
+    margin-bottom: 2rem;
+}
+
+.return-btn {
+    padding: 8px 20px;
+    background-color: var(--main-color) !important;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.return-btn:hover {
+    opacity: 0.9;
 }
 </style>
