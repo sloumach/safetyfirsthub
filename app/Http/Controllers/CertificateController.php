@@ -40,14 +40,18 @@ class CertificateController extends Controller
                 'exam_user_id'   => $examUser->id,
                 'certificate_url'=> $certificate_url,
                 'available'      => true, // Valide par défaut
+                'user_id'        => $examUser->user_id,
             ]);
         }
+
+        // ✅ Générer un QR Code sous forme d'image Base64
+        $qrCode = base64_encode(QrCode::format('png')->size(200)->generate(route('certificates.scan', $certificate->certificate_url)));
 
         return response()->json([
             'message'     => 'Certificate generated successfully.',
             'certificate' => [
-                'url'      => route('certificates.scan', $certificate->certificate_url), // 📌 Nouveau lien !
-                'qr_code'  => QrCode::size(200)->generate(route('certificates.scan', $certificate->certificate_url)),
+                'url'      => route('certificates.scan', $certificate->certificate_url),
+                'qr_code'  => "data:image/png;base64," . $qrCode, // 🔹 Encodé pour affichage direct dans Vue.js
             ],
         ]);
     }
