@@ -3,6 +3,8 @@ import Courses from '../dashboard/Courses/Courses.vue'
 import CourseVideo from '../dashboard/Courses/CourseVideo.vue'
 import Exams from '../dashboard/Exams/Exams.vue'
 import ExamDetails from '../dashboard/Exams/ExamDetails.vue'
+import Certificates from '../dashboard/Certificates/Certificates.vue'
+import CertificateDetails from '../dashboard/Certificates/CertificateDetails.vue'
 
 const routes = [
     {
@@ -28,6 +30,21 @@ const routes = [
         path: '/dashboard/exams/:id',
         name: 'exam-details',
         component: ExamDetails
+    },
+    {
+        path: '/dashboard/certificates',
+        name: 'certificates',
+        component: Certificates
+    },
+    {
+        path: '/dashboard/certificate',
+        name: 'Certificates',
+        component: Certificates
+    },
+    {
+        path: '/dashboard/certificate/:id',
+        name: 'CertificateDetails',
+        component: CertificateDetails
     }
 ]
 
