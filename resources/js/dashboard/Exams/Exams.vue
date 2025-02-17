@@ -6,7 +6,6 @@
       <div class="col" v-for="course in courses" :key="course.id">
         <div class="card h-100 course-card">
           <div class="course-image position-relative">
-            <!-- Display course cover image -->
             <img 
               :src="course.cover || 'https://placehold.co/600x400/003366/ffffff?text=Course'" 
               :alt="course.name"
@@ -23,9 +22,12 @@
           </div>
           <div class="card-footer bg-white border-0 d-flex flex-column align-items-center">
             <span class="text-muted"><i class="fas fa-users"></i> {{ course.students || 0 }} students</span>
-            <button @click="navigateToExams(course.id)" class="btn custom-btn w-75 mt-3">
-              Take Exam
+            
+            <!-- Ensure Button Updates Based on examcheck -->
+            <button @click="handleButtonClick(course)" class="btn custom-btn w-75 mt-3">
+              {{ getButtonText(course) }}
             </button>
+
           </div>
         </div>
       </div>
@@ -34,7 +36,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
@@ -51,15 +53,30 @@ export default {
     const fetchCourses = async () => {
       try {
         const response = await axios.get('/api/courses')
-        courses.value = response.data
+        courses.value = [...response.data]  // Force Vue reactivity
+        console.log("Fetched courses:", courses.value);
       } catch (error) {
         console.error('Error fetching courses:', error)
       }
     }
 
-    const navigateToExams = (courseId) => {
-      router.push(`/dashboard/exams/${courseId}`)  // Navigate to the Exam Page for that course
+    const handleButtonClick = (course) => {
+      if (course.examcheck) {
+        window.location.href = 'http://localhost:8000/dashboard/certificate'
+      } else {
+        router.push(`/dashboard/exams/${course.id}`)
+      }
     }
+
+    // Computed Property for Button Text
+    const getButtonText = (course) => {
+      return course.examcheck ? 'Get Your Certificate' : 'Take Exam';
+    }
+
+    // Debugging: Watch if courses update properly
+    watch(courses, (newCourses) => {
+      console.log("Updated courses:", newCourses);
+    })
 
     onMounted(() => {
       fetchCourses()
@@ -67,8 +84,9 @@ export default {
 
     return {
       courses,
-      navigateToExams,
-      handleImageError
+      handleButtonClick,
+      handleImageError,
+      getButtonText
     }
   }
 }

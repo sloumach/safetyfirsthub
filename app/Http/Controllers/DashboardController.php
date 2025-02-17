@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Course;
+use App\Models\ExamUser;
+
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -26,14 +28,23 @@ class DashboardController extends Controller
 
         return view('userdashboard.dashboard-course', compact('courses'));
     }
-
     public function getCourses()
     {
         try {
-            $user    = auth()->user();
+            $user = auth()->user();
             
-            $courses = $user->courses->map(function ($course) {
+            $courses = $user->courses->map(function ($course) use ($user) {
                 $coverUrl = $course->cover ? $this->getcoverurl(basename($course->cover)) : null;
+    
+                // 🔹 Vérifier si l'utilisateur a réussi au moins un examen pour ce cours
+                $examcheck = ExamUser::where('user_id', $user->id)
+                    ->whereHas('exam', function ($query) use ($course) {
+                        $query->where('course_id', $course->id);
+                    })
+                    ->whereColumn('score', '>=', 'exams.passing_score') // ✅ Vérifier si le score est suffisant
+                    ->join('exams', 'exam_users.exam_id', '=', 'exams.id') // ✅ Joindre pour accéder à `passing_score`
+                    ->exists();
+    
                 return [
                     'id'           => $course->id,
                     'name'         => $course->name,
@@ -41,14 +52,17 @@ class DashboardController extends Controller
                     'cover'        => $coverUrl,
                     'total_videos' => $course->total_videos,
                     'students'     => $course->students ?? 0,
+                    'examcheck'    => $examcheck, // ✅ Vérification basée sur le score minimum requis
                 ];
             });
-
+    
             return response()->json($courses, 200);
+    
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch courses'], 500);
         }
     }
+    
 
     public function getCourse($id)
 {
