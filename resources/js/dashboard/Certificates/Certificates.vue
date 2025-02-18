@@ -34,7 +34,7 @@
             <p class="card-text text-muted">{{ course.description }}</p>
           </div>
           <div class="card-footer bg-white border-0 d-flex flex-column align-items-center">
-            <button @click="viewCertificate(course.id)" class="btn custom-btn w-75 mt-3">
+            <button @click="viewCertificate(course.exam_id)" class="btn custom-btn w-75 mt-3">
               View Certificate
             </button>
           </div>
@@ -77,8 +77,8 @@ export default {
       }
     }
 
-    const viewCertificate = (courseId) => {
-      router.push(`/dashboard/certificate/${courseId}`)
+    const viewCertificate = (exam_id) => {
+      router.push(`/dashboard/certificate/${exam_id}`)
     }
 
     onMounted(() => {

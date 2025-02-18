@@ -74,9 +74,9 @@
         </div>
     </section>
 
-		<!-- End Popular Courses Area -->
-
-		<!-- Start Footer Top Area -->
+	
+        
+	
 		@include('footer')
 		<!-- End Footer Bottom Area -->
 

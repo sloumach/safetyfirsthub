@@ -18,43 +18,62 @@ class CertificateController extends Controller
     public function generateCertificate($exam_user_id)
     {
         $examUser = ExamUser::findOrFail($exam_user_id);
-
+    
         // Vérifier si l'utilisateur a réussi l'examen
         if ($examUser->score < $examUser->exam->passing_score) {
             return response()->json(['error' => 'You have not passed this exam.'], 403);
         }
-
-        // Vérifier si un certificat existe déjà et s'il est encore valide
+    
+        // Récupérer l'utilisateur connecté
+        $user = auth()->user();
+    
+        // Récupérer le nom du cours associé à l'examen
+        $courseName = $examUser->exam->course->name ?? 'Unknown Course';
+    
+        // Vérifier si un certificat existe déjà pour cet examen
         $certificate = Certificate::where('exam_user_id', $examUser->id)->first();
-
+    
         if ($certificate) {
             if (!$certificate->available) {
                 return response()->json(['error' => 'This certificate has expired.'], 403);
             }
-        } else {
-            // Générer une URL unique pour le certificat
-            $certificate_url = Str::uuid()->toString();
-
-            // Créer le certificat
-            $certificate = Certificate::create([
-                'exam_user_id'   => $examUser->id,
-                'certificate_url'=> $certificate_url,
-                'available'      => true, // Valide par défaut
-                'user_id'        => $examUser->user_id,
+    
+            // 🔹 Si le certificat est valide, on retourne directement ses informations
+            return response()->json([
+                'message'        => 'Certificate already exists.',
+                'user_firstname' => $user->firstname,
+                'user_lastname'  => $user->lastname,
+                'course_name'    => $courseName,
+                'certificate'    => [
+                    'url'      => route('certificates.view', $certificate->certificate_url),
+                    'qr_code'  => base64_encode(QrCode::format('svg')->size(200)->generate(route('certificates.scan', $certificate->certificate_url))),
+                ],
             ]);
         }
-
-        // ✅ Générer un QR Code sous forme d'image Base64
-        $qrCode = base64_encode(QrCode::format('png')->size(200)->generate(route('certificates.scan', $certificate->certificate_url)));
-
+    
+        // 🔹 Générer une URL unique pour le certificat
+        $certificate_url = Str::uuid()->toString();
+    
+        // 🔹 Créer un nouveau certificat
+        $certificate = Certificate::create([
+            'exam_user_id'    => $examUser->id,
+            'certificate_url' => $certificate_url,
+            'available'       => true, // Valide par défaut
+            'user_id'         => $examUser->user_id,
+        ]);
+    
         return response()->json([
-            'message'     => 'Certificate generated successfully.',
-            'certificate' => [
-                'url'      => route('certificates.scan', $certificate->certificate_url),
-                'qr_code'  => "data:image/png;base64," . $qrCode, // 🔹 Encodé pour affichage direct dans Vue.js
+            'message'        => 'Certificate generated successfully.',
+            'user_firstname' => $user->firstname,
+            'user_lastname'  => $user->lastname,
+            'course_name'    => $courseName,
+            'certificate'    => [
+                'url'      => route('certificates.view', $certificate->certificate_url),
+                'qr_code'  => base64_encode(QrCode::format('svg')->size(200)->generate(route('certificates.scan', $certificate->certificate_url))),
             ],
         ]);
     }
+    
 
     /**
      * 🔹 Nouvelle route intermédiaire après scan du QR Code
