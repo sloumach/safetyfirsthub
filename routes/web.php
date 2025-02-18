@@ -40,6 +40,7 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/shop', 'index')->name('shop');
         Route::get('/cart', 'cart')->name('cart');
         Route::get('/wishlist', 'wishlist')->name('wishlist');
+        Route::post('/wishlist', 'wishlist')->name('add.wishlist');
         Route::post('/add-to-cart', 'addToCart')->name('add.to.cart');
         Route::post('/remove-from-cart', 'removeFromCart')->name('remove.from.cart');
     });
