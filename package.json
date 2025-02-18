@@ -19,6 +19,7 @@
         "vue-template-compiler": "^2.7.14"
     },
     "dependencies": {
+        "@chenfengyuan/vue-qrcode": "^2.0.0",
         "@vitejs/plugin-vue": "^5.2.1",
         "qrcode.vue": "^3.6.0",
         "sweetalert2": "^11.17.2",

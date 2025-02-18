@@ -12,17 +12,20 @@
           <p class="date">{{ currentDate }}</p>
         </div>
 
-        <div class="qr-section">
-          <!-- <qrcode-vue
-            :value="qrValue"
-            :size="200"
-            level="H"
-          /> -->
-          <p class="qr-text">Scan to verify certificate</p>
+        <!-- QR Code Section -->
+        <div v-if="loading" class="qr-section">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
         </div>
 
-        <button @click="downloadCertificate" class="download-btn">
-          Download Certificate
+        <div v-else-if="qrCodeImage" class="qr-section">
+          <img :src="qrCodeImage" alt="QR Code" class="qr-code-image" />
+          <p class="qr-text">Scan to view certificate</p>
+        </div>
+
+        <button @click="generateCertificate" class="btn custom-btn mt-4">
+          Générer le Certificat
         </button>
       </div>
     </div>
@@ -30,15 +33,19 @@
 </template>
 
 <script>
-import QrcodeVue from 'qrcode.vue'
 import { ref, computed } from 'vue'
+import axios from 'axios'
+import Swal from 'sweetalert2'
+import { useRoute } from 'vue-router'
 
 export default {
   name: 'CertificateDetails',
-  components: {
-    QrcodeVue
-  },
   setup() {
+    const route = useRoute() 
+    const loading = ref(false)
+    const qrCodeImage = ref(null)
+    const certificateUrl = ref(null)
+
     const currentDate = computed(() => {
       return new Date().toLocaleDateString('en-US', {
         year: 'numeric',
@@ -47,35 +54,52 @@ export default {
       })
     })
 
-    // const qrValue = computed(() => {
-    //   // This URL would typically point to your certificate verification endpoint
-    //   return `https://yourwebsite.com/verify-certificate/${window.location.pathname}`
-    // })
+    const generateCertificate = async () => {
+      try {
+        loading.value = true
+        
+        // Show loading state
+        Swal.fire({
+          title: 'Generating Certificate',
+          text: 'Please wait...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading()
+          }
+        })
+        const examUserId = route.params.id
+        const response = await axios.post(`/certificates/generate/112`)
+        qrCodeImage.value = response.data.certificate.qr_code
+        certificateUrl.value = response.data.certificate.url
 
-    const downloadCertificate = () => {
-      // For now, we'll create a simple text file
-      const element = document.createElement('a')
-      const certificateText = `
-        Certificate of Completion
+        // Show success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Certificate generated successfully',
+          confirmButtonColor: 'var(--main-color)'
+        })
+
+      } catch (error) {
+        console.error('Error generating certificate:', error)
         
-        This is to certify that John Doe has successfully completed the course.
-        
-        Date: ${currentDate.value}
-        
-        Certificate ID: ${window.location.pathname.split('/').pop()}
-      `
-      const file = new Blob([certificateText], {type: 'text/plain'})
-      element.href = URL.createObjectURL(file)
-      element.download = `certificate-${Date.now()}.txt`
-      document.body.appendChild(element)
-      element.click()
-      document.body.removeChild(element)
+        // Show error message
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Failed to generate certificate',
+          confirmButtonColor: 'var(--main-color)'
+        })
+      } finally {
+        loading.value = false
+      }
     }
 
     return {
+      loading,
+      qrCodeImage,
       currentDate,
-    //   qrValue,
-      downloadCertificate
+      generateCertificate
     }
   }
 }
@@ -103,31 +127,8 @@ export default {
 .certificate-content {
   text-align: center;
   padding: 20px;
-  border: 2px solid #ffd700;
+  border: 2px solid gold;
   position: relative;
-}
-
-.certificate-title {
-  font-size: 2.5rem;
-  color: var(--main-color);
-  margin-bottom: 2rem;
-  font-weight: bold;
-}
-
-.certificate-body {
-  margin: 2rem 0;
-}
-
-.student-name {
-  font-size: 2rem;
-  color: #333;
-  margin: 1rem 0;
-}
-
-.course-name {
-  font-size: 1.5rem;
-  color: #666;
-  margin: 1rem 0;
 }
 
 .qr-section {
@@ -137,12 +138,18 @@ export default {
   margin: 2rem 0;
 }
 
+.qr-code-image {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 1rem;
+}
+
 .qr-text {
   margin-top: 1rem;
   color: #666;
 }
 
-.download-btn {
+.custom-btn {
   background-color: var(--main-color);
   color: white;
   padding: 12px 24px;
@@ -151,34 +158,15 @@ export default {
   cursor: pointer;
   font-size: 1.1rem;
   transition: all 0.3s ease;
-  margin-top: 2rem;
 }
 
-.download-btn:hover {
+.custom-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  color: var(--main-color);
+  border: 2px solid var(--main-color);
 }
 
-.recipient, .achievement, .date {
-  color: #666;
-  margin: 0.5rem 0;
-}
-
-@media (max-width: 768px) {
-  .certificate-card {
-    padding: 20px;
-  }
-
-  .certificate-title {
-    font-size: 2rem;
-  }
-
-  .student-name {
-    font-size: 1.5rem;
-  }
-
-  .course-name {
-    font-size: 1.2rem;
-  }
-}
-</style> 
+/* Add other existing styles... */
+</style>
