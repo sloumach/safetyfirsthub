@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
+use App\Jobs\SendEmailVerificationJob;
 use Illuminate\Auth\Events\Registered;
 
 class RegisteredUserController extends Controller
@@ -50,7 +51,8 @@ class RegisteredUserController extends Controller
             'updated_at' => now(),
         ]);
 
-        event(new Registered($user));
+        SendEmailVerificationJob::dispatch($user);
+        //event(new Registered($user));
 
         Auth::login($user);
         return redirect(route('shop', absolute: false));
