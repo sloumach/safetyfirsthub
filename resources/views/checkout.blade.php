@@ -89,14 +89,14 @@
                                     <div class="col-lg-6 col-md-6">
                                         <div class="form-group">
                                             <label>First name <span class="required">*</span></label>
-                                            <input type="text" class="form-control" name="first_name" value="{{ auth()->user()->name }}" readonly>
+                                            <input type="text" class="form-control" name="first_name" value="{{ auth()->user()->firstname }}" readonly>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6 col-md-6">
                                         <div class="form-group">
                                             <label>Last name <span class="required">*</span></label>
-                                            <input type="text" class="form-control" name="last_name" value="{{ auth()->user()->name }}" readonly>
+                                            <input type="text" class="form-control" name="last_name" value="{{ auth()->user()->lastname }}" readonly>
                                         </div>
                                     </div>
 

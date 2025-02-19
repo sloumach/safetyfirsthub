@@ -50,26 +50,12 @@ class AdminController extends Controller
             ]);
 
             // Sauvegarde de l'image de couverture
-            $coverPath = $request->file('cover')->store('courses/covers', 'private');
-
-            if (!$request->hasFile('video')) {
-                
-            }
-
+            $coverPath = $request->file('cover')->store('courses/covers', 'public');
             // Teste si le fichier est lisible
             $file = $request->file('video');
-            if (!$file->isValid()) {
-                
-            }
-
-            // Vérifie la taille du fichier
-            if ($file->getSize() > 50000000) {
-                
-            }
-
             // Sauvegarde de la vidéo
             $videoPath = $request->file('video')->store('courses/videos', 'private');
-            
+
 
             // Création du cours
             Course::create([
