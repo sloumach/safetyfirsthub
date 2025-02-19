@@ -236,7 +236,7 @@
                         @else
                         <div class="register">
                             <div class="default-btn">
-                                Yassine
+                                {{ Auth::user()->firstname }}
                             </div>
                         </div>
                         <div class="register">

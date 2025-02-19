@@ -50,7 +50,7 @@ class ShopController extends Controller
 
         return view('wishlist',compact('wishlistedCourses'));
     }
-    
+
     public function addToWishlist(Request $request)
     {
         $request->validate([
@@ -63,7 +63,7 @@ class ShopController extends Controller
         try {
             // Check if already in wishlist
             $exists = Wishlist::where('user_id', $userId)
-                ->where('course_id', $courseId)
+                ->where('product_id', $courseId)
                 ->exists();
 
             if ($exists) {
@@ -76,7 +76,7 @@ class ShopController extends Controller
             // Add to wishlist
             Wishlist::create([
                 'user_id' => $userId,
-                'course_id' => $courseId,
+                'product_id' => $courseId,
             ]);
 
             return response()->json([
@@ -170,7 +170,7 @@ class ShopController extends Controller
 
         try {
             Wishlist::where('user_id', $userId)
-                ->where('course_id', $courseId)
+                ->where('product_id', $courseId)
                 ->delete();
 
             return response()->json([
