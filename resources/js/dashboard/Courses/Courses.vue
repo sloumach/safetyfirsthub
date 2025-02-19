@@ -83,7 +83,7 @@ export default {
 <style scoped>
 .courses-container {
     padding: 30px;
-    background-color: #f8f9fa;
+    background-color: transparent; /* à vérifier */
 }
 
 .course-card {

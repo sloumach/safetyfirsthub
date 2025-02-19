@@ -183,7 +183,6 @@
                                 <i class="bx bx-chevron-down"></i>
                             </a>
                             <ul class="dropdown-menu">
-
                                 <li class="nav-item">
                                     <a href="{{ url('/dashboard/courses') }}" class="nav-link">Courses</a>
                                 </li>
@@ -191,10 +190,8 @@
                                     <a href="{{ url('/dashboard/exams') }}" class="nav-link">Exams</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('dashboard') }}" class="nav-link active">Certificates</a>
+                                    <a href="{{ url('/dashboard/certificate') }}" class="nav-link">Certificates</a>
                                 </li>
-
-
                             </ul>
                         </li>
                         @endif

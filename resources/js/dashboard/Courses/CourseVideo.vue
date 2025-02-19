@@ -140,37 +140,27 @@ window.addEventListener("popstate", async () => {
     }
 });
 
-window.addEventListener("blur", async () => {
-    await Swal.fire({
-        title: 'Window Unfocused',
-        text: 'Your video session has ended due to switching applications.',
-        icon: 'warning',
-        confirmButtonColor: '#3085d6',
-    });
-    router.push("/dashboard/courses");
-});
-
-// Update the inactivity timer
-const resetInactivityTimer = () => {
-    clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(async () => {
-        await Swal.fire({
-            title: 'Session Timeout',
-            text: 'Your video session has ended due to inactivity.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6',
-        });
-        router.push("/dashboard/courses");
-    }, 300000); // 5 minutes
-};
-
+// Move the blur event listener to onMounted
 onMounted(() => {
+    // Add blur event listener
+    const handleBlur = async () => {
+        if (route.path.includes('/video')) {  // Only show alert if we're on the video page
+            await Swal.fire({
+                title: 'Window Unfocused',
+                text: 'Your video session has ended due to switching applications.',
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+            });
+            router.push("/dashboard/courses");
+        }
+    };
+    window.addEventListener("blur", handleBlur);
+
+    // Add other existing event listeners
     document.addEventListener("fullscreenchange", onFullScreenChange);
     document.addEventListener("webkitfullscreenchange", onFullScreenChange);
     document.addEventListener("mozfullscreenchange", onFullScreenChange);
     document.addEventListener("msfullscreenchange", onFullScreenChange);
-
-    // Disable right-click on the page
     document.addEventListener("contextmenu", disableRightClick);
     document.addEventListener("keydown", blockDevTools);
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -209,9 +199,17 @@ onMounted(() => {
 
     fetchCourse();
     fetchVideo();
+
+    // Store handleBlur function for cleanup
+    window._handleBlur = handleBlur;
 });
 
 onBeforeUnmount(() => {
+    // Remove the blur event listener
+    if (window._handleBlur) {
+        window.removeEventListener("blur", window._handleBlur);
+    }
+    
     document.removeEventListener("fullscreenchange", onFullScreenChange);
     document.removeEventListener("webkitfullscreenchange", onFullScreenChange);
     document.removeEventListener("mozfullscreenchange", onFullScreenChange);

@@ -5,6 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Bootstrap Min CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
@@ -36,7 +37,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     <!-- Title -->
-    <title>Eduon - Online Courses & Training HTML Template</title>
+    <title>Safety FirstHUB</title>
 </head>
 
 <body>
@@ -154,7 +155,9 @@
                                 <i class="flaticon-right"></i>
                             </a>
                         @else
-                            <button type="button" class="default-btn add-to-cart mt-5" data-id="{{ $product->id }}">
+                            <button type="button" class="default-btn add-to-cart mt-5" 
+                                data-id="{{ $product->id }}"
+                                data-url="{{ route('add.to.cart') }}">
                                 Add to Cart
                                 <i class="flaticon-right"></i>
                             </button>
@@ -526,55 +529,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-    <script>
-        $(document).on('click', '.add-to-cart', function() {
-            let courseId = $(this).data('id'); // Récupérer l'ID du cours
-            let cartCountSpan = $('.cart-icon span'); // Sélectionne les compteurs du panier
-
-            $.ajax({
-                url: "{{ route('add.to.cart') }}",
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    course_id: courseId, // Renommé pour être plus clair
-                },
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire({
-                            customClass: { confirmButton: "default-btn" },
-                            title: 'Added to the cart.',
-                            icon: 'success',
-                            confirmButtonText: 'Cart',
-                            showCloseButton: true
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location = "/student/dashboard";
-                            }
-                        });
-
-                        // Mettre à jour dynamiquement le compteur du panier
-                        cartCountSpan.text(response.cart_count);
-                    }
-                },
-                error: function(xhr) {
-                    let response = xhr.responseJSON;
-                    if (response && response.message) {
-                        Swal.fire({
-                            customClass: { confirmButton: "default-btn" },
-                            title: response.message,
-                            icon: 'warning',
-                            confirmButtonText: response.message === "Product already in your cart!" ? 'Cart' : 'Dashboard',
-                            showCloseButton: true
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location = response.message === "Product already in your cart!" ? "/cart" : "/dashboard";
-                            }
-                        });
-                    }
-                }
-            });
-        });
-    </script>
+    <script src="{{ asset('assets/js/single-product.js') }}"></script>
 
 
 </body>

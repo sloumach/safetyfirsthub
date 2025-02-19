@@ -125,7 +125,7 @@
         }
     </style>
     <!-- Title -->
-    <title>Eduon - Online Courses & Training HTML Template</title>
+    <title>Safety FirstHUB</title>
 </head>
 
 <body>

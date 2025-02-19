@@ -4,6 +4,7 @@
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 
 		<!-- Bootstrap Min CSS -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -35,7 +36,7 @@
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
-		<title>Eduon - Online Courses & Training HTML Template</title>
+		<title>Safety FirstHUB</title>
     </head>
     <body>
 
@@ -89,17 +90,18 @@
 										<th scope="col">Product name</th>
 										<th scope="col">Price</th>
 										<th scope="col">Total</th>
-										<th scope="col">Add to cart</th>
+										<th scope="col">Actions</th>
 									</tr>
 								</thead>
 
 								<tbody>
-                                    <!-- ici on parcoure dans le wishlist	-->
                                     @foreach($wishlistedCourses as $wishlistItem)
-                                        <tr>
+                                        <tr data-id="{{ $wishlistItem->course->id }}" 
+                                            data-add-url="{{ route('add.to.cart') }}"
+                                            data-remove-url="{{ route('remove.from.wishlist') }}">
                                             <td class="product-thumbnail">
                                                 <a href="#">
-                                                    <img src=" {{ asset('storage/' . $wishlistItem->course->cover) }}  " alt="Image">
+                                                    <img src="{{ asset('storage/' . $wishlistItem->course->cover) }}" alt="Image">
                                                 </a>
                                             </td>
 
@@ -111,26 +113,17 @@
                                                 <span class="unit-amount">${{ $wishlistItem->course->price }}</span>
                                             </td>
 
-                                            {{-- <td class="product-quantity">
-                                                <div class="input-counter">
-                                                    <span class="minus-btn">
-                                                        <i class='bx bx-minus' ></i>
-                                                    </span>
-                                                    <input type="text" value="1">
-                                                    <span class="plus-btn">
-                                                        <i class='bx bx-plus' ></i>
-                                                    </span>
-                                                </div>
-                                            </td> --}}
-
                                             <td class="product-subtotal">
                                                 <span class="subtotal-amount">${{ $wishlistItem->course->price }}</span>
                                             </td>
 
-                                            <td class="product-subtotal">
-                                                <a href="#" class="default-btn">
-                                                    Add to cart
-                                                </a>
+                                            <td class="product-actions">
+                                                <button type="button" class="wishlist-cart-btn">
+                                                    <i class="flaticon-shopping-cart"></i>
+                                                </button>
+                                                <button type="button" class="wishlist-remove-btn">
+                                                    <i class="bx bx-x"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -185,5 +178,9 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+        <!-- SweetAlert2 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- Wishlist JS -->
+        <script src="{{ asset('assets/js/wishlist.js') }}"></script>
     </body>
 </html>
