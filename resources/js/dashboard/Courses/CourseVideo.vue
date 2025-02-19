@@ -37,10 +37,26 @@
                             </div>
 
                             <!-- Video Player -->
-                            <video ref="videoPlayer" class="w-100" controls v-show="!showPreview" @play="hidePreview">
+                            <video 
+                                ref="videoPlayer" 
+                                class="w-100" 
+                                controls 
+                                v-show="!showPreview" 
+                                @play="hidePreview"
+                                @timeupdate="updateProgress"
+                                @ended="markAsCompleted"
+                            >
                                 <source :src="videoUrl" type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
+
+                            <!-- Add completion messages -->
+                            <div v-if="isCompleted" class="message-success mt-3">
+                                ✅ You have completed the course video! You can now take the exam.
+                            </div>
+                            <div v-else class="message-warning mt-3">
+                                ⏳ You need to watch the entire video before taking the exam.
+                            </div>
                         </div>
 
                         <div class="card-body p-3"> <!-- Reduced padding -->
@@ -85,6 +101,9 @@ const previewImage = ref("");
 const course = ref(null);
 const watermarkText = ref("safetyfirsthub.com");
 const isFullScreen = ref(false);
+const isCompleted = ref(false);
+const watchedSegments = ref(new Set());
+let totalDuration = 0;
 
 // Disable right-click
 const disableRightClick = (event) => {
@@ -202,6 +221,18 @@ onMounted(() => {
 
     // Store handleBlur function for cleanup
     window._handleBlur = handleBlur;
+
+    // Add progress check
+    const checkProgress = async () => {
+        try {
+            const response = await axios.get(`/api/courses/${route.params.id}/video-progress`);
+            isCompleted.value = response.data.is_completed;
+        } catch (error) {
+            console.error("Error fetching progress:", error);
+        }
+    };
+    
+    checkProgress();
 });
 
 onBeforeUnmount(() => {
@@ -289,6 +320,39 @@ watch(() => route.params.id, async (newId, oldId) => {
         await fetchVideo();
     }
 });
+
+const updateProgress = async () => {
+    if (!videoPlayer.value) return;
+
+    const currentTime = Math.floor(videoPlayer.value.currentTime);
+    totalDuration = Math.floor(videoPlayer.value.duration);
+
+    watchedSegments.value.add(currentTime);
+
+    // Send progress every 10 seconds
+    if (currentTime % 10 === 0) {
+        try {
+            await axios.post(`/api/courses/${route.params.id}/video-progress`, {
+                current_time: currentTime,
+                total_duration: totalDuration,
+            });
+        } catch (error) {
+            console.error("Error updating progress:", error);
+        }
+    }
+};
+
+const markAsCompleted = async () => {
+    try {
+        await axios.post(`/api/courses/${route.params.id}/video-progress`, {
+            current_time: totalDuration,
+            total_duration: totalDuration,
+        });
+        isCompleted.value = true;
+    } catch (error) {
+        console.error("Error marking video as completed:", error);
+    }
+};
 </script>
 
 
@@ -424,6 +488,21 @@ watch(() => route.params.id, async (newId, oldId) => {
     margin-top: 0.5rem; /* Reduced margin */
 }
 
+.message-success {
+    color: #198754;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #d1e7dd;
+}
+
+.message-warning {
+    color: #dc3545;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f8d7da;
+}
 
 @media (max-width: 576px) {
     .course-video-container {
