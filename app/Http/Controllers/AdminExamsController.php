@@ -5,6 +5,8 @@ use App\Models\Course;
 use App\Models\Exam;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Flasher\Prime\FlasherInterface;
 
 class AdminExamsController extends Controller
 {
@@ -23,15 +25,24 @@ class AdminExamsController extends Controller
 
     public function storeExam(Request $request)
     {
-        $validatedData = $request->validate([
+        $rules = [
             'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:1000',
             'duration' => 'required|integer|min:5|max:120',
             'passing_score' => 'required|integer|min:1|max:100',
             'is_active' => 'boolean',
-        ]);
+        ];
 
+        foreach ($rules as $field => $rule) {
+            $validator = Validator::make($request->all(), [$field => $rule]);
+            if ($validator->fails()) {
+                flash()->error($validator->errors()->first());
+                return back()->withInput();
+            }
+        }
+
+        $validatedData = $request->all();
         Exam::create($validatedData);
         return redirect()->route('admin.exams')->with('success', 'Exam created successfully!');
     }
@@ -45,14 +56,23 @@ class AdminExamsController extends Controller
 
     public function updateExam(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'course_id'     => 'required|exists:courses,id',
-            'title'         => 'required|string|max:255',
-            'description'   => 'nullable|string',
-            'duration'      => 'required|integer|min:5|max:120',
-            'passing_score' => 'required|integer|min:1|max:100',
-            'is_active'     => 'boolean',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'course_id'     => 'required|exists:courses,id',
+                'title'         => 'required|string|max:255',
+                'description'   => 'nullable|string',
+                'duration'      => 'required|integer|min:5|max:120',
+                'passing_score' => 'required|integer|min:1|max:100',
+                'is_active'     => 'boolean',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            foreach ($e->errors() as $field => $messages) {
+                foreach ($messages as $message) {
+                    flash()->error($field . ': ' . $message);
+                }
+            }
+            return back()->withInput();
+        }
 
         $exam = Exam::findOrFail($id);
         $exam->update($validatedData);
@@ -72,7 +92,6 @@ class AdminExamsController extends Controller
     {
         $exam      = Exam::with('questions.choices')->findOrFail($exam_id);
         $questions = $exam->questions; // Récupérer les questions de l'examen
-        //dd($questions,$exam);
         return view('adminpanel.exams.questions', compact('exam', 'questions'));
     }
 
@@ -84,12 +103,22 @@ class AdminExamsController extends Controller
 
     public function storeQuestion(Request $request, $exam_id)
     {
-        $validatedData = $request->validate([
-            'question_text'  => 'required|string|max:1000',
-            'answers'        => 'required|array|size:4',
-            'answers.*'      => 'required|string|max:255',
+        $rules = [
+            'question_text' => 'required|string|max:1000',
+            'answers' => 'required|array|size:4',
+            'answers.*' => 'required|string|max:255',
             'correct_answer' => 'required|integer|min:1|max:4',
-        ]);
+        ];
+
+        foreach ($rules as $field => $rule) {
+            $validator = Validator::make($request->all(), [$field => $rule]);
+            if ($validator->fails()) {
+                flash()->error($validator->errors()->first());
+                return back()->withInput();
+            }
+        }
+
+        $validatedData = $request->all();
         $exam = Exam::findOrFail($exam_id);
 
         // Créer la question
@@ -99,7 +128,7 @@ class AdminExamsController extends Controller
 
         // Vérifier que $question est bien créé avant d'ajouter les réponses
         if (! $question) {
-            dd($question);
+           
             return redirect()->back()->with('error', 'Error creating question.');
         }
 
@@ -142,12 +171,21 @@ class AdminExamsController extends Controller
 
     public function updateQuestion(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'question_text'  => 'required|string|max:1000',
-            'choices'        => 'required|array|size:4',
-            'choices.*'      => 'required|string|max:255',
-            'correct_answer' => 'required|integer|min:1|max:4',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'question_text'  => 'required|string|max:1000',
+                'choices'        => 'required|array|size:4',
+                'choices.*'      => 'required|string|max:255',
+                'correct_answer' => 'required|integer|min:1|max:4',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            foreach ($e->errors() as $field => $messages) {
+                foreach ($messages as $message) {
+                    flash()->error($field . ': ' . $message);
+                }
+            }
+            return back()->withInput();
+        }
 
         $question = Question::findOrFail($id);
         $exam_id  = $question->exam_id; // Récupérer l'ID de l'examen pour la redirection

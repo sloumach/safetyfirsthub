@@ -54,7 +54,7 @@ export default {
       try {
         const response = await axios.get('/api/courses')
         courses.value = [...response.data]  // Force Vue reactivity
-        console.log("Fetched courses:", courses.value);
+       
       } catch (error) {
         console.error('Error fetching courses:', error)
       }
@@ -75,7 +75,7 @@ export default {
 
     // Debugging: Watch if courses update properly
     watch(courses, (newCourses) => {
-      console.log("Updated courses:", newCourses);
+   
     })
 
     onMounted(() => {

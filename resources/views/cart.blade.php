@@ -44,16 +44,7 @@
 		@include('navbar')
 		<!-- End Navbar Area -->
 		<!-- Start Preloader Area -->
-		<div class="loader-wrapper">
-			<div class="loader">
-				<div class="dot-wrap">
-					<span class="dot"></span>
-					<span class="dot"></span>
-					<span class="dot"></span>
-					<span class="dot"></span>
-				</div>
-			</div>
-		</div>
+		
 		<!-- End Preloader Area -->
 
 
@@ -143,11 +134,11 @@
 											</div>
 										</div> --}}
                                         @if(!$courses->isEmpty())
-                                            <div class="col-lg-4 col-sm-5 text-right">
+                                            <!-- <div class="col-lg-4 col-sm-5 text-right">
                                                 <a href="#" class="default-btn update">
                                                     Update cart
                                                 </a>
-                                            </div>
+                                            </div> -->
                                         @endif
 
 									</div>
