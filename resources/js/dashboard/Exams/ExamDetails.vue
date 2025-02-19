@@ -200,9 +200,27 @@ const submitAnswer = async () => {
         }
     } catch (error) {
         if (axios.isCancel(error)) {
-        
+            Swal.fire({
+                title: 'Requête Annulée',
+                text: error.message,
+                icon: 'warning',
+                customClass: {
+                    confirmButton: 'default-btn'
+                },
+                confirmButtonText: 'D\'accord'
+            });
+           
         } else {
-            console.error("Error in submit answer flow:", error);
+            Swal.fire({
+                title: 'Erreur',
+                text: 'Une erreur est survenue lors de la récupération des résultats de l\'examen. Veuillez réessayer.',
+                icon: 'error',
+                customClass: {
+                    confirmButton: 'default-btn'
+                },
+                confirmButtonText: 'D\'accord'
+            });
+            console.error("Erreur lors de la récupération des résultats de l'examen:", error);
         }
     }
 };
@@ -239,10 +257,28 @@ const calculateScore = async () => {
         router.push("/dashboard/exams"); // Redirect after exam
     } catch (error) {
         if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message);
-        } else {
-            console.error("Erreur lors de la récupération des résultats de l'examen:", error);
-        }
+    Swal.fire({
+        title: 'Requête Annulée',
+        text: error.message,
+        icon: 'warning',
+        customClass: {
+            confirmButton: 'default-btn'
+        },
+        confirmButtonText: 'D\'accord'
+    });
+    
+} else {
+    Swal.fire({
+        title: 'Erreur',
+        text: 'Une erreur est survenue lors de la récupération des résultats de l\'examen. Veuillez réessayer.',
+        icon: 'error',
+        customClass: {
+            confirmButton: 'default-btn'
+        },
+        confirmButtonText: 'D\'accord'
+    });
+    console.error("Erreur lors de la récupération des résultats de l'examen:", error);
+}
     }
 };//
 

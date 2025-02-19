@@ -69,7 +69,6 @@ export default {
         loading.value = true
         const response = await axios.get('/api/courses')
         courses.value = [...response.data]
-        console.log(courses.value)
       } catch (error) {
         console.error('Error fetching courses:', error)
       } finally {
@@ -103,7 +102,7 @@ export default {
 
 .courses-container {
   padding: 30px;
-  background-color: #f8f9fa;
+  background-color: transparent;
 }
 
 .course-card {

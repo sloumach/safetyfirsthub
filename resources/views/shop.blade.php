@@ -4,7 +4,7 @@
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<!-- Bootstrap Min CSS -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 		<!-- Owl Theme Default Min CSS -->
@@ -31,11 +31,11 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
-		<title>Eduon - Online Courses & Training HTML Template</title>
+		<title>Safety FirstHUB</title>
     </head>
     <body>
 
@@ -115,15 +115,15 @@
                                                 <img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
 
                                                 <ul>
-                                                    <li>
+                                                    <!-- <li>
                                                         <a href="#">
                                                             <a href="#product-view-one{{ $product->id }}" data-bs-toggle="modal">
                                                                 <i class="bx bx-show-alt"></i>
                                                             </a>
                                                         </a>
-                                                    </li>
+                                                    </li> -->
                                                     <li>
-                                                        <a href="#">
+                                                        <a href="#" class="add-to-wishlist" data-course-id="{{ $product->id }}">
                                                             <i class="bx bx-heart"></i>
                                                         </a>
                                                     </li>
@@ -379,5 +379,7 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="assets/js/shop.js"></script>
     </body>
 </html>
