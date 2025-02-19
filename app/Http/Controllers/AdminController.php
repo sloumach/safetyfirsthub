@@ -9,6 +9,9 @@ use App\Models\Role;
 use App\Models\Order;
 use App\Models\Course;
 use App\Models\User;
+use Flasher\Prime\FlasherInterface;
+
+
 
 class AdminController extends Controller
 {
@@ -46,8 +49,19 @@ class AdminController extends Controller
                 'short_description' => 'required|string|max:500',
                 'description' => 'required|string|max:2000',
                 'cover' => 'required|file|mimes:jpg,jpeg,png|max:2048',
-                'video' => 'required|file|mimes:mp4,mov,avi|max:50000', // 50MB max
+                'video' => 'required|file|mimes:mp4,mov,avi|max:50000',
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            foreach ($e->errors() as $field => $messages) {
+                foreach ($messages as $message) {
+                    flash()->error($field . ': ' . $message);
+                }
+            }
+            return back()->withInput();
+        }
+
+        try {
+        
 
             // Sauvegarde de l'image de couverture
             $coverPath = $request->file('cover')->store('courses/covers', 'public');
@@ -55,7 +69,6 @@ class AdminController extends Controller
             $file = $request->file('video');
             // Sauvegarde de la vidéo
             $videoPath = $request->file('video')->store('courses/videos', 'private');
-
 
             // Création du cours
             Course::create([
@@ -70,11 +83,12 @@ class AdminController extends Controller
                 'students' => 0,
             ]);
 
-            return redirect()->back()->with('success', 'Course added successfully!');
+            flash()->success('Course added successfully!');
+            return redirect()->back();
         } catch (\Exception $e) {
-            dd($e->getMessage());
             Log::error("Error in addCourse: " . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred while adding the course.');
+            flash()->error('An error occurred while adding the course.');
+            return back()->withInput();
         }
     }
 
@@ -91,17 +105,32 @@ class AdminController extends Controller
                 'description' => 'required|string|max:2000',
                 'cover' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            foreach ($e->errors() as $field => $messages) {
+                foreach ($messages as $message) {
+                    flash()->error($field . ': ' . $message);
+                }
+            }
+            return back()->withInput();
+        }
+
+        try {
+            $validatedData = $request->all();
+          
 
             $course = $this->courseService->updateCourse($id, $validatedData);
 
             if (!$course) {
-                return redirect()->back()->with('error', 'Failed to update course.');
+                flash()->error('Failed to update course.');
+                return back()->withInput();
             }
 
-            return redirect()->back()->with('success', 'Course updated successfully!');
+            flash()->success('Course updated successfully!');
+            return redirect()->back();
         } catch (\Exception $e) {
             Log::error("Error in updateCourse: " . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred while updating the course.');
+            flash()->error('An error occurred while updating the course.');
+            return back()->withInput();
         }
     }
 

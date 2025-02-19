@@ -39,16 +39,7 @@
     </head>
     <body>
 		<!-- Start Preloader Area -->
-		<div class="loader-wrapper">
-			<div class="loader">
-				<div class="dot-wrap">
-					<span class="dot"></span>
-					<span class="dot"></span>
-					<span class="dot"></span>
-					<span class="dot"></span>
-				</div>
-			</div>
-		</div>
+		
 		<!-- End Preloader Area -->
 
 		<!-- Start Navbar Area -->
@@ -103,13 +94,8 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label>Country <span class="required">*</span></label>
-                                            <select class="form-control" name="country" required>
-                                                <option value="5">United Kingdom</option>
-                                                <option value="1">China</option>
-                                                <option value="2">United Arab Emirates</option>
-                                                <option value="0">Germany</option>
-                                                <option value="3">France</option>
-                                                <option value="4">Japan</option>
+                                            <select class="form-control" name="country" id="countrySelect" required>
+                                                <option value="">Select a country</option>
                                             </select>
                                         </div>
                                     </div>
@@ -195,7 +181,7 @@
 		<!-- Wow Min JS -->
         <script src="assets/js/wow.min.js"></script>
         <!-- Nice Select Min JS -->
-		<script src="assets/js/nice-select.min.js"></script>
+		
         <!-- Magnific Popup Min JS -->
 		<script src="assets/js/magnific-popup.min.js"></script>
 		<!-- jarallax Min JS -->
@@ -212,5 +198,7 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+
+		<script src="assets/js/countries.js"></script>
     </body>
 </html>

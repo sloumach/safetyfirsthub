@@ -39,16 +39,7 @@
     </head>
     <body>
 		<!-- Start Preloader Area -->
-		<div class="loader-wrapper">
-			<div class="loader">
-				<div class="dot-wrap">
-					<span class="dot"></span>
-					<span class="dot"></span>
-					<span class="dot"></span>
-					<span class="dot"></span>
-				</div>
-			</div>
-		</div>
+	
 		<!-- End Preloader Area -->
  
 		<!-- Start Navbar Area -->
