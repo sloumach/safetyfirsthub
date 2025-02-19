@@ -56,7 +56,7 @@ export default {
       const generateCertificate = async () => {
           try {
               const examUserId = route.params.id;
-              console.log('Generating certificate for exam user ID:', examUserId); // Debug log
+
 
               const response = await axios.post(`/certificates/generate/${examUserId}`);
 

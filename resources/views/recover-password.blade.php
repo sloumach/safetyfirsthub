@@ -35,7 +35,7 @@
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
-		<title>Eduon - Online Courses & Training HTML Template</title>
+		<title>Safety FirstHUB</title>
     </head>
     <body>
 		<!-- Start Preloader Area -->

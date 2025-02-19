@@ -4,6 +4,7 @@
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 
 		<!-- Bootstrap Min CSS -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -35,7 +36,7 @@
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
-		<title>Eduon - Online Courses & Training HTML Template</title>
+		<title>Safety FirstHUB</title>
     </head>
     <body>
 
@@ -100,7 +101,8 @@
 
                                             <!-- ici on parcoure le contenu de la cart	-->
                                             @foreach($courses as $course)
-                                                <tr data-id="{{ $course->id }}"> <!-- Ajout de l'ID pour faciliter la suppression -->
+                                                <tr data-id="{{ $course->id }}" 
+                                                    data-remove-url="{{ route('remove.from.cart') }}">
                                                     <td class="product-thumbnail">
                                                         <a href="#">
                                                             <img src="{{ asset('storage/' . $course->cover) }}" alt="Image">

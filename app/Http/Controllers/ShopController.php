@@ -50,6 +50,47 @@ class ShopController extends Controller
 
         return view('wishlist',compact('wishlistedCourses'));
     }
+    
+    public function addToWishlist(Request $request)
+    {
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $userId = auth()->id();
+        $courseId = $request->input('course_id');
+
+        try {
+            // Check if already in wishlist
+            $exists = Wishlist::where('user_id', $userId)
+                ->where('course_id', $courseId)
+                ->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Course already in wishlist'
+                ], 409);
+            }
+
+            // Add to wishlist
+            Wishlist::create([
+                'user_id' => $userId,
+                'course_id' => $courseId,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course added to wishlist successfully!'
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error adding course to wishlist'
+            ], 500);
+        }
+    }
 
     public function addToCart(Request $request)
     {
@@ -118,30 +159,30 @@ class ShopController extends Controller
         ]);
     }
 
-    public function addToWishlist(Request $request)
+    public function removeFromWishlist(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id', // Vérifie que le produit existe
+            'course_id' => 'required|exists:courses,id',
         ]);
 
-        $userId = auth()->id(); // Récupère l'utilisateur connecté
-        $productId = $request->input('product_id');
+        $userId = auth()->id();
+        $courseId = $request->input('course_id');
 
-        // Vérifie si le produit est déjà dans la wishlist
-        $exists = Wishlist::where('user_id', $userId)
-            ->where('product_id', $productId)
-            ->exists();
+        try {
+            Wishlist::where('user_id', $userId)
+                ->where('course_id', $courseId)
+                ->delete();
 
-        if ($exists) {
-            return response()->json(['message' => 'Product already in wishlist'], 409);
+            return response()->json([
+                'success' => true,
+                'message' => 'Course removed from wishlist successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error removing course from wishlist'
+            ], 500);
         }
-
-        // Ajoute le produit à la wishlist
-        Wishlist::create([
-            'user_id' => $userId,
-            'product_id' => $productId,
-        ]);
-
-        return response()->json(['message' => 'Product added to wishlist'], 201);
     }
+
 }

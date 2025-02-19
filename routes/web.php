@@ -40,9 +40,11 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/shop', 'index')->name('shop');
         Route::get('/cart', 'cart')->name('cart');
         Route::get('/wishlist', 'wishlist')->name('wishlist');
-        Route::post('/wishlist', 'wishlist')->name('add.wishlist');
+        Route::post('/add-to-wishlist', 'addToWishlist')->name('add.to.wishlist');
+        Route::post('/remove-from-wishlist', 'removeFromWishlist')->name('remove.from.wishlist');
         Route::post('/add-to-cart', 'addToCart')->name('add.to.cart');
         Route::post('/remove-from-cart', 'removeFromCart')->name('remove.from.cart');
+       
     });
     Route::controller(PaymentController::class)->group(function () {
         Route::get('/success','successPage')->name('checkout.success');

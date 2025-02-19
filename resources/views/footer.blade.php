@@ -1,7 +1,7 @@
 <footer class="footer-top-area pt-100 pb-70">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-sm-6">
+        <div class="row" >
+            <div class="col-lg-3 col-sm-6 text-center mt-1">
                 <div class="footer-widget">
                     <h3>Find Us</h3>
 
@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-lg-6 col-sm-6 text-center mt-2">
                 <div class="footer-widget">
                     <h3>Useful links</h3>
 
@@ -50,7 +50,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-lg-3 col-sm-6 text-center mt-2">
                 <div class="footer-widget">
                     <h3>Top online courses</h3>
 
@@ -74,29 +74,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-sm-6">
-                <div class="footer-widget">
-                    <h3>Popular subjects</h3>
-
-                    <ul class="link">
-                        <li>
-                            <a href="#">Data science</a>
-                        </li>
-                        <li>
-                            <a href="#">Computer science</a>
-                        </li>
-                        <li>
-                            <a href="#">Business and Management</a>
-                        </li>
-                        <li>
-                            <a href="#">Business and Management</a>
-                        </li>
-                        <li>
-                            <a href="#">Nature & Environment</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+           
         </div>
     </div>
 </footer>

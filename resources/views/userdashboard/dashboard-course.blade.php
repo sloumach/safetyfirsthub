@@ -35,7 +35,7 @@
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
 		<!-- Title -->
-		<title>Eduon - Online Courses & Training HTML Template</title>
+		<title>Safety FirstHUB</title>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 		
     </head>
@@ -116,5 +116,6 @@
 		<script src="{{ asset('assets/js/ajaxchimp.min.js') }}"></script>
         <!-- Custom JS -->
 		<script src="{{ asset('assets/js/custom.js') }}"></script>
+		
     </body>
 </html>
