@@ -1,14 +1,15 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\Choice;
 use App\Models\Exam;
+use App\Models\Choice;
 use App\Models\ExamUser;
 use App\Models\Question;
 use App\Models\UserAnswer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\VideoProgress;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class UserExamsController extends Controller
 {
