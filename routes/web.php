@@ -44,7 +44,7 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::post('/remove-from-wishlist', 'removeFromWishlist')->name('remove.from.wishlist');
         Route::post('/add-to-cart', 'addToCart')->name('add.to.cart');
         Route::post('/remove-from-cart', 'removeFromCart')->name('remove.from.cart');
-       
+
     });
     Route::controller(PaymentController::class)->group(function () {
         Route::get('/success','successPage')->name('checkout.success');
@@ -73,8 +73,8 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
     Route::get('/api/courses', [DashboardController::class, 'getCourses'])->name('api.courses');
     Route::get('/api/course/{id}', [DashboardController::class, 'getCourse'])->name('api.course');
     Route::get('/api/courses/{id}', [DashboardController::class, 'streamVideo'])->name('api.course.show');
-    Route::get('/storage/private-cover/{filename}', [DashboardController::class, 'serveCover'])
-    ->name('cover.access');
+    Route::get('/storage/private-cover/{filename}', [DashboardController::class, 'serveCover'])->name('cover.access');
+
 
 });
 
@@ -88,8 +88,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exams/{session_id}/question', [UserExamsController::class, 'getNextQuestion'])->name('exam.question');
     Route::post('/exams/{session_id}/answer', [UserExamsController::class, 'submitAnswer'])->name('exam.answer');
     Route::post('/exams/{session_id}/complete', [UserExamsController::class, 'markExamAsCompleted'])->name('exam.complete');
-
-
+    Route::post('/video/progress/update', [UserExamsController::class, 'updateProgress'])->name('video.progress.update');
+    Route::get('/video/progress/check/{course_id}', [UserExamsController::class, 'checkProgress'])->name('video.progress.check');
 });
 
 Route::controller(AdminController::class)->group(function () {
