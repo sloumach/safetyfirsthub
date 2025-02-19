@@ -89,24 +89,6 @@ class PaymentService
                 // 🔹 Déclencher l'événement pour CHAQUE cours acheté
                 event(new CoursePurchased($user, $course));
             }
-            foreach ($courses as $course) {
-                // Créer l'enregistrement de la commande
-                Order::create([
-                    'payment_id' => $payment->id,
-                    'user_id' => $user->id,
-                    'course_id' => $course->id,
-                ]);
-
-                // Associer l'utilisateur au cours acheté
-                $user->courses()->attach($course->id, [
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-
-                // 🔹 Déclencher l'événement pour CHAQUE cours acheté
-                event(new CoursePurchased($user, $course));
-            }
-
 
             // Nettoyer le panier après un paiement réussi
             session()->forget('cart');
