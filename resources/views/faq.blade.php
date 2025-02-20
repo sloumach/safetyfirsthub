@@ -64,7 +64,7 @@
 						<div class="collapse navbar-collapse mean-menu">
 							<ul class="navbar-nav m-auto">
 								<li class="nav-item">
-									<a href="#" class="nav-link">
+									<a href="{{ route('home') }}" class="nav-link">
 										Home
 										<i class="bx bx-chevron-down"></i>
 									</a>
@@ -320,7 +320,7 @@
 					<h2>FAQ</h2>
 					<ul>
 						<li>
-							<a href="index.html">
+							<a href="{{ route('home') }}">
 								Home 
 							</a>
 						</li>

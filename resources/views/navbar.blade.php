@@ -11,7 +11,7 @@
     <div class="main-nav">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-md">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="{{ route('home') }}">
                     <img src="{{ asset('assets/img/logo.png') }}" class="main-logo" alt="Logo">
                     <img src="{{ asset('assets/img/logo-2.png') }}" class="white-logo" alt="Logo">
                 </a>
@@ -235,9 +235,9 @@
                         </div>
                         @else
                         <div class="register">
-                            <div class="default-btn">
+                            <a href="{{ route('profile') }}" class="default-btn">
                                 {{ Auth::user()->firstname }}
-                            </div>
+                        </a>
                         </div>
                         <div class="register">
                             <div class="default-btn">

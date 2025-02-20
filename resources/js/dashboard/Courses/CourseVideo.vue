@@ -371,7 +371,7 @@ const markAsIncomplete = async () => {
         const response = await axios.post(`/video/progress/reset`, {
             course_id: route.params.id
         });
-        console.log('Video marked as incomplete:', response.data);
+       
     } catch (error) {
         console.error("Error marking video as incomplete:", error);
     }

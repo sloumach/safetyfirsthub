@@ -60,7 +60,7 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
     });
     Route::controller(UserController::class)->group(function () {
-        Route::get('/profiles', 'profile')->name('profiles');//added par yassine page profile
+        Route::get('/profile', 'profile')->name('profile');//added par yassine page profile
     });
 });
 

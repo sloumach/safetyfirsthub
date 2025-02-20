@@ -55,7 +55,7 @@
 					<h2>Shop</h2>
 					<ul>
 						<li>
-							<a href="index.html">
+						<a href="{{ route('home') }}">
 								Home
 							</a>
 						</li>

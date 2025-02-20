@@ -25,7 +25,7 @@ class ShopController extends Controller
     public function cart () {
         // Récupère les IDs depuis la session
         $cartCount = session('cart', []); // Par défaut, retourne un tableau vide si 'cart' est inexistant
-        /* dd($cartCount); */
+        
         // Vérifie si le tableau n'est pas vide
         if (empty($cartCount)) {
             $courses = collect(); // Crée une collection vide
@@ -46,7 +46,7 @@ class ShopController extends Controller
         // Charge les produits de la wishlist de cet utilisateur
         $wishlistedCourses = $user->wishlists()->with('course')->get();
 
-        //dd($wishlistedCourses);
+        
 
         return view('wishlist',compact('wishlistedCourses'));
     }

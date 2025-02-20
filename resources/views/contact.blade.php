@@ -58,7 +58,7 @@
                 <h2>Contact</h2>
                 <ul>
                     <li>
-                        <a href="index.html">
+                        <a href="{{ route('home') }}">
                             Home
                         </a>
                     </li>
