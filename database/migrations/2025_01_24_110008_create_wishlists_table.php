@@ -19,8 +19,8 @@ return new class extends Migration
 
             // Clés étrangères et contraintes
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->unique(['user_id', 'product_id']); // Empêche les doublons pour un utilisateur
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+            $table->unique(['user_id', 'course_id']); // Empêche les doublons pour un utilisateur
         });
     }
 
