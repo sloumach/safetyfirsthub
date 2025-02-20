@@ -170,7 +170,7 @@ class ShopController extends Controller
 
         try {
             Wishlist::where('user_id', $userId)
-                ->where('product_id', $courseId)
+                ->where('course_id', $courseId)
                 ->delete();
 
             return response()->json([
