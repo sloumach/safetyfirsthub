@@ -50,8 +50,8 @@ export default {
 
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('/api/courses')
-                courses.value = response.data
+                const response = await axios.get('/api/courses');
+                courses.value = response.data;
             } catch (error) {
                 // console.error('Error details:', {
                 //     message: error.message,

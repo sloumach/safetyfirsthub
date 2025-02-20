@@ -223,35 +223,34 @@ onMounted(() => {
     window._handleBlur = handleBlur;
 
     // Add progress check
-    const checkProgress = async () => {
-        try {
-            const response = await axios.get(`/api/courses/${route.params.id}/video-progress`);
-            isCompleted.value = response.data.is_completed;
-        } catch (error) {
-            console.error("Error fetching progress:", error);
-        }
-    };
     
-    checkProgress();
 });
 
-onBeforeUnmount(() => {
-    // Remove the blur event listener
-    if (window._handleBlur) {
-        window.removeEventListener("blur", window._handleBlur);
-    }
-    
-    document.removeEventListener("fullscreenchange", onFullScreenChange);
-    document.removeEventListener("webkitfullscreenchange", onFullScreenChange);
-    document.removeEventListener("mozfullscreenchange", onFullScreenChange);
-    document.removeEventListener("msfullscreenchange", onFullScreenChange);
-    document.removeEventListener("visibilitychange", handleVisibilityChange);
-    // Remove right-click prevention when leaving the page
-    document.removeEventListener("contextmenu", disableRightClick);
-    document.removeEventListener("keydown", blockDevTools);
+onBeforeUnmount(async () => {
+    try {
+        // Only mark as incomplete if we haven't completed the video
+        if (!isCompleted.value && videoPlayer.value) {
+            await markAsIncomplete();
+        }
+    } catch (error) {
+        console.error('Error during cleanup:', error);
+    } finally {
+        // Remove event listeners
+        if (window._handleBlur) {
+            window.removeEventListener("blur", window._handleBlur);
+        }
+        
+        document.removeEventListener("fullscreenchange", onFullScreenChange);
+        document.removeEventListener("webkitfullscreenchange", onFullScreenChange);
+        document.removeEventListener("mozfullscreenchange", onFullScreenChange);
+        document.removeEventListener("msfullscreenchange", onFullScreenChange);
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        document.removeEventListener("contextmenu", disableRightClick);
+        document.removeEventListener("keydown", blockDevTools);
 
-    // Redirect to Courses page when leaving this page
-    router.push("/dashboard/courses");
+        // Redirect to Courses page when leaving this page
+        router.push("/dashboard/courses");
+    }
 });
 
 const fetchVideo = async () => {
@@ -332,9 +331,11 @@ const updateProgress = async () => {
     // Send progress every 10 seconds
     if (currentTime % 10 === 0) {
         try {
-            await axios.post(`/api/courses/${route.params.id}/video-progress`, {
+            await axios.post(`/video/progress/update`, {
                 current_time: currentTime,
                 total_duration: totalDuration,
+                course_id: route.params.id,
+                is_completed: false // Always false unless explicitly completed
             });
         } catch (error) {
             console.error("Error updating progress:", error);
@@ -343,14 +344,36 @@ const updateProgress = async () => {
 };
 
 const markAsCompleted = async () => {
+    if (!videoPlayer.value) return;
+    
+    const currentTime = Math.floor(videoPlayer.value.currentTime);
+    const duration = Math.floor(videoPlayer.value.duration);
+    
+    // Only mark as completed if we're at the end of the video
+    if (currentTime >= duration - 1) { // -1 to account for small timing differences
+        try {
+            await axios.post(`/video/progress/complete`, {
+                current_time: duration,
+                total_duration: duration,
+                course_id: route.params.id,
+            });
+            isCompleted.value = true;
+        } catch (error) {
+            console.error("Error marking video as completed:", error);
+        }
+    }
+};
+
+const markAsIncomplete = async () => {
+    if (!route.params.id) return; // Guard against missing course_id
+    
     try {
-        await axios.post(`/api/courses/${route.params.id}/video-progress`, {
-            current_time: totalDuration,
-            total_duration: totalDuration,
+        const response = await axios.post(`/video/progress/reset`, {
+            course_id: route.params.id
         });
-        isCompleted.value = true;
+        console.log('Video marked as incomplete:', response.data);
     } catch (error) {
-        console.error("Error marking video as completed:", error);
+        console.error("Error marking video as incomplete:", error);
     }
 };
 </script>
