@@ -32,10 +32,10 @@
 
                     <ul class="link">
                         <li>
-                            <a href="courses.html">All Courses</a>
+                            <a href="{{ route('courses') }}">All Courses</a>
                         </li>
                         <li>
-                            <a href="about.html">About us</a>
+                            <a href="{{ route('contact') }}">About us</a>
                         </li>
                         <li>
                             <a href="{{ route('faq') }}">Help (FAQ)</a>

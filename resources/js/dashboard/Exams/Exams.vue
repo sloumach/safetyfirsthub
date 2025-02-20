@@ -73,7 +73,7 @@ export default {
 }
     const handleButtonClick = async (course) => {
   if (course.examcheck) {
-    window.location.href = 'http://localhost:8000/dashboard/certificate';
+    window.location.href = '/dashboard/certificate';
   } else {
     const isCompleted = await checkProgress(course.id); // Use checkProgress here
     

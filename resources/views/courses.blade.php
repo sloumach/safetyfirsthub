@@ -42,11 +42,6 @@
         <!-- Start Navbar Area -->
         @include('navbar')
         <!-- End Navbar Area -->
-		<!-- Start Preloader Area -->
-		
-		<!-- End Preloader Area -->
-
-
 
 		<!-- Start Page Title Area -->
 		<div class="page-title-area bg-4">
@@ -55,7 +50,7 @@
 					<h2>Courses</h2>
 					<ul>
 						<li>
-							<a href="index.html">
+							<a href="{{ route('home') }}">
 								Home
 							</a>
 						</li>
@@ -72,10 +67,10 @@
 			<div class="container">
 				<div class="showing-result">
 					<div class="row align-items-center">
-						<div class="col-lg-6 col-md-4">
-							<div class="showing-result-count">
+						<!-- <div class="col-lg-6 col-md-4">
+							 <div class="showing-result-count">
 								<p>Showing 1-8 of 14 results</p>
-							</div>
+							</div> 
 						</div>
 
 						<div class="col-lg-3 col-md-4">
@@ -90,7 +85,7 @@
 									<option value="5">Assessment</option>
 								</select>
 							</div>
-						</div>
+						</div> -->
 
 						{{-- <div class="col-lg-3 col-md-4">
 							<form class="search-form">
@@ -108,8 +103,8 @@
                     @foreach ($courses as $course)
                         <div class="col-lg-4 col-md-6">
                             <div class="single-course">
-                                <a href="{{ route('singlecourse', ['id' => $course->id]) }}">
-                                    <img src="{{ asset('storage/' . $course->cover) }}" class="card-img-top" alt="Cover for {{ $course->category }}">
+                                <a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="course-img-wrapper">
+                                    <img src="{{ asset('storage/' . $course->cover) }}" alt="Cover for {{ $course->category }}">
 
                                 </a>
 
@@ -117,7 +112,7 @@
                                     <span class="price">$39</span>
                                     <span class="tag">{{ $course->category }}</span>
 
-                                    <a href="{{ route('singlecourse', ['id' => $course->id]) }}">
+                                    <a href="{{ route('singlecourse', ['id' => $course->id]) }}" style="padding-top: 2%;">
 
                                         <h3>{{ $course->name }}</h3>
                                     </a>
@@ -162,14 +157,14 @@
 								<i class="bx bx-chevron-left"></i>
 							</a>
 							-->
-                            <span class="page-numbers current" aria-current="page">1</span>
+                            <!-- <span class="page-numbers current" aria-current="page">1</span>
                             <a href="#" class="page-numbers">2</a>
                             <a href="#" class="page-numbers">3</a>
 							<a href="#" class="page-numbers">4</a>
 
                             <a href="#" class="next page-numbers">
 								<i class="bx bx-chevron-right"></i>
-							</a>
+							</a> -->
                         </div>
                     </div>
 				</div>

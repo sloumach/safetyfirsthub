@@ -85,7 +85,7 @@
                                 </div>
                                 <form id="profile-form">
                                     <div class="profile-section">
-                                        <div class="avatar-section">
+                                        <!-- <div class="avatar-section">
                                             <div class="avatar-preview">
                                                 <img src="default-avatar.jpg" alt="Avatar" id="avatar-preview">
                                                 <div class="avatar-overlay">
@@ -93,7 +93,7 @@
                                                 </div>
                                             </div>
                                             <input type="file" id="avatar-upload" name="avatar" accept="image/*">
-                                        </div>
+                                        </div> -->
                                         <div class="form-section">
                                             <div class="form-group">
                                                 <label for="first-name">First Name *</label>

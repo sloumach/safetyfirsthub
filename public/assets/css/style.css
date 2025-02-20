@@ -1454,10 +1454,31 @@ Course Area Style
   background-color: var(--white-color);
 }
 
+/* Add these new classes */
+.single-course .course-img-wrapper {
+  width: 100%;
+  height: 250px; /* Fixed height - adjust as needed */
+  overflow: hidden;
+  position: relative;
+}
+
+.single-course .course-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+.single-course:hover .course-img-wrapper img {
+  transform: scale(1.05);
+}
+/* End of new classes */
+
 .single-course .course-content {
   position: relative;
   -webkit-box-shadow: var(--box-shadow);
-          box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow);
   padding: 20px;
 }
 

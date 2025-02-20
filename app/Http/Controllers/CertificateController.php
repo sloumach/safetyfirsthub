@@ -98,6 +98,7 @@ class CertificateController extends Controller
     {
         $certificate = Certificate::where('certificate_url', $certificate_url)
             ->where('available', true)
+            ->with(['examUser.user', 'examUser.exam.course']) // Eager load relationships
             ->firstOrFail();
 
         // Vérifier si l'accès est autorisé (QR Code uniquement)
@@ -105,9 +106,19 @@ class CertificateController extends Controller
             abort(404);
         }
 
+        // Prepare data for the view
+        $data = [
+            'certificateNumber' => 'CERT-' . str_pad($certificate->id, 5, '0', STR_PAD_LEFT),
+            'firstname' => $certificate->examUser->user->firstname,
+            'lastname' => $certificate->examUser->user->lastname,
+            'course_name' => $certificate->examUser->exam->course->name,
+            'duration' => $certificate->examUser->exam->duration ?? '2', // Default to 2 if not set
+            'date' => $certificate->created_at->format('d/m/Y')
+        ];
+
         // ❌ Supprimer la session après affichage (Empêche réutilisation)
         $request->session()->forget("certificate_access_{$certificate_url}");
 
-        return view('certificates.show', compact('certificate'));
+        return view('certificates.show', $data);
     }
 }

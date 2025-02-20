@@ -60,7 +60,7 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
     });
     Route::controller(UserController::class)->group(function () {
-        Route::get('/profiles', 'profile')->name('profiles');//added par yassine page profile
+        Route::get('/profile', 'profile')->name('profile');//added par yassine page profile
     });
 });
 
@@ -138,8 +138,8 @@ Route::middleware([])->group(function () {
 
 
 Route::post('/certificates/generate/{exam_user_id}', [CertificateController::class, 'generateCertificate'])->name('certificates.generate');
-    Route::get('/certificates/{certificate_url}/scan', [CertificateController::class, 'scanCertificate'])->name('certificates.scan'); // ✅ Nouvelle route
-    Route::get('/certificates/{certificate_url}/view', [CertificateController::class, 'viewCertificate'])->name('certificates.view');
+Route::get('/certificates/{certificate_url}/scan', [CertificateController::class, 'scanCertificate'])->name('certificates.scan'); // ✅ Nouvelle route
+Route::get('/certificates/{certificate_url}/view', [CertificateController::class, 'viewCertificate'])->name('certificates.view');
 
 
 
