@@ -63,7 +63,7 @@ class ShopController extends Controller
         try {
             // Check if already in wishlist
             $exists = Wishlist::where('user_id', $userId)
-                ->where('product_id', $courseId)
+                ->where('course_id', $courseId)
                 ->exists();
 
             if ($exists) {
@@ -76,7 +76,7 @@ class ShopController extends Controller
             // Add to wishlist
             Wishlist::create([
                 'user_id' => $userId,
-                'product_id' => $courseId,
+                'course_id' => $courseId,
             ]);
 
             return response()->json([

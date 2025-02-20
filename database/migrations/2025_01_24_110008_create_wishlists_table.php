@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('wishlists', function (Blueprint $table) {
             $table->id(); // Identifiant unique
             $table->unsignedBigInteger('user_id'); // Référence à l'utilisateur
-            $table->unsignedBigInteger('product_id'); // Référence au produit
+            $table->unsignedBigInteger('course_id'); // Référence au produit
             $table->timestamps(); // Pour created_at et updated_at
 
             // Clés étrangères et contraintes

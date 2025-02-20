@@ -220,7 +220,7 @@ class UserExamsController extends Controller
             $totalQuestions = $exam->questions()->count();
             $correctAnswers = UserAnswer::where('user_id', $user->id)
                 ->where('exam_id', $exam->id)
-                ->where('exam_user_id', $examUser->id) // ✅ Filtrer par session actuelle !
+                ->where('exam_user_id', $examUser->id)
                 ->where('is_correct', true)
                 ->count();
 
@@ -236,6 +236,13 @@ class UserExamsController extends Controller
                 'completed_at' => now(),
             ]);
 
+            // If exam failed, reset video progress completion status
+            if ($status === 'failed') {
+                VideoProgress::where('user_id', $user->id)
+                    ->where('course_id', $exam->course_id)
+                    ->update(['is_completed' => false]);
+            }
+
             // 🔹 Vérifier le nombre total de tentatives
             $attempts = ExamUser::where('user_id', $user->id)
                 ->whereHas('exam', function ($query) use ($exam) {
@@ -248,16 +255,18 @@ class UserExamsController extends Controller
                     'message'        => "Exam failed. You have " . (3 - $attempts) . " attempts left.",
                     'exam_completed' => true,
                     'retry_allowed'  => true,
-                    'attempts_left'  => 3 - $attempts, // ✅ On passe la valeur exacte au frontend
+                    'attempts_left'  => 3 - $attempts,
+                    'video_reset'    => true  // Added to inform frontend
                 ]);
             }
 
             return response()->json([
                 'message'        => 'Exam completed. Redirecting to results.',
                 'exam_completed' => true,
-                'score'          => $score,
-                'status'         => $status,
-                'retry_allowed'  => false,
+                'score'         => $score,
+                'status'        => $status,
+                'retry_allowed' => false,
+                'video_reset'   => ($status === 'failed')  // Added to inform frontend
             ]);
         }
 
@@ -293,14 +302,17 @@ class UserExamsController extends Controller
         return response()->json(['message' => 'Exam session marked as completed.']);
     }
 
-    public function updateProgress(Request $request, $course_id)
+    public function updateProgress(Request $request)
     {
         $request->validate([
             'current_time'   => 'required|integer|min:0',
             'total_duration' => 'required|integer|min:1',
+            'course_id'      => 'required|exists:courses,id',
+            'is_completed'   => 'boolean'
         ]);
 
-        $user = auth()->user();
+        $course_id = $request->course_id;
+        $user = Auth::user();
 
         if (! $user->courses->contains($course_id)) {
             return response()->json(['error' => 'You do not have access to this course'], 403);
@@ -313,19 +325,115 @@ class UserExamsController extends Controller
 
         $segments   = json_decode($progress->watched_segments, true) ?? [];
         $segments[] = $request->current_time;
+        
+        // Only update is_completed if explicitly set to true via markAsCompleted
         $progress->update([
             'watched_segments' => json_encode($segments),
-            'is_completed'     => $this->checkCompletion($segments, $request->total_duration),
+            'is_completed'     => $request->boolean('is_completed', false),
         ]);
 
-        return response()->json(['message' => 'Progress updated', 'is_completed' => $progress->is_completed]);
+        return response()->json([
+            'message' => 'Progress updated', 
+            'is_completed' => $progress->is_completed
+        ]);
     }
 
     private function checkCompletion($segments, $total_duration)
     {
         sort($segments);
         $watched_time = count($segments) * 10; // Approximation de l'avancement par 10s
-        return $watched_time >= ($total_duration * 0.9);
+        $completion_threshold = $total_duration * 0.9; // 90% threshold
+        return $watched_time >= $completion_threshold;
+    }
+
+    public function checkProgress($course_id)
+    {
+        $user = auth()->user();
+
+        // Récupérer la progression de l'utilisateur sur ce cours
+        $progress = VideoProgress::where('user_id', $user->id)
+            ->where('course_id', $course_id)
+            ->first();
+
+        if (!$progress) {
+            return response()->json([
+                'watched' => false,
+                'message' => 'No progress found for this course.'
+            ], 404);
+        }
+
+        return response()->json([
+            'watched' => $progress->is_completed,
+            'progress' => $progress->watched_segments,
+            'message' => $progress->is_completed ? 'Course video fully watched.' : 'Course video not fully watched yet.'
+        ]);
+    }
+
+    public function markAsCompleted(Request $request)
+    {
+        $request->validate([
+            'current_time'   => 'required|integer|min:0',
+            'total_duration' => 'required|integer|min:1',
+            'course_id'      => 'required|exists:courses,id',
+        ]);
+
+        $user = Auth::user();
+        $course_id = $request->course_id;
+
+        if (!$user->courses->contains($course_id)) {
+            return response()->json(['error' => 'You do not have access to this course'], 403);
+        }
+
+        $progress = VideoProgress::firstOrCreate(
+            ['user_id' => $user->id, 'course_id' => $course_id],
+            ['total_duration' => $request->total_duration, 'watched_segments' => json_encode([])]
+        );
+
+        // Only mark as completed if we're at the end of the video
+        if ($request->current_time >= ($request->total_duration - 1)) {
+            $progress->update([
+                'is_completed' => true,
+                'watched_segments' => json_encode(array_unique(array_merge(
+                    json_decode($progress->watched_segments, true) ?? [],
+                    [$request->total_duration]
+                )))
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Video progress updated',
+            'is_completed' => $progress->is_completed
+        ]);
+    }
+
+    public function resetProgress(Request $request)
+    {
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $user = Auth::user();
+        $course_id = $request->course_id;
+
+        if (!$user->courses->contains($course_id)) {
+            return response()->json(['error' => 'You do not have access to this course'], 403);
+        }
+
+        $progress = VideoProgress::where('user_id', $user->id)
+            ->where('course_id', $course_id)
+            ->first();
+
+        if ($progress) {
+            $progress->update([
+                'is_completed' => false,
+                'watched_segments' => json_encode([])
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Progress reset successfully',
+            'is_completed' => false
+        ]);
     }
 
 }

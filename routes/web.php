@@ -90,6 +90,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/exams/{session_id}/complete', [UserExamsController::class, 'markExamAsCompleted'])->name('exam.complete');
     Route::post('/video/progress/update', [UserExamsController::class, 'updateProgress'])->name('video.progress.update');
     Route::get('/video/progress/check/{course_id}', [UserExamsController::class, 'checkProgress'])->name('video.progress.check');
+    Route::post('/video/progress/complete', [UserExamsController::class, 'markAsCompleted'])->name('video.progress.complete');
+    Route::post('/video/progress/reset', [UserExamsController::class, 'resetProgress'])->name('video.progress.reset');
 });
 
 Route::controller(AdminController::class)->group(function () {

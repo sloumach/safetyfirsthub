@@ -37,14 +37,17 @@
 
 <script>
 import { ref, onMounted, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
   name: 'Exams',
   setup() {
     const router = useRouter()
+    const isCompleted = ref(false)
     const courses = ref([])
+    const route = useRoute()
 
     const handleImageError = (e) => {
       e.target.src = 'https://placehold.co/600x400/003366/ffffff?text=Course'
@@ -59,14 +62,34 @@ export default {
         console.error('Error fetching courses:', error)
       }
     }
-
-    const handleButtonClick = (course) => {
-      if (course.examcheck) {
-        window.location.href = 'http://localhost:8000/dashboard/certificate'
-      } else {
-        router.push(`/dashboard/exams/${course.id}`)
-      }
+    const checkProgress = async (courseId) => {
+  try {
+    const response = await axios.get(`/video/progress/check/${courseId}`);
+    return response.data.watched; // Assuming this is what the API returns
+  } catch (error) {
+    console.error("Error checking progress:", error);
+    return false;
+  }
+}
+    const handleButtonClick = async (course) => {
+  if (course.examcheck) {
+    window.location.href = 'http://localhost:8000/dashboard/certificate';
+  } else {
+    const isCompleted = await checkProgress(course.id); // Use checkProgress here
+    
+    if (isCompleted) {
+      router.push(`/dashboard/exams/${course.id}`);
+    } else {
+      await Swal.fire({
+        title: 'Access Denied',
+        text: 'You need to complete the required content before accessing this exam.',
+        icon: 'warning',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+      });
     }
+  }
+}
 
     // Computed Property for Button Text
     const getButtonText = (course) => {
