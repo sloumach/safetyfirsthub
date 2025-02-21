@@ -50,6 +50,8 @@ class AdminController extends Controller
                 'description' => 'required|string|max:2000',
                 'cover' => 'required|file|mimes:jpg,jpeg,png|max:2048',
                 'video' => 'required|file|mimes:mp4,mov,avi|max:50000',
+                'duration' => 'required|integer|min:1', // Validation de la durée
+
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             foreach ($e->errors() as $field => $messages) {
@@ -61,7 +63,7 @@ class AdminController extends Controller
         }
 
         try {
-        
+
 
             // Sauvegarde de l'image de couverture
             $coverPath = $request->file('cover')->store('courses/covers', 'public');
@@ -81,6 +83,8 @@ class AdminController extends Controller
                 'cover' => $coverPath,
                 'video' => $videoPath, // Enregistre le chemin sécurisé de la vidéo
                 'students' => 0,
+                'duration' => $validatedData['duration'],
+
             ]);
 
             flash()->success('Course added successfully!');
@@ -116,7 +120,7 @@ class AdminController extends Controller
 
         try {
             $validatedData = $request->all();
-          
+
 
             $course = $this->courseService->updateCourse($id, $validatedData);
 
