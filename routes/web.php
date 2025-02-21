@@ -13,6 +13,8 @@ use App\Http\Controllers\UserExamsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminExamsController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\ContactController;
+
 
 
 
@@ -27,11 +29,20 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('/terms', 'terms')->name('terms');
     Route::get('/faq', 'faq')->name('faq');
     Route::get('/contact', 'contact')->name('contact');
+
+
+
 });
+Route::post('/contact/submit', [ContactController::class, 'submitContactForm'])->name('contact.submit');
+Route::get('/admin/inbox', [ContactController::class, 'index'])->name('admin.contacts.index');
+
+Route::delete('/admin/contacts/{id}', [ContactController::class, 'destroy'])->name('admin.contacts.destroy');
+
 Route::controller(CourseController::class)->group(function () {
 
     Route::get('/singlecourse/{id}', 'singlecourse')->name('singlecourse');
     Route::get('/courses', 'index')->name('courses');
+
 });
 
 Route::group([ 'middleware' => ['auth','verified']], function () {
