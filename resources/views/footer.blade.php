@@ -35,7 +35,7 @@
                             <a href="{{ route('courses') }}">All Courses</a>
                         </li>
                         <li>
-                            <a href="{{ route('contact') }}">About us</a>
+                            <a href="{{ route('about') }}">About us</a>
                         </li>
                         <li>
                             <a href="{{ route('faq') }}">Help (FAQ)</a>

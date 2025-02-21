@@ -152,6 +152,14 @@ Route::post('/certificates/generate/{exam_user_id}', [CertificateController::cla
 Route::get('/certificates/{certificate_url}/scan', [CertificateController::class, 'scanCertificate'])->name('certificates.scan'); // ✅ Nouvelle route
 Route::get('/certificates/{certificate_url}/view', [CertificateController::class, 'viewCertificate'])->name('certificates.view');
 
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+Route::get('/recover-password', function () {
+    return view('recover-password');
+})->name('password.request');
+
 
 
 /* Route::middleware('auth')->group(function () {
