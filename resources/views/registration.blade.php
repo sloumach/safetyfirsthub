@@ -71,6 +71,10 @@
 						<h2>Registration</h2>
 					</div>
 
+					
+
+					<div id="notification-container"></div>
+
 					<div class="contact-form-action">
 						<form method="POST" action="{{ route('register') }}">
                             @csrf
@@ -177,6 +181,5 @@
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
 
-		<script src="assets/js/register.js"></script>
     </body>
 </html>

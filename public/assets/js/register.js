@@ -12,3 +12,4 @@ document.getElementById('remember').addEventListener('change', function() {
         confirmPasswordField.type = 'password';
     }
 });
+
