@@ -128,12 +128,18 @@ const fetchNextQuestion = async () => {
 
 // Start Timer
 const startTimer = () => {
+    clearInterval(timerInterval); // Clear any existing interval
     timer.value = 10;
-    clearInterval(timerInterval);
     timerInterval = setInterval(() => {
-        if (!isActive) return; // Stop timer if user navigates away
-        timer.value--;
+        if (!isActive) {
+            clearInterval(timerInterval);
+            return;
+        }
+        if (timer.value > 0) {
+            timer.value--;
+        }
         if (timer.value === 0) {
+            clearInterval(timerInterval);
             submitAnswer();
         }
     }, 1000);
@@ -142,10 +148,15 @@ const startTimer = () => {
 // Submit Answer
 const submitAnswer = async () => {
     if (!isActive) return;
+    
+    // Clear the timer immediately to prevent negative counts
+    clearInterval(timerInterval);
+    timer.value = 10;
 
     const selectedChoice = userAnswers.value[currentQuestionIndex.value] ?? null;
     try {
-        const answerResponse = await axios.post(
+        // Submit the answer
+        await axios.post(
             `/exams/${sessionId.value}/answer`,
             {
                 question_id: currentQuestion.value.id,
@@ -153,75 +164,68 @@ const submitAnswer = async () => {
             },
             { cancelToken: axiosSource.token }
         );
-        // Check if this is the last question
+
+        // Get next question
         const nextQuestionResponse = await axios.get(`/exams/${sessionId.value}/question`);
 
         if (nextQuestionResponse.data.exam_completed) {
-            try {
-                const resultsResponse = await axios.get(`/exams/${sessionId.value}/results`);
+            const resultsResponse = await axios.get(`/exams/${sessionId.value}/results`);
             
-                const score = resultsResponse.data.score;
-                const passingScore = resultsResponse.data.passing_score || 60;
-                const attemptsLeft = resultsResponse.data.attempts_left || 0;
+            const score = resultsResponse.data.score;
+            const passingScore = resultsResponse.data.passing_score || 60;
+            const attemptsLeft = resultsResponse.data.attempts_left || 0;
 
-                if (score >= passingScore) {
+            if (score >= passingScore) {
+                await Swal.fire({
+                    title: 'Congratulations! 🎉',
+                    text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6'
+                });
+            } else {
+                if (resultsResponse.data.retry_allowed) {
                     await Swal.fire({
-                        title: 'Congratulations! 🎉',
-                        text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
-                        icon: 'success',
+                        title: 'Exam Failed',
+                        text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${attemptsLeft} attempts left.`,
+                        icon: 'error',
                         confirmButtonColor: '#3085d6'
                     });
                 } else {
-                    if (resultsResponse.data.retry_allowed) {
-                        await Swal.fire({
-                            title: 'Exam Failed',
-                            text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${attemptsLeft} attempts left.`,
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6'
-                        });
-                    } else {
-                        await Swal.fire({
-                            title: 'Exam Failed',
-                            text: `Your score is ${score}%, while ${passingScore}% was required. You cannot retry.`,
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6'
-                        });
-                    }
+                    await Swal.fire({
+                        title: 'Exam Failed',
+                        text: `Your score is ${score}%, while ${passingScore}% was required. You cannot retry.`,
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6'
+                    });
                 }
-                router.push("/dashboard/exams");
-                return;
-            } catch (resultsError) {
-                console.error('Error fetching results:', resultsError);
             }
+            router.push("/dashboard/exams");
+            return;
         } else {
+            // Update the current question and restart timer
             currentQuestionIndex.value++;
             currentQuestion.value = nextQuestionResponse.data.question;
             startTimer();
         }
     } catch (error) {
+        clearInterval(timerInterval); // Make sure timer is cleared on error
         if (axios.isCancel(error)) {
-            Swal.fire({
-                title: 'Requête Annulée',
+            await Swal.fire({
+                title: 'Request Cancelled',
                 text: error.message,
                 icon: 'warning',
-                customClass: {
-                    confirmButton: 'default-btn'
-                },
-                confirmButtonText: 'D\'accord'
+                confirmButtonColor: '#3085d6'
             });
-           
         } else {
-            Swal.fire({
-                title: 'Erreur',
-                text: 'Une erreur est survenue lors de la récupération des résultats de l\'examen. Veuillez réessayer.',
+            await Swal.fire({
+                title: 'Error',
+                text: 'An error occurred while submitting your answer. Please try again.',
                 icon: 'error',
-                customClass: {
-                    confirmButton: 'default-btn'
-                },
-                confirmButtonText: 'D\'accord'
+                confirmButtonColor: '#3085d6'
             });
-            console.error("Erreur lors de la récupération des résultats de l'examen:", error);
+            console.error("Error submitting answer:", error);
         }
+        startTimer(); // Restart timer after error
     }
 };
 

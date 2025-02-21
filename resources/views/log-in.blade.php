@@ -75,31 +75,56 @@
 					</div>
 
 					<div class="contact-form-action">
-                        <form method="POST" action="{{ route('login') }}">
-                            @csrf
+						<!-- Add Error Messages Display -->
+						@if ($errors->any())
+							<div class="alert alert-danger">
+								<ul class="mb-0">
+									@foreach ($errors->all() as $error)
+										<li>{{ $error }}</li>
+									@endforeach
+								</ul>
+							</div>
+						@endif
+
+						<!-- Add Success Message Display -->
+						@if (session('status'))
+							<div class="alert alert-success" role="alert">
+								{{ session('status') }}
+							</div>
+						@endif
+
+						<form method="POST" action="{{ route('login') }}">
+							@csrf
 							<div class="row">
 								<div class="col-12">
 									<div class="form-group">
 										<label>Email or Phone</label>
-										<input class="form-control" type="text" name="email">
+										<input class="form-control @error('email') is-invalid @enderror" 
+											   type="text" 
+											   name="email" 
+											   value="{{ old('email') }}">
+										
 									</div>
 								</div>
 
 								<div class="col-12">
 									<div class="form-group">
 										<label>Password</label>
-										<input class="form-control" type="password" name="password">
+										<input class="form-control @error('password') is-invalid @enderror" 
+											   type="password" 
+											   name="password">
+										
 									</div>
 								</div>
 
 								<div class="col-12">
 									<div class="login-action">
-										<span class="log-rem">
+										<!-- <span class="log-rem">
 											<input id="remember" type="checkbox">
 											<label for="remember">Remember me!</label>
-										</span>
+										</span> -->
 										<span class="forgot-login">
-											<a href="recover-password.html">Forgot your password?</a>
+											<a href="{{ route('password.request') }}">Forgot your password?</a>
 										</span>
 									</div>
 								</div>
@@ -111,7 +136,7 @@
 								</div>
 
 								<div class="col-12">
-									<p>Have an account? <a href="registration.html">Registration Now!</a></p>
+									<p>Have an account? <a href="{{ route('register') }}">Registration Now!</a></p>
 								</div>
 							</div>
 						</form>

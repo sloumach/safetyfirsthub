@@ -19,7 +19,7 @@
                 <div class="collapse navbar-collapse mean-menu">
                     <ul class="navbar-nav m-auto">
                         <li class="nav-item">
-                            <a href="{{ route('home') }}" class="nav-link active">
+                            <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
                                 Home
                                 {{-- <i class="bx bx-chevron-down"></i> --}}
                             </a>
@@ -38,7 +38,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('courses') }}" class="nav-link">
+                            <a href="{{ route('courses') }}" class="nav-link {{ request()->routeIs('courses*') ? 'active' : '' }}">
                                 Courses
                                 {{-- <i class="bx bx-chevron-down"></i> --}}
                             </a>
@@ -128,17 +128,17 @@
                         </li> --}}
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link {{ request()->routeIs('shop*', 'cart*', 'wishlist*') ? 'active' : '' }}">
                                 Shop
                                 <i class="bx bx-chevron-down"></i>
                             </a>
 
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a href="{{ route('shop') }}" class="nav-link">Shop</a>
+                                    <a href="{{ route('shop') }}" class="nav-link {{ request()->routeIs('shop') ? 'active' : '' }}">Shop</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('cart') }}" class="nav-link">Cart</a>
+                                    <a href="{{ route('cart') }}" class="nav-link {{ request()->routeIs('cart') ? 'active' : '' }}">Cart</a>
                                 </li>
                                {{--  <li class="nav-item">
                                     <a href="checkout.html" class="nav-link">Checkout</a>
@@ -147,7 +147,7 @@
                                     <a href="single-product.html" class="nav-link">Single Product</a>
                                 </li> --}}
                                 <li class="nav-item">
-                                    <a href="{{ route('wishlist') }}" class="nav-link">Wishlist</a>
+                                    <a href="{{ route('wishlist') }}" class="nav-link {{ request()->routeIs('wishlist') ? 'active' : '' }}">Wishlist</a>
                                 </li>
                             </ul>
                         </li>
@@ -178,25 +178,29 @@
                         </li> --}}
                         @if(Auth::check() && Auth::user()->hasRole('student'))
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}">
                                 Dashboard
                                 <i class="bx bx-chevron-down"></i>
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a href="{{ url('/dashboard/courses') }}" class="nav-link">Courses</a>
+                                    <a href="{{ url('/dashboard/courses') }}" class="nav-link {{ request()->is('dashboard/courses*') ? 'active' : '' }}">Courses</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('/dashboard/exams') }}" class="nav-link">Exams</a>
+                                    <a href="{{ url('/dashboard/exams') }}" class="nav-link {{ request()->is('dashboard/exams*') ? 'active' : '' }}">Exams</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('/dashboard/certificate') }}" class="nav-link">Certificates</a>
+                                    <a href="{{ url('/dashboard/certificate') }}" class="nav-link {{ request()->is('dashboard/certificate*') ? 'active' : '' }}">Certificates</a>
                                 </li>
                             </ul>
                         </li>
                         @endif
                         <li class="nav-item">
-                            <a href="{{ route('contact') }}" class="nav-link">Contact</a>
+                            <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About</a>
                         </li>
                     </ul>
 

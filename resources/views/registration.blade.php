@@ -64,9 +64,6 @@
 				</div>
 			</div>
 		</div>
-		<!-- End Page Title Area -->
-
-		<!-- Start Log In Area -->
 		<section class="user-area-style ptb-100">
 			<div class="container">
 				<div class="registration-area">
@@ -123,13 +120,13 @@
 
 										<div class="col-lg-6 text-right">
 											<input id="remember" type="checkbox">
-											<label for="remember">Show password ?</label>
+											<label for="remember">Show password</label>
 										</div>
 									</div>
 								</div>
 
 								<div class="col-12">
-									<p>Have an account? <a href="log-in.html">Login Now!</a></p>
+									<p>Have an account? <a href="{{ route('login') }}">Login Now!</a></p>
 								</div>
 							</div>
 						</form>
@@ -179,5 +176,7 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+
+		<script src="assets/js/register.js"></script>
     </body>
 </html>
