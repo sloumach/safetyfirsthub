@@ -108,6 +108,12 @@
                                                 value="0" readonly> <!-- Valeur par défaut à 0 -->
                                         </div>
 
+                                        <div class="form-group">
+                                            <label>Durée de validité du cours (en mois)</label>
+                                            <input type="number" name="duration" class="form-control" required min="1" value="3">
+                                        </div>
+
+
                                         <!-- Champ pour l'image de couverture -->
                                         <div class="form-group">
                                             <label for="cover">Upload Course Cover</label>
