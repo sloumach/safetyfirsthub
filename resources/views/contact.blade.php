@@ -214,8 +214,8 @@
     <script src="assets/js/odometer.min.js"></script>
     <!-- Form Validator Min JS -->
     <script src="assets/js/form-validator.min.js"></script>
-    <!-- Contact JS -->
-    <script src="assets/js/contact-form-script.js"></script>
+    <!-- <script src="assets/js/contact-form-script.js"></script> Contact JS -->
+
     <!-- Ajaxchimp Min JS -->
     <script src="assets/js/ajaxchimp.min.js"></script>
     <!-- Custom JS -->

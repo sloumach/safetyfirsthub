@@ -21,6 +21,7 @@ class Course extends Model
         'description',
         'cover',
         'video',
+        'duration',
         'students', // Nouvelle colonne
     ];
 

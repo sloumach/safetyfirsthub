@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\ExamUser;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
 {
@@ -31,13 +32,33 @@ class DashboardController extends Controller
             $courses = $user->courses->map(function ($course) use ($user) {
                 $coverUrl = $course->cover ? $this->getcoverurl(basename($course->cover)) : null;
 
-                // 🔹 Vérifier si l'utilisateur a réussi au moins un examen pour ce cours
-                $examcheck = ExamUser::query()
-                    ->where('user_id', $user->id)
-                    ->whereHas('exam', fn($query) => $query->where('course_id', $course->id))
-                    ->whereColumn('score', '>=', 'exams.passing_score')
-                    ->join('exams', 'exam_users.exam_id', '=', 'exams.id')
-                    ->value('exam_users.id');
+                // 🔹 Récupérer le dernier achat du cours
+                $order = Order::where('user_id', $user->id)
+                    ->whereHas('course', fn($query) => $query->where('course_id', $course->id))
+                    ->latest()
+                    ->first();
+
+                if (!$order) {
+                    return [
+                        'id'           => $course->id,
+                        'name'         => $course->name,
+                        'description'  => $course->description,
+                        'cover'        => $coverUrl,
+                        'total_videos' => $course->total_videos,
+                        'students'     => $course->students ?? 0,
+                        'examcheck'    => false, // ❌ Aucun examen valide trouvé
+                        'exam_id'      => null,
+                    ];
+                }
+            $examcheck = ExamUser::query()
+                ->where('user_id', $user->id)
+                ->where('order_id', $order->id) // ✅ Vérifie uniquement les examens de CE paiement
+                ->whereHas('exam', fn($query) => $query->where('course_id', $course->id))
+                ->whereColumn('score', '>=', 'exams.passing_score') // ✅ Vérifie si la tentative est réussie
+                ->join('exams', 'exam_users.exam_id', '=', 'exams.id')
+                ->latest('exam_users.id') // ✅ Prend la dernière tentative réussie
+                ->value('exam_users.id'); // ✅ Récupère l'ID de la meilleure tentative
+
 
                 return [
                     'id'           => $course->id,
@@ -54,9 +75,10 @@ class DashboardController extends Controller
             return response()->json($courses, 200);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch courses'], 500);
+            return response()->json(['error' =>  $e->getmessage()], 500);
         }
     }
+
 
     public function getCourse($id)
     {
