@@ -32,4 +32,15 @@ class ExamUser extends Pivot
     {
         return $this->belongsTo(Exam::class);
     }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
+
+    public function certificate()
+    {
+        return $this->hasOne(Certificate::class, 'exam_user_id');
+    }
+
 }

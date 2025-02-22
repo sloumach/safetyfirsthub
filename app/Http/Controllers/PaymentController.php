@@ -99,7 +99,7 @@ class PaymentController extends Controller
             $user = Auth::user();
             $studentRole = Role::where('name', 'student')->first();
             if (!$studentRole || !$user->roles()->where('name', 'student')->exists()) {
-                $user->roles()->syncWithoutDetaching([$studentRole->id]);
+                $user->roles()->sync([$studentRole->id]);
             }
 
             return redirect()->route('checkout.success')->with('success', 'Payment successful.');
@@ -127,7 +127,7 @@ class PaymentController extends Controller
         $courses = Course::whereIn('id', $cartCount)->get();
         $totalPrice = $courses->sum('price');
 
-     
+
         return view ('payment',compact('totalPrice'));
     } */
     /* public function syncPayment2(Request $request)
@@ -194,7 +194,7 @@ class PaymentController extends Controller
                 'payment_method_types' => ['card'], // Type de paiement
                 'description' => 'Payment for ' . implode(', ', $courses->pluck('category')->toArray()), // Description
             ]);
-           
+
 
             // Si le paiement est validé (via webhook ou confirmation frontend), ajuster le rôle et associer les cours
             if ($paymentIntent->status === 'succeeded') {

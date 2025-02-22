@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Exam;
+use App\Models\Order;
 use App\Models\Choice;
 use App\Models\ExamUser;
 use App\Models\Question;
@@ -21,7 +22,7 @@ class UserExamsController extends Controller
     {
         $user = Auth::user();
 
-        // Vérifier si l'utilisateur a regardé la vidéo
+        // Vérifier si l'utilisateur a regardé la vidéo avant de passer l'examen
         $progress = VideoProgress::where('user_id', $user->id)
             ->where('course_id', $course_id)
             ->first();
@@ -35,6 +36,18 @@ class UserExamsController extends Controller
             return response()->json(['error' => 'You do not have access to this course'], 403);
         }
 
+        // Récupérer l'ID du dernier achat pour ce cours
+        $order = Order::where('user_id', $user->id)
+            ->whereHas('course', function ($query) use ($course_id) {
+                $query->where('course_id', $course_id);
+            })
+            ->latest()
+            ->first();
+
+        if (! $order) {
+            return response()->json(['error' => 'No valid purchase found for this course.'], 403);
+        }
+
         // Sélectionner un examen actif pour ce cours
         $exam = Exam::where('course_id', $course_id)
             ->where('is_active', true)
@@ -45,20 +58,20 @@ class UserExamsController extends Controller
             return response()->json(['error' => 'No exams available for this course'], 404);
         }
 
-        // Vérifier combien de fois l'utilisateur a tenté cet examen
+        // Vérifier combien de fois l'utilisateur a tenté cet examen avec le dernier achat
         $attempts = ExamUser::where('user_id', $user->id)
-            ->whereHas('exam', function ($query) use ($course_id) {
-                $query->where('course_id', $course_id);
-            })->count();
+            ->where('order_id', $order->id) // Vérifier seulement les tentatives de CE paiement
+            ->count();
 
         if ($attempts >= 3) {
-            return response()->json(['error' => 'You have reached the maximum number of attempts (3).'], 403);
+            return response()->json(['error' => 'You have reached the maximum number of attempts (3) for this purchase.'], 403);
         }
 
         // Créer une nouvelle session d'examen pour cet utilisateur
         $sessionId = DB::table('exam_users')->insertGetId([
             'user_id'    => $user->id,
             'exam_id'    => $exam->id,
+            'order_id'   => $order->id, // Associe l'examen à l'achat
             'status'     => 'in_progress',
             'started_at' => now(),
             'created_at' => now(),
@@ -74,6 +87,7 @@ class UserExamsController extends Controller
             'passing_score' => $exam->passing_score,
         ]);
     }
+
 
     /**
      * Afficher les questions de l'examen.
@@ -325,7 +339,7 @@ class UserExamsController extends Controller
 
         $segments   = json_decode($progress->watched_segments, true) ?? [];
         $segments[] = $request->current_time;
-        
+
         // Only update is_completed if explicitly set to true via markAsCompleted
         $progress->update([
             'watched_segments' => json_encode($segments),
@@ -333,7 +347,7 @@ class UserExamsController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Progress updated', 
+            'message' => 'Progress updated',
             'is_completed' => $progress->is_completed
         ]);
     }

@@ -4,8 +4,8 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Console\Scheduling\Schedule;
 
-app(Schedule::class)->command('courses:remove-expired')->everyMinute(); // Exécution quotidienne à minuit
-app(Schedule::class)->command('certificates:expire')->everyMinute(); // Exécution quotidienne à minuit
+app(Schedule::class)->command('courses:remove-expired')->daily(); //Exécution quotidienne à minuit
+ //app(Schedule::class)->command('certificates:expire')->everyDay(); Exécution quotidienne à minuit
 
 
 Artisan::command('inspire', function () {
