@@ -98,25 +98,28 @@ class CertificateController extends Controller
     {
         $certificate = Certificate::where('certificate_url', $certificate_url)
             ->where('available', true)
-            ->with(['examUser.user', 'examUser.exam.course']) // Eager load relationships
+            ->with(['examUser.user', 'examUser.exam.course'])
             ->firstOrFail();
 
-        // Vérifier si l'accès est autorisé (QR Code uniquement)
         if (!$request->session()->has("certificate_access_{$certificate_url}")) {
             abort(404);
         }
 
-        // Prepare data for the view
+        // Generate QR code
+        $qrCode = base64_encode(QrCode::format('svg')
+            ->size(200)
+            ->generate(route('certificates.scan', $certificate->certificate_url)));
+
         $data = [
             'certificateNumber' => 'CERT-' . str_pad($certificate->id, 5, '0', STR_PAD_LEFT),
             'firstname' => $certificate->examUser->user->firstname,
             'lastname' => $certificate->examUser->user->lastname,
             'course_name' => $certificate->examUser->exam->course->name,
-            'duration' => $certificate->examUser->exam->duration ?? '2', // Default to 2 if not set
-            'date' => $certificate->created_at->format('d/m/Y')
+            'duration' => $certificate->examUser->exam->duration ?? '2',
+            'date' => $certificate->created_at->format('d/m/Y'),
+            'qrCode' => $qrCode // Add QR code to the data
         ];
 
-        // ❌ Supprimer la session après affichage (Empêche réutilisation)
         $request->session()->forget("certificate_access_{$certificate_url}");
 
         return view('certificates.show', $data);
