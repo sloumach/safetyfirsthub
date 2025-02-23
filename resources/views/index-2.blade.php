@@ -39,7 +39,7 @@
     </head>
     <body>
 		<!-- Start Preloader Area -->
-		
+
 		<!-- End Preloader Area -->
 
 		<!-- Start Newsletter Modal-->
@@ -102,8 +102,8 @@
 						<div class="row align-items-center">
 							<div class="col-lg-7">
 								<div class="banner-content">
-									<h1 class="wow animate__animated animate__fadeInLeft" data-wow-delay="0.3s">Expert IT training when and where you need it</h1>
-									<p class="wow animate__animated animate__fadeInLeft" data-wow-delay="0.6s">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas architecto doloremque fugiat! Tempora, molestias minus mollitia optio laboriosam nulla, sed, numquam ad tempore</p>
+									<h1 class="wow animate__animated animate__fadeInLeft" data-wow-delay="0.3s">Advance Your Skills with Expert-Led Online Learning</h1>
+									<p class="wow animate__animated animate__fadeInLeft" data-wow-delay="0.6s">Access high-quality courses designed to enhance your expertise and drive professional growth. Learn at your own pace, master new competencies, and stay ahead in an ever-evolving landscape.</p>
 
 									<a href="{{ route('courses') }}" class="default-btn wow fadeInLeft" data-wow-delay="0.9s">
 										View Courses
@@ -153,7 +153,7 @@
 			<div class="container">
 				<div class="section-title">
 					<span>Our Affordable</span>
-					<h2>Your benefit with Eduon</h2>
+					<h2>Your benefit with Safetyfirsthub</h2>
 					<img src="assets/img/section-title-shape.png" alt="Image">
 				</div>
 
@@ -198,240 +198,57 @@
 		<section class="courses-two-area f5f6fa-bg-color ptb-100">
 			<div class="container">
 				<div class="section-title">
-					<span>Popular Courses</span>
-					<h2>Popular online courses</h2>
+					<span>Courses</span>
+					<h2>Online courses</h2>
 					<img src="assets/img/section-title-shape.png" alt="Image">
 				</div>
 
 				<div class="courses-slider-two owl-theme owl-carousel">
                     <!-- ici on parcoure les courses -->
-					<div class="single-course">
-						<a href="single-course.html">
-							<img src="assets/img/course-img/course-img-1.jpg" alt="Image">
-						</a>
+                    @foreach ($courses as $course )
+                    <div class="single-course">
+                        <a href="single-course.html">
+                            <img src="{{ asset('storage/' . $course->cover) }}" alt="Image">
+                        </a>
 
-						<div class="course-content">
-							<span class="price">$35</span>
-							<span class="tag">Education</span>
+                        <div class="course-content">
+                            <span class="price">${{ round($course->price) }}</span>
+                            <span class="tag">{{ $course->category }}</span>
 
-							<a href="single-course.html">
-								<h3>Programming foundations: real-world examples</h3>
-							</a>
+                            <a href="single-course.html">
+                                <h3>{{ $course->name }}</h3>
+                            </a>
 
-							<ul class="rating">
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-							</ul>
+                            <ul class="rating">
+                                <li>
+                                    <i class="bx bxs-star"></i>
+                                </li>
+                                <li>
+                                    <i class="bx bxs-star"></i>
+                                </li>
+                                <li>
+                                    <i class="bx bxs-star"></i>
+                                </li>
+                                <li>
+                                    <i class="bx bxs-star"></i>
+                                </li>
+                                <li>
+                                    <i class="bx bxs-star"></i>
+                                </li>
+                            </ul>
 
-							<ul class="lessons">
-								<li>0 Lessons</li>
-								<li class="float">44 Students</li>
-							</ul>
-						</div>
-					</div>
+                            <ul class="lessons">
+                                <li>{{ $course->total_videos }} Lessons</li>
+                                <li class="float">{{ $course->students }} Students</li>
+                            </ul>
+                        </div>
+                    </div>
+                    @endforeach
 
-					<div class="single-course">
-						<a href="single-course.html">
-							<img src="assets/img/course-img/course-img-2.jpg" alt="Image">
-						</a>
 
-						<div class="course-content">
-							<span class="price">$39</span>
-							<span class="tag">School</span>
 
-							<a href="single-course.html">
-								<h3>Teaching assistant certificate in learning in schools</h3>
-							</a>
 
-							<ul class="rating">
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-							</ul>
 
-							<ul class="lessons">
-								<li>0 Lessons</li>
-								<li class="float">44 Students</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="single-course">
-						<a href="single-course.html">
-							<img src="assets/img/course-img/course-img-3.jpg" alt="Image">
-						</a>
-
-						<div class="course-content">
-							<span class="price">$29</span>
-							<span class="tag">Language</span>
-
-							<a href="single-course.html">
-								<h3>English: spelling, punctuation and grammar</h3>
-							</a>
-
-							<ul class="rating">
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-							</ul>
-
-							<ul class="lessons">
-								<li>0 Lessons</li>
-								<li class="float">39 Students</li>
-							</ul>
-						</div>
-					</div>
-
-					{{-- <div class="single-course">
-						<a href="single-course.html">
-							<img src="assets/img/course-img/course-img-4.jpg" alt="Image">
-						</a>
-
-						<div class="course-content">
-							<span class="price">$49</span>
-							<span class="tag">Teaching</span>
-
-							<a href="single-course.html">
-								<h3>Introduction to cybersecurity for teachers</h3>
-							</a>
-
-							<ul class="rating">
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-							</ul>
-
-							<ul class="lessons">
-								<li>0 Lessons</li>
-								<li class="float">50 Students</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="single-course">
-						<a href="single-course.html">
-							<img src="assets/img/course-img/course-img-5.jpg" alt="Image">
-						</a>
-
-						<div class="course-content">
-							<span class="price">$39</span>
-							<span class="tag">Teaching</span>
-
-							<a href="single-course.html">
-								<h3>Learning Implementing Formative Assessment</h3>
-							</a>
-
-							<ul class="rating">
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-							</ul>
-
-							<ul class="lessons">
-								<li>0 Lessons</li>
-								<li class="float">44 Students</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="single-course">
-						<a href="single-course.html">
-							<img src="assets/img/course-img/course-img-1.jpg" alt="Image">
-						</a>
-
-						<div class="course-content">
-							<span class="price">$59</span>
-							<span class="tag">Education</span>
-
-							<a href="single-course.html">
-								<h3>Teaching languages in primary schools: putting research</h3>
-							</a>
-
-							<ul class="rating">
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-								<li>
-									<i class="bx bxs-star"></i>
-								</li>
-							</ul>
-
-							<ul class="lessons">
-								<li>0 Lessons</li>
-								<li class="float">44 Students</li>
-							</ul>
-						</div>
-					</div> --}}
 				</div>
 			</div>
 		</section>
@@ -585,24 +402,32 @@
 						<div class="col-lg-4 col-sm-6">
 							<div class="single-feature">
 								<i class="flaticon-online"></i>
-								<h3>Go at your own course</h3>
-								<p>Enjoy lifetime access to courses on Eduon website</p>
+								<h3>Learn at Your Own Pace</h3>
+								<p>Gain lifetime access to expert-led courses and advance your skills whenever and wherever you want.
+
+                                </p>
 							</div>
 						</div>
 
 						<div class="col-lg-4 col-sm-6">
 							<div class="single-feature">
 								<i class="flaticon-expert"></i>
-								<h3>Learn from our experts</h3>
-								<p>Enjoy lifetime access to courses on Eduon website</p>
+								<h3>Flexible Learning, Unlimited Possibilities
+                                </h3>
+								<p>Enjoy lifetime access to a wide range of courses and take control of your learning journey.
+
+                                </p>
 							</div>
 						</div>
 
 						<div class="col-lg-4 col-sm-6 offset-sm-3 offset-lg-0">
 							<div class="single-feature">
 								<i class="flaticon-online-class"></i>
-								<h3>Find video courses</h3>
-								<p>Enjoy lifetime access to courses on Eduon website</p>
+								<h3>Empower Your Growth with Lifetime Learning
+                                </h3>
+								<p>Access high-quality courses anytime and build expertise at your own convenience.
+
+                                </p>
 							</div>
 						</div>
 					</div>
@@ -626,7 +451,7 @@
 						<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
 
 						<div class="feedback-title">
-							<img src="assets/img/feedback-img/feedback-img-1.jpg" alt="Image">
+							{{-- <img src="assets/img/feedback-img/feedback-img-1.jpg" alt="Image"> --}}
 							<h3>Jessica Molony</h3>
 							<span>Designer</span>
 						</div>
@@ -1117,8 +942,8 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
-		
-		<script src="assets/js/popup.js"></script> 
-		
+
+		<script src="assets/js/popup.js"></script>
+
     </body>
 </html>
