@@ -73,7 +73,6 @@ body {
 .certificate-details {
     display: flex;
     flex-direction: column;
-    gap: 18px;
     margin: 35px 0;
     padding-left: 259px;
     text-align: left;
@@ -110,9 +109,183 @@ body {
     font-style: italic;
 }
 
+/* Tablet and smaller desktops */
+@media screen and (max-width: 1024px) {
+    .certificate-frame {
+        width: 90%;
+        margin: 0 auto;
+    }
+    
+    .title {
+        font-size: 24px;
+    }
+    
+    .candidate-name {
+        font-size: 45px;
+    }
+    
+    .program-name {
+        font-size: 26px;
+    }
+}
+
+/* iPad and similar tablets */
+@media screen and (max-width: 768px) {
+    .certificate-preview {
+        padding: 10px;
+    }
+    
+    .certificate-frame {
+        width: 95%;
+    }
+    
+    .certificate-details {
+        padding-left: 20%;
+    }
+    
+    .title {
+        font-size: 22px;
+    }
+    
+    .candidate-name {
+        font-size: 40px;
+    }
+    
+    .certifies {
+        font-size: 17px;
+    }
+    
+    .completion-text {
+        font-size: 20px;
+    }
+    
+    .program-name {
+        font-size: 24px;
+    }
+}
+
+/* Mobile phones */
+@media screen and (max-width: 480px) {
+    .certificate-preview {
+        padding: 5px;
+    }
+    
+    .certificate-frame {
+        width: 81%;
+        background-size: 100% 51%;
+    
+    }
+    
+    .certificate-details {
+        padding-left: 28%;
+        position: relative;
+        top: -45px;
+        margin: 51px 0;
+        gap: 5px;
+
+    }
+    
+    .title {
+        font-size: 9px;
+        position: relative;
+        top: 19px;
+    }
+    
+    .candidate-name {
+        font-size: 16px;
+        position: relative;
+        top: -7px;
+    }
+    .candidate-name::after {
+        bottom: 1px;
+    }
+    
+    .certifies {
+        font-size: 8px;
+        position: relative;
+        top: 16px;
+    }
+    
+    .completion-text {
+        font-size: 10px;
+        position: relative;
+        top: -15px;
+    }
+    
+    .program-name {
+        font-size: 14px;
+        position: relative;
+        top: -21px;
+    }
+    
+    .detail-item {
+        font-size: 8px;
+        position: relative;
+        top: -21px;
+    }
+    
+    .detail-icon {
+        width: 16px; /* Smaller icon */
+        height: 16px;
+    }
+    .certificate-content {
+        padding-top: 120px;
+    }
+    .certificate-number {
+        position: absolute;
+        top: 35%;
+        right: 39px;
+        color: #333;
+        font-size: 7px;
+        font-family: 'Times New Roman', serif;
+        font-style: italic;
+    }
+}
+
+/* Small mobile phones */
+@media screen and (max-width: 320px) {
+    .certificate-frame {
+        width: 100%;
+    }
+    
+    .certificate-details {
+        padding-left: 10%;
+    }
+    
+    .title {
+        font-size: 18px;
+    }
+    
+    .candidate-name {
+        font-size: 30px;
+    }
+    
+    .certifies {
+        font-size: 14px;
+    }
+    
+    .completion-text {
+        font-size: 16px;
+    }
+    
+    .program-name {
+        font-size: 20px;
+    }
+    
+    .detail-item {
+        font-size: 14px;
+    }
+}
+
+/* Print styles */
 @media print {
     .certificate-frame {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+    }
+    
+    @page {
+        size: landscape;
+        margin: 0;
     }
 }
