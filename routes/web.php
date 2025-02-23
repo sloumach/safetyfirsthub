@@ -23,26 +23,23 @@ use App\Http\Controllers\ContactController;
 require __DIR__.'/auth.php';
 
 Route::controller(HomeController::class)->group(function () {
-
     Route::get('/', 'home')->name('home');
     Route::get('/policy', 'policy')->name('policy');
     Route::get('/terms', 'terms')->name('terms');
     Route::get('/faq', 'faq')->name('faq');
     Route::get('/contact', 'contact')->name('contact');
-
-
-
+    Route::get('/about', 'about')->name('about');
 });
-Route::post('/contact/submit', [ContactController::class, 'submitContactForm'])->name('contact.submit');
-Route::get('/admin/inbox', [ContactController::class, 'index'])->name('admin.contacts.index');
 
-Route::delete('/admin/contacts/{id}', [ContactController::class, 'destroy'])->name('admin.contacts.destroy');
+Route::controller(ContactController::class)->group(function () {
+    Route::post('/contact/submit', 'submitContactForm')->name('contact.submit');
+    Route::get('/admin/inbox', 'index')->name('admin.contacts.index');
+    Route::delete('/admin/contacts/{id}', 'destroy')->name('admin.contacts.destroy');
+});
 
 Route::controller(CourseController::class)->group(function () {
-
     Route::get('/singlecourse/{id}', 'singlecourse')->name('singlecourse');
     Route::get('/courses', 'index')->name('courses');
-
 });
 
 Route::group([ 'middleware' => ['auth','verified']], function () {
@@ -76,37 +73,41 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
 });
 
 Route::group(['middleware' => ['auth', 'verified', 'role:student']], function () {
-    //dashboard routes
-    Route::get('/dashboard/{any?}', [DashboardController::class, 'index'])
-    ->where('any', '.*')
-    ->name('dashboard');
-    //api routes
-    Route::get('/api/courses', [DashboardController::class, 'getCourses'])->name('api.courses');
-    Route::get('/api/course/{id}', [DashboardController::class, 'getCourse'])->name('api.course');
-    Route::get('/api/courses/{id}', [DashboardController::class, 'streamVideo'])->name('api.course.show');
-    Route::get('/storage/private-cover/{filename}', [DashboardController::class, 'serveCover'])->name('cover.access');
+    // Dashboard route
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/dashboard/{any?}', 'index')->where('any', '.*')->name('dashboard');
+        // API routes under '/api' prefix
+        Route::prefix('api')->group(function () {
+            Route::get('/courses', 'getCourses')->name('api.courses');
+            Route::get('/course/{id}', 'getCourse')->whereNumber('id')->name('api.course');
+            Route::get('/courses/{id}', 'streamVideo')->whereNumber('id')->name('api.course.show');
+        });
+        // Secure storage access route
+        Route::get('/storage/private-cover/{filename}', 'serveCover')->name('cover.access');
 
-
-});
-
-Route::middleware(['auth'])->group(function () {
-    //Route::get('/exams/available/{id}', [UserExamsController::class, 'availableExams'])->name('user.exams.available');
-    Route::post('/exams/start/{exam_id}', [UserExamsController::class, 'startExam'])->name('exam.start');
-    Route::get('/exams/{exam_id}', [UserExamsController::class, 'showExam'])->name('user.exams.show');
-    Route::post('/exams/{exam_id}/submit', [UserExamsController::class, 'submitExam'])->name('user.exams.submit');
-    Route::get('/exams/{exam_id}/results', [UserExamsController::class, 'examResults'])->name('user.exams.results');
-    Route::get('/exams/history', [UserExamsController::class, 'userExamHistory'])->name('user.exams.history');
-    Route::get('/exams/{session_id}/question', [UserExamsController::class, 'getNextQuestion'])->name('exam.question');
-    Route::post('/exams/{session_id}/answer', [UserExamsController::class, 'submitAnswer'])->name('exam.answer');
-    Route::post('/exams/{session_id}/complete', [UserExamsController::class, 'markExamAsCompleted'])->name('exam.complete');
-    Route::post('/video/progress/update', [UserExamsController::class, 'updateProgress'])->name('video.progress.update');
-    Route::get('/video/progress/check/{course_id}', [UserExamsController::class, 'checkProgress'])->name('video.progress.check');
-    Route::post('/video/progress/complete', [UserExamsController::class, 'markAsCompleted'])->name('video.progress.complete');
-    Route::post('/video/progress/reset', [UserExamsController::class, 'resetProgress'])->name('video.progress.reset');
+    });
+    Route::controller(UserExamsController::class)->group(function () {
+        Route::prefix('exams')->group(function () {
+            Route::post('/start/{exam_id}', 'startExam')->whereNumber('exam_id')->name('exam.start');
+            Route::get('/{exam_id}', 'showExam')->whereNumber('exam_id')->name('user.exams.show');
+            Route::post('/{exam_id}/submit', 'submitExam')->whereNumber('exam_id')->name('user.exams.submit');
+            Route::get('/{exam_id}/results', 'examResults')->whereNumber('exam_id')->name('user.exams.results');
+            Route::get('/history', 'userExamHistory')->name('user.exams.history');
+            Route::get('/{session_id}/question', 'getNextQuestion')->whereNumber('session_id')->name('exam.question');
+            Route::post('/{session_id}/answer', 'submitAnswer')->whereNumber('session_id')->name('exam.answer');
+            Route::post('/{session_id}/complete', 'markExamAsCompleted')->whereNumber('session_id')->name('exam.complete');
+        });
+        // Routes liées à la progression vidéo
+        Route::prefix('video/progress')->group(function () {
+            Route::post('/update', 'updateProgress')->name('video.progress.update');
+            Route::get('/check/{course_id}', 'checkProgress')->whereNumber('course_id')->name('video.progress.check');
+            Route::post('/complete', 'markAsCompleted')->name('video.progress.complete');
+            Route::post('/reset', 'resetProgress')->name('video.progress.reset');
+        });
+    });
 });
 
 Route::controller(AdminController::class)->group(function () {
-
     Route::get('adminindex', 'index')->name('adminindex');
     Route::get('adminfinanceindex', 'finance')->name('adminfinanceindex');
     Route::get('usersmanagement', 'usersManagement')->name('usersManagement');
@@ -114,74 +115,42 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('addcourse', 'addcourse')->name('addcourse');
     // Route pour mettre à jour un cours
     Route::post('/admin/course/update/{id}', 'updateCourse')->name('update.course');
-
     // Route pour supprimer un cours
     Route::delete('/admin/course/delete/{id}','deleteCourse')->name('delete.course');
 
 });
 
 Route::middleware([])->group(function () {
-    // Gestion des examens
-    Route::get('/admin/exams', [AdminExamsController::class, 'listExams'])->name('admin.exams');
-    Route::get('/admin/exams/create', [AdminExamsController::class, 'createExam'])->name('admin.exams.create');
-    Route::post('/admin/exams/store', [AdminExamsController::class, 'storeExam'])->name('admin.exams.store');
-    Route::get('/admin/exams/{id}/edit', [AdminExamsController::class, 'editExam'])->name('admin.exams.edit');
-    Route::post('/admin/exams/{id}/update', [AdminExamsController::class, 'updateExam'])->name('admin.exams.update');
-    Route::delete('/admin/exams/{id}/delete', [AdminExamsController::class, 'deleteExam'])->name('admin.exams.delete');
-    // Accéder aux questions d'un examen spécifique
-    Route::get('/admin/exams/{exam_id}/questions', [AdminExamsController::class, 'listQuestions'])->name('admin.exams.questions');
-    // Activer/Désactiver un examen
-    Route::put('/admin/exams/{id}/toggle', [AdminExamsController::class, 'toggleExamStatus'])->name('admin.exams.toggle');
-    // Ajouter une nouvelle question
-    Route::post('/admin/exams/{exam_id}/questions/store', [AdminExamsController::class, 'storeQuestion'])->name('admin.exams.questions.store');
-    // Supprimer une question
-    Route::delete('/admin/questions/{id}/delete', [AdminExamsController::class, 'deleteQuestion'])->name('admin.questions.delete');
-    // Afficher la page Ajouter une nouvelle question
-    Route::get('/admin/exams/{exam_id}/questions/create', [AdminExamsController::class, 'createQuestion'])->name('admin.questions.create');
-    // Modifier une question
-    Route::get('/admin/questions/{id}/edit', [AdminExamsController::class, 'editQuestion'])->name('admin.questions.edit');
-    Route::put('/admin/questions/{id}/update', [AdminExamsController::class, 'updateQuestion'])->name('admin.questions.update');
 
-
-
-
-});
-
-
-Route::post('/certificates/generate/{exam_user_id}', [CertificateController::class, 'generateCertificate'])->name('certificates.generate');
-Route::get('/certificates/{certificate_url}/scan', [CertificateController::class, 'scanCertificate'])->name('certificates.scan'); // ✅ Nouvelle route
-Route::get('/certificates/{certificate_url}/view', [CertificateController::class, 'viewCertificate'])->name('certificates.view');
-
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
-
-Route::get('/recover-password', function () {
-    return view('recover-password');
-})->name('password.request');
-
-
-
-/* Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-Route::group(['prefix' => 'user', 'middleware' => ['verified', '2fa.verify', 'role:user|subscriber|admin', 'PreventBackHistory', 'checkNotAuth']], function () {
-    // USER DASHBOARD ROUTES
-    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
-    Route::post('/dashboard/favorite', [UserDashboardController::class, 'favorite']);
-    Route::post('/dashboard/favoritecustom', [UserDashboardController::class, 'favoriteCustom']);
-    // USER TEMPLATE ROUTES
-    Route::controller(TemplateController::class)->group(function () {
-        Route::get('/templates/custom-template/{code}', 'viewCustomTemplate');
-        Route::get('/templates/original-template/{slug}', 'viewOriginalTemplate');
+    Route::prefix('admin/exams')->controller(AdminExamsController::class)->group(function () {
+        // Gestion des examens
+        Route::get('/', 'listExams')->name('admin.exams');
+        Route::get('/create', 'createExam')->name('admin.exams.create');
+        Route::post('/store', 'storeExam')->name('admin.exams.store');
+        Route::get('/{id}/edit', 'editExam')->whereNumber('id')->name('admin.exams.edit');
+        Route::post('/{id}/update', 'updateExam')->whereNumber('id')->name('admin.exams.update');
+        Route::delete('/{id}/delete', 'deleteExam')->whereNumber('id')->name('admin.exams.delete');
+        Route::put('/{id}/toggle', 'toggleExamStatus')->whereNumber('id')->name('admin.exams.toggle');
+        // Gestion des questions d'un examen
+        Route::prefix('{exam_id}/questions')->whereNumber('exam_id')->group(function () {
+            Route::get('/', 'listQuestions')->name('admin.exams.questions');
+            Route::post('/store', 'storeQuestion')->name('admin.exams.questions.store');
+            Route::get('/create', 'createQuestion')->name('admin.questions.create');
+        });
+    });
+    // Gestion individuelle des questions (hors contexte d'examen spécifique)
+    Route::prefix('admin/questions')->controller(AdminExamsController::class)->group(function () {
+        Route::delete('/{id}/delete', 'deleteQuestion')->whereNumber('id')->name('admin.questions.delete');
+        Route::get('/{id}/edit', 'editQuestion')->whereNumber('id')->name('admin.questions.edit');
+        Route::put('/{id}/update', 'updateQuestion')->whereNumber('id')->name('admin.questions.update');
     });
 });
-Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/course-content/{id}', [CourseController::class, 'show'])->name('course.content');
-}); */
+
+Route::prefix('certificates')->controller(CertificateController::class)->group(function () {
+    Route::post('/generate/{exam_user_id}', 'generateCertificate')->whereNumber('exam_user_id')->name('certificates.generate');
+    Route::get('/{certificate_url}/scan', 'scanCertificate')->where('certificate_url', '.*')->name('certificates.scan');
+    Route::get('/{certificate_url}/view', 'viewCertificate')->where('certificate_url', '.*')->name('certificates.view');
+});
 
 
 

@@ -60,11 +60,11 @@ class RegisteredUserController extends Controller
                 'updated_at' => now(),
             ]);
 
-            SendEmailVerificationJob::dispatch($user);
-            //event(new Registered($user));
+            //SendEmailVerificationJob::dispatch($user);
+            event(new Registered($user));
 
             Auth::login($user);
-            
+
             $this->flasher->addSuccess('Registration successful! Welcome to SafetyFirstHub.');
             return redirect(route('shop', absolute: false));
 
