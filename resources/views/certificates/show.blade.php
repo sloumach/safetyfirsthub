@@ -34,6 +34,18 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Add QR code section -->
+                <div class="verification-section">
+                    <div class="qr-placeholder">
+                        <img src="data:image/svg+xml;base64,{{ $qrCode }}" alt="QR Code" class="qr-code-image">
+                        <div class="qr-corner top-left"></div>
+                        <div class="qr-corner top-right"></div>
+                        <div class="qr-corner bottom-left"></div>
+                        <div class="qr-corner bottom-right"></div>
+                    </div>
+                   
+                </div>
             </div>
         </div>
     </div>
