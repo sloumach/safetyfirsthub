@@ -5,19 +5,19 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<!-- Bootstrap Min CSS --> 
+		<!-- Bootstrap Min CSS -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-		<!-- Owl Theme Default Min CSS --> 
+		<!-- Owl Theme Default Min CSS -->
 		<link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
-		<!-- Owl Carousel Min CSS --> 
+		<!-- Owl Carousel Min CSS -->
 		<link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-		<!-- Owl Magnific Popup Min CSS --> 
+		<!-- Owl Magnific Popup Min CSS -->
 		<link rel="stylesheet" href="assets/css/magnific-popup.min.css">
-		<!-- Animate Min CSS --> 
+		<!-- Animate Min CSS -->
 		<link rel="stylesheet" href="assets/css/animate.min.css">
-		<!-- Boxicons Min CSS --> 
-		<link rel="stylesheet" href="assets/css/boxicons.min.css"> 
-		<!-- Flaticon CSS --> 
+		<!-- Boxicons Min CSS -->
+		<link rel="stylesheet" href="assets/css/boxicons.min.css">
+		<!-- Flaticon CSS -->
 		<link rel="stylesheet" href="assets/css/flaticon.css">
 		<!-- Meanmenu Min CSS -->
 		<link rel="stylesheet" href="assets/css/meanmenu.min.css">
@@ -31,7 +31,7 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-		
+
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
@@ -39,9 +39,9 @@
     </head>
     <body>
 		<!-- Start Preloader Area -->
-		
+
 		<!-- End Preloader Area -->
- 
+
 		<!-- Start Navbar Area -->
 	@include('navbar')
 		<!-- End Navbar Area -->
@@ -54,10 +54,10 @@
 					<ul>
 						<li>
 							<a href="{{ route('home') }}">
-								Home 
+								Home
 							</a>
 						</li>
-						
+
 						<li class="active">About</li>
 					</ul>
 				</div>
@@ -72,9 +72,10 @@
 					<div class="col-lg-6">
 						<div class="education-content">
 							<span class="top-title">Education For All</span>
-							<h2>Why create an online course with <span>EDUON</span>?</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida dolor sit amet, consectetur adipiscing elit consectetur.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt dolor sit amet, consectetur adipiscing elit.</p>
+							<h2>Focus on Monetization & Growth with <span>Safetyfirsthub</span></h2>
+                            <p>Monetize your expertise and grow your online presence with SafetyFirstHub. Our platform provides intuitive tools, secure payment integration, and marketing support to help you turn your knowledge into a profitable online course.</p>
+
+                            <p>Reach a wider audience, scale your business, and maximize your earning potential. With seamless course creation and expert guidance, you can focus on delivering high-quality content while we handle the rest.</p>
 
 							<div class="row">
 								<div class="col-lg-6">
@@ -104,7 +105,7 @@
 								</div>
 							</div>
 
-							<a href="courses.html" class="default-btn">
+							<a href="{{ route('courses') }}" class="default-btn">
 								View All Courses
 							</a>
 						</div>
@@ -143,7 +144,7 @@
 			<div class="container">
 				<div class="section-title">
 					<span>Our Affordable</span>
-					<h2>Your benefit with Eduon</h2>
+					<h2>Your benefit with Safetyfirsthub</h2>
 				</div>
 
 				<div class="row">
@@ -221,7 +222,7 @@
 									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
 								</div>
 							</div>
-		
+
 							<div class="col-lg-6 col-sm-6">
 								<div class="single-tutor two">
 									<i class="flaticon-instructor"></i>
@@ -229,7 +230,7 @@
 									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
 								</div>
 							</div>
-		
+
 							<div class="col-lg-6 col-sm-6">
 								<div class="single-tutor three">
 									<i class="flaticon-certificate-1"></i>
@@ -237,7 +238,7 @@
 									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
 								</div>
 							</div>
-		
+
 							<div class="col-lg-6 col-sm-6">
 								<div class="single-tutor four">
 									<i class="flaticon-consulting"></i>
@@ -253,7 +254,7 @@
 		<!-- End Events Area -->
 
 		<!-- Start Feedback Area -->
-		<section class="feedback-area feedback-area-three feedback-area-style ptb-100">
+		{{-- <section class="feedback-area feedback-area-three feedback-area-style ptb-100">
 			<div class="container">
 				<div class="section-title">
 					<span>Feedback</span>
@@ -295,11 +296,11 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> --}}
 		<!-- End Feedback Area -->
 
 		<!-- Start Teachers Area -->
-		<section class="teachers-area-three pt-100 pb-70">
+		{{-- <section class="teachers-area-three pt-100 pb-70">
 			<div class="container">
 				<div class="section-title">
 					<span>Our Teachers</span>
@@ -400,11 +401,11 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> --}}
 		<!-- End Teachers Area -->
 
 		<!-- Start Partner Area -->
-		<div class="partner-area f5f6fa-bg-color ptb-100">
+		{{-- <div class="partner-area f5f6fa-bg-color ptb-100">
 			<div class="container">
 				<div class="partner-wrap owl-theme owl-carousel">
 					<div class="partner-item">
@@ -438,23 +439,23 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> --}}
 		<!-- End Partner Area -->
 
 		<!-- Start Footer Top Area -->
 		@include('footer')
 		<!-- End Footer Bottom Area -->
-		
+
 		<!-- Start Go Top Area -->
 		<div class="go-top">
 			<i class='bx bx-chevrons-up'></i>
 			<i class='bx bx-chevrons-up'></i>
 		</div>
 		<!-- End Go Top Area -->
-		
+
 
         <!-- Jquery Min JS -->
-        <script src="assets/js/jquery.min.js"></script> 
+        <script src="assets/js/jquery.min.js"></script>
         <!-- Bootstrap Bundle Min JS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <!-- Meanmenu Min JS -->
@@ -467,11 +468,11 @@
 		<script src="assets/js/nice-select.min.js"></script>
         <!-- Magnific Popup Min JS -->
 		<script src="assets/js/magnific-popup.min.js"></script>
-		<!-- jarallax Min JS --> 
+		<!-- jarallax Min JS -->
 		<script src="assets/js/jarallax.min.js"></script>
-		<!-- Appear Min JS --> 
+		<!-- Appear Min JS -->
         <script src="assets/js/appear.min.js"></script>
-		<!-- Odometer JS --> 
+		<!-- Odometer JS -->
 		<script src="assets/js/odometer.min.js"></script>
 		<!-- Form Validator Min JS -->
 		<script src="assets/js/form-validator.min.js"></script>
