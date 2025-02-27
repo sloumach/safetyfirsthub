@@ -44,7 +44,7 @@
 		@include('navbar')
 		<!-- End Navbar Area -->
 		<!-- Start Preloader Area -->
-		
+
 		<!-- End Preloader Area -->
 
 
@@ -92,7 +92,7 @@
 
                                             <!-- ici on parcoure le contenu de la cart	-->
                                             @foreach($courses as $course)
-                                                <tr data-id="{{ $course->id }}" 
+                                                <tr data-id="{{ $course->id }}"
                                                     data-remove-url="{{ route('remove.from.cart') }}">
                                                     <td class="product-thumbnail">
                                                         <a href="#">
@@ -126,13 +126,13 @@
 
 								<div class="coupon-cart">
 									<div class="row">
-										{{-- <div class="col-lg-8 col-sm-7">
+										<div class="col-lg-8 col-sm-7">
 											<div class="form-group mb-0">
 												<input type="text" class="form-control" placeholder="Coupon code">
 
 												<a href="#" class="default-btn">Apply coupon</a>
 											</div>
-										</div> --}}
+										</div>
                                         @if(!$courses->isEmpty())
                                             <!-- <div class="col-lg-4 col-sm-5 text-right">
                                                 <a href="#" class="default-btn update">

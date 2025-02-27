@@ -33,6 +33,9 @@ class PaymentService
                 'mode' => 'payment',
                 'success_url' => route('syncPayment') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('checkout.cancel'),
+                'metadata' => [
+                    'course_ids' => implode(',', $courses->pluck('id')->toArray()), // Stocker les IDs des cours
+                ],
             ]);
 
             return $session->url;
@@ -57,9 +60,15 @@ class PaymentService
             }
 
             $user = Auth::user();
-            $cartCourses = session('cart', []);
-            $courses = Course::query()->whereIn('id', $cartCourses)->get();
-            $totalPrice = $courses->sum('price');
+            $courseIds = explode(',', $session->metadata->course_ids);
+            $courses = Course::query()->whereIn('id', $courseIds)->get();
+            $totalPrice = $session->amount_total / 100; // Stripe retourne en centimes, donc division par 100
+            $calculatedTotal = $courses->sum('price');
+            if ($calculatedTotal != $totalPrice) {
+                throw new \Exception("Payment amount mismatch. Expected: $calculatedTotal, Received: $totalPrice");
+            }
+
+
 
             $paymentStatus = ($session->payment_status === 'paid') ? 'completed' : 'failed';
 
@@ -70,28 +79,29 @@ class PaymentService
                 'total_price' => $totalPrice,
                 'status' => $paymentStatus,
             ]);
+            Log::error("payment status: ".$paymentStatus);
+            if ($paymentStatus === 'completed') {
+                foreach ($courses as $course) {
+                    Order::create([
+                        'payment_id' => $payment->id,
+                        'user_id' => $user->id,
+                        'course_id' => $course->id,
+                    ]);
 
-            // Enregistrement des commandes
-            foreach ($courses as $course) {
-                // Créer l'enregistrement de la commande
-                Order::create([
-                    'payment_id' => $payment->id,
-                    'user_id' => $user->id,
-                    'course_id' => $course->id,
-                ]);
+                    $user->courses()->attach($course->id, [
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                    Log::error("saved order!");
+                    event(new CoursePurchased($user, $course));
+                }
 
-                // Associer l'utilisateur au cours acheté
-                $user->courses()->attach($course->id, [
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-
-                // 🔹 Déclencher l'événement pour CHAQUE cours acheté
-                event(new CoursePurchased($user, $course));
+                // Nettoyer le panier après un paiement réussi
+                session()->forget('cart');
+            } else {
+                throw new \Exception("Payment failed. Courses will not be assigned.");
             }
-
-            // Nettoyer le panier après un paiement réussi
-            session()->forget('cart');
+            Log::error("payment done " );
 
             return $paymentStatus;
         } catch (\Exception $e) {
