@@ -83,14 +83,14 @@
                 margin-top: 30px;
                 li {
                     &.follow-us {
-                        color: var(--main-color);
+                        color: #FF8A00;
                         &::before {
-                            background-color: var(--main-color);
+                            background-color: #FF8A00;
                         }
                     }
                     a {
                         i {
-                            color: var(--main-color);
+                            color: #FF8A00;
                         }
                     }
                 }
@@ -1219,14 +1219,14 @@
                 margin-top: 30px;
                 li {
                     &.follow-us {
-                        color: var(--main-color);
+                        color: #FF8A00;
                         &::before {
-                            background-color: var(--main-color);
+                            background-color: #FF8A00;
                         }
                     }
                     a {
                         i {
-                            color: var(--main-color);
+                            color: #FF8A00;
                         }
                     }
                 }
@@ -2276,10 +2276,10 @@
                 li {
                     a {
                         &:hover {
-                            color: #ffb607;
+                            color: #FF8A00;
                         }
                         &.active {
-                            color: #ffb607;
+                            color: #FF8A00;
                         }
                     }
                 }

@@ -6,22 +6,15 @@
                     <h3>Find Us</h3>
 
                     <ul class="address">
-                        <li class="location">
-                            <i class="bx bxs-location-plus"></i>
-                            6890 Blvd, The Bronx, NY 1058 New York, USA
-                        </li>
+                       
 
                         <li>
                             <i class="bx bxs-envelope"></i>
-                            <a href="mailto:hello@eduon.com">hello@eduon.com</a>
-                            <a href="mailto:public@eduon.com">public@eduon.com</a>
+                           
+                            <a href="mailto:Support@safetyfirsthub.com">Support@safetyfirsthub.com</a>
                         </li>
 
-                        <li>
-                            <i class="bx bxs-phone-call"></i>
-                            <a href="tel:+1(514)312-5678">+1 (514) 312-5678</a>
-                            <a href="tel:+1(514)312-6688">+1 (514) 312-6688</a>
-                        </li>
+                       
                     </ul>
                 </div>
             </div>

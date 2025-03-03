@@ -27,6 +27,7 @@
 		<link rel="stylesheet" href="assets/css/odometer.min.css">
 		<!-- Style CSS -->
 		<link rel="stylesheet" href="assets/css/style.css">
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Dark CSS -->
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
@@ -34,8 +35,10 @@
 		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
+		<link rel="stylesheet" href="assets/css/shop.css">
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
     <body>
 
@@ -69,204 +72,84 @@
 
 		<!-- Start Shop Area -->
 		<div class="shop-area ptb-100">
+			<!-- SVG Icons -->
+			<svg class="moving-icon icon-1" viewBox="0 0 24 24" width="24" height="24">
+				<path fill="currentColor" d="M19 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h13c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H6V4h13v16z"/>
+				<path fill="currentColor" d="M8 6h8v2H8zm0 4h8v2H8zm0 4h5v2H8z"/>
+			</svg>
+
+			<svg class="moving-icon icon-2" viewBox="0 0 24 24" width="24" height="24">
+				<path fill="currentColor" d="M12 3L1 9l11 6l11-6z"/>
+				<path fill="currentColor" d="M2 12l10 6l10-6"/>
+			</svg>
+
+			<svg class="moving-icon icon-3" viewBox="0 0 24 24" width="24" height="24">
+				<path fill="currentColor" d="M20.71 5.63l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-3.12 3.12-1.93-1.91-1.41 1.41 1.42 1.42L3 16.25V21h4.75l8.92-8.92 1.42 1.42 1.41-1.41-1.92-1.92 3.12-3.12c.4-.4.4-1.03.01-1.42zM6.92 19H5v-1.92l8.06-8.06 1.92 1.92L6.92 19z"/>
+			</svg>
+
+			<svg class="moving-icon icon-4" viewBox="0 0 24 24" width="24" height="24">
+				<path fill="currentColor" d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/>
+			</svg>
+			
 			<div class="container">
+				<!-- Simple Typewriter Intro -->
+				<div class="shop-intro-simple">
+					<div class="slide-in-text">
+						<span class="word">Discover</span>
+						<span class="word">Your</span>
+						<span class="word">Next</span>
+						<span class="word">Course</span>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-lg-8">
 						<div class="shop-card-wrap">
-							{{-- <div class="showing-result">
-								<div class="row align-items-center">
-									<div class="col-lg-6 col-sm-6">
-										<div class="showing-result-count">
-											<p>Showing 1-8 of 14 results</p>
+							<div class="row" id="shopGrid">
+								@foreach ($products as $product)
+									<div class="col-lg-4 col-sm-6 mt-5 shop-item">
+										<div class="single-shop">
+											<div class="shop-img">
+												<img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
+												<ul>
+													<li>
+														<a href="#" class="add-to-wishlist" data-course-id="{{ $product->id }}">
+															<i class="bx bx-heart"></i>
+														</a>
+													</li>
+												</ul>
+											</div>
+
+											<h3>{{ $product->name }}</h3>
+											<span> <del>$49.00</del> ${{ $product->price }}</span>
+
+											<a href="{{ route('singleproduct', ['id' => $product->id]) }}" class="default-btn">
+												View course
+											</a>
 										</div>
 									</div>
+								@endforeach
+							</div>
 
-									<div class="col-lg-6 col-sm-6">
-										<div class="showing-top-bar-ordering">
-											<select>
-												<option value="1">Default sorting</option>
-												<option value="2">Education</option>
-												<option value="0">Accounting</option>
-												<option value="3">Language</option>
-												<option value="4">Teaching</option>
-												<option value="5">Research</option>
-												<option value="5">Assessment</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div> --}}
-
-							<div class="row">
-                                <!-- ici on parcoure les courses	-->
-                                @foreach ($products as $product)
-                                    <div class="col-lg-4 col-sm-6 mt-5">
-                                        <div class="single-shop">
-                                            <div class="shop-img">
-                                                <img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
-
-                                                <ul>
-                                                    <!-- <li>
-                                                        <a href="#">
-                                                            <a href="#product-view-one{{ $product->id }}" data-bs-toggle="modal">
-                                                                <i class="bx bx-show-alt"></i>
-                                                            </a>
-                                                        </a>
-                                                    </li> -->
-                                                    <li>
-                                                        <a href="#" class="add-to-wishlist" data-course-id="{{ $product->id }}">
-                                                            <i class="bx bx-heart"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-
-                                            <h3>{{ $product->name }}</h3>
-                                            <span> <del>$49.00</del> ${{ $product->price }}</span>
-
-                                            <a href="{{ route('singleproduct', ['id' => $product->id])  }}" class="default-btn">
-                                                View course
-                                            </a>
-                                        </div>
-								    </div>
-
-                                    <div class="modal fade product-view-one" id="product-view-one{{ $product->id }}">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <button type="button" class="close" data-bs-dismiss="modal">
-                                                    <span aria-hidden="true">
-                                                        <i class="bx bx-x"></i>
-                                                    </span>
-                                                </button>
-
-                                                <div class="row align-items-center">
-                                                    <div class="col-lg-6 col-md-6">
-                                                        <div class="product-view-one-image">
-                                                            <div id="big" class="owl-carousel owl-theme">
-
-                                                                <div class="item">
-                                                                <img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
-                                                                </div>
-                                                            </div>
-
-                                                            <div id="thumbs" class="owl-carousel owl-theme">
-                                                                <div class="item">
-                                                                <img src="{{ asset('storage/' . $product->cover) }}" alt="Image">
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-lg-6 col-md-6">
-                                                        <div class="product-content">
-                                                            <h3>
-                                                                <a href="#">transform: scaleY(1);</a>
-                                                            </h3>
-
-                                                            <div class="price">
-                                                                <del>$59.00</del> <span class="new-price">$39.00</span>
-                                                            </div>
-
-                                                            <div class="product-review">
-                                                                <div class="rating">
-                                                                    <i class="bx bxs-star"></i>
-                                                                    <i class="bx bxs-star"></i>
-                                                                    <i class="bx bxs-star"></i>
-                                                                    <i class="bx bxs-star"></i>
-                                                                    <i class="bx bxs-star"></i>
-                                                                </div>
-                                                                <a href="#" class="rating-count">3 reviews</a>
-                                                            </div>
-
-                                                            <ul class="product-info">
-                                                                <li>
-                                                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At magnam ad reprehenderit fuga nam, non odit necessitatibus facilis beatae temporibus</p>
-                                                                </li>
-                                                                <li>
-                                                                    <span>Availability:</span> <a href="#">In stock (7 items)</a>
-                                                                </li>
-                                                                <li>
-                                                                    <span>Product Type:</span> <a href="#">Book</a>
-                                                                </li>
-                                                            </ul>
-
-                                                            <div class="product-add-to-cart">
-                                                                <div class="input-counter">
-                                                                    <span class="minus-btn">
-                                                                        <i class="bx bx-minus"></i>
-                                                                    </span>
-
-                                                                    <input type="text" value="1">
-
-                                                                    <span class="plus-btn">
-                                                                        <i class="bx bx-plus"></i>
-                                                                    </span>
-                                                                </div>
-
-                                                                <button type="submit" class="default-btn">
-                                                                    Add to Cart
-                                                                    <i class="flaticon-right"></i>
-                                                                </button>
-                                                            </div>
-
-                                                            <div class="share-this-product">
-                                                                <h3>Share this product</h3>
-
-                                                                <ul>
-                                                                    <li>
-                                                                        <a href="#">
-                                                                            <i class="bx bxl-facebook"></i>
-                                                                        </a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="#">
-                                                                            <i class="bx bxl-twitter"></i>
-                                                                        </a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="#">
-                                                                            <i class="bx bxl-instagram"></i>
-                                                                        </a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="#">
-                                                                            <i class="bx bxl-linkedin"></i>
-                                                                        </a>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-
-                                <!-- pagination	-->
-								{{-- <div class="col-lg-12 col-md-12">
-									<div class="pagination-area">
-										<!--
-										<a href="#" class="prev page-numbers">
+							<!-- Pagination -->
+							<div class="pagination-container">
+								<ul class="pagination" id="pagination">
+									<li class="page-item">
+										<a class="page-link" href="#" id="prevPage">
 											<i class="bx bx-chevron-left"></i>
 										</a>
-										-->
-										<span class="page-numbers current" aria-current="page">1</span>
-										<a href="#" class="page-numbers">2</a>
-										<a href="#" class="page-numbers">3</a>
-										<a href="#" class="page-numbers">4</a>
-
-										<a href="#" class="next page-numbers">
+									</li>
+									<div id="pageNumbers" class="d-flex"></div>
+									<li class="page-item">
+										<a class="page-link" href="#" id="nextPage">
 											<i class="bx bx-chevron-right"></i>
 										</a>
-									</div>
-								</div> --}}
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>
 
-					<div class="col-lg-4">
+					<!-- <div class="col-lg-4">
 						<div class="widget-sidebar">
 
 
@@ -320,7 +203,7 @@
 
 
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</div>
@@ -372,5 +255,6 @@
 		<script src="assets/js/custom.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="assets/js/shop.js"></script>
+		<script src="assets/js/navbar.js"></script>
     </body>
 </html>

@@ -31,11 +31,13 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
 		<title>SafetyFirstHub</title>
+		<!-- Add this line in the head section -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
     <body>
 		<!-- Start Preloader Area -->
@@ -96,51 +98,37 @@
 
 		<!-- Start Banner Area -->
 		<section class="banner-area-two">
-			<div class="d-table">
-				<div class="d-table-cell">
-					<div class="container-fluid social">
-						<div class="row align-items-center">
-							<div class="col-lg-7">
-								<div class="banner-content">
-									<h1 class="wow animate__animated animate__fadeInLeft" data-wow-delay="0.3s">Advance Your Skills with Expert-Led Online Learning</h1>
-									<p class="wow animate__animated animate__fadeInLeft" data-wow-delay="0.6s">Access high-quality courses designed to enhance your expertise and drive professional growth. Learn at your own pace, master new competencies, and stay ahead in an ever-evolving landscape.</p>
+			<div class="container">
+				<!-- Add the floating icons container -->
+				<div class="floating-icons">
+					<div class="icon icon-1">
+						<i class="fas fa-hard-hat"></i>
+					</div>
+					<div class="icon icon-2">
+						<i class="fas fa-first-aid"></i>
+					</div>
+					<div class="icon icon-3">
+						<i class="fas fa-fire-extinguisher"></i>
+					</div>
+					<div class="icon icon-4">
+						<i class="fas fa-shield-alt"></i>
+					</div>
+				</div>
 
-									<a href="{{ route('courses') }}" class="default-btn wow fadeInLeft" data-wow-delay="0.9s">
-										View Courses
-									</a>
-								</div>
-							</div>
+				<div class="row align-items-center">
+					<div class="col-lg-6">
+						<div class="banner-content">
+							<h1 class="wow fadeInLeft" data-wow-delay="0.3s">Enhance Your Workplace Safety Skills with Expert Online Training</h1>
+							<p class="wow fadeInLeft" data-wow-delay="0.6s">SafetyFirstHub offers professional online certifications covering RF Awareness, Bloodborne Pathogens, Heat Stress, MEWP Training, and more to ensure workplace safety and compliance.</p>
+							<a href="{{ route('courses') }}" class="default-btn wow fadeInLeft" data-wow-delay="0.9s">
+								View Certifications
+							</a>
+						</div>
+					</div>
 
-							<div class="col-lg-5">
-								<div class="banner-img wow animate__animated animate__fadeInRight" data-wow-delay="0.3s">
-									<img src="assets/img/banner-img/banner-img-2.png" alt="Image">
-
-									<div class="banner-shape-1">
-										<img src="assets/img/banner-img/shape-img-1.png" alt="Image">
-									</div>
-									<div class="banner-shape-2">
-										<img src="assets/img/banner-img/shape-img-2.png" alt="Image">
-									</div>
-									<div class="banner-shape-3">
-										<img src="assets/img/banner-img/shape-img-3.png" alt="Image">
-									</div>
-									<div class="banner-shape-4">
-										<img src="assets/img/banner-img/shape-img-4.png" alt="Image">
-									</div>
-									<div class="banner-shape-5 rotated">
-										<img src="assets/img/banner-img/shape-img-5.png" alt="Image">
-									</div>
-									<div class="banner-shape-6">
-										<img src="assets/img/banner-img/shape-img-6.png" alt="Image">
-									</div>
-									<div class="banner-shape-7 rotated">
-										<img src="assets/img/banner-img/shape-img-7.png" alt="Image">
-									</div>
-									<div class="banner-shape-8">
-										<img src="assets/img/banner-img/shape-img-8.png" alt="Image">
-									</div>
-								</div>
-							</div>
+					<div class="col-lg-6">
+						<div class="banner-img wow fadeInRight" data-wow-delay="0.3s">
+							<img src="assets/img/banner-img/banner-img-2.png" alt="Students learning online">
 						</div>
 					</div>
 				</div>
@@ -152,41 +140,49 @@
 		<section class="affordable-area pt-100 pb-70">
 			<div class="container">
 				<div class="section-title">
-					<span>Our Affordable</span>
-					<h2>Your benefit with Safetyfirsthub</h2>
+				<span>Our Affordable</span>	
+				<h2>Why Choose SafetyFirstHub?</h2>
 					<img src="assets/img/section-title-shape.png" alt="Image">
 				</div>
 
 				<div class="row">
 					<div class="col-lg-3 col-sm-6">
 						<div class="single-affordable one">
-							<i class="flaticon-investment"></i>
-
-							<h3>Save time & money</h3>
+							<i class="fas fa-tags size-icon"></i>
+							<div class="affordable-content">
+								<h3>Affordable Pricing</h3>
+								<p class="description">We offer competitive rates with special discounts for bulk orders.</p>
+							</div>
 						</div>
 					</div>
 
 					<div class="col-lg-3 col-sm-6">
 						<div class="single-affordable two">
-							<i class="flaticon-balance"></i>
-
-							<h3>Balance learning with life</h3>
+							<i class="fas fa-laptop-house size-icon"></i>
+							<div class="affordable-content">
+								<h3>Learn at Your Convenience</h3>
+								<p class="description">Access certifications online and study at your own pace, from anywhere with an internet connection.</p>
+							</div>
 						</div>
 					</div>
 
 					<div class="col-lg-3 col-sm-6">
 						<div class="single-affordable three">
-							<i class="flaticon-online-education"></i>
-
-							<h3>Gain valuable knowledge</h3>
+							<i class="fas fa-certificate size-icon"></i>
+							<div class="affordable-content">
+								<h3>Instant Access to Certificates</h3>
+								<p class="description">Download and print your certificate as soon as you complete your course.</p>
+							</div>
 						</div>
 					</div>
 
 					<div class="col-lg-3 col-sm-6">
 						<div class="single-affordable four">
-							<i class="flaticon-route"></i>
-
-							<h3>Finish what you started</h3>
+							<i class="fas fa-tasks size-icon"></i>
+							<div class="affordable-content">
+								<h3>Exam Flexibility</h3>
+								<p class="description">You have three attempts to pass the final exam, with a required minimum score of 70%.</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -196,60 +192,71 @@
 
 		<!-- Start Popular Courses Area -->
 		<section class="courses-two-area f5f6fa-bg-color ptb-100">
-			<div class="container">
+			<div class="container position-relative">
+				<!-- Add floating background icons -->
+				<div class="course-bg-icons">
+					<i class="bx bx-book-open icon-1"></i>
+					<i class="bx bx-certification icon-2"></i>
+					<i class="bx bx-bulb icon-3"></i>
+					<i class="bx bx-line-chart icon-4"></i>
+					<i class="bx bx-calendar-check icon-5"></i>
+					<i class="bx bx-target-lock icon-6"></i>
+				</div>
+
 				<div class="section-title">
-					<span>Courses</span>
-					<h2>Online courses</h2>
+					<span>Certifications</span>
+					<h2>Online Certifications</h2>
 					<img src="assets/img/section-title-shape.png" alt="Image">
 				</div>
 
-				<div class="courses-slider-two owl-theme owl-carousel">
-                    <!-- ici on parcoure les courses -->
-                    @foreach ($courses as $course )
-                    <div class="single-course">
-                        <a href="single-course.html">
-                            <img src="{{ asset('storage/' . $course->cover) }}" alt="Image">
-                        </a>
-
-                        <div class="course-content">
-                            <span class="price">${{ round($course->price) }}</span>
-                            <span class="tag">{{ $course->category }}</span>
-
-                            <a href="single-course.html">
-                                <h3>{{ $course->name }}</h3>
-                            </a>
-
-                            <ul class="rating">
-                                <li>
-                                    <i class="bx bxs-star"></i>
-                                </li>
-                                <li>
-                                    <i class="bx bxs-star"></i>
-                                </li>
-                                <li>
-                                    <i class="bx bxs-star"></i>
-                                </li>
-                                <li>
-                                    <i class="bx bxs-star"></i>
-                                </li>
-                                <li>
-                                    <i class="bx bxs-star"></i>
-                                </li>
-                            </ul>
-
-                            <ul class="lessons">
-                                <li>{{ $course->total_videos }} Lessons</li>
-                                <li class="float">{{ $course->students }} Students</li>
-                            </ul>
-                        </div>
-                    </div>
-                    @endforeach
-
-
-
-
-
+				<!-- Add Category Filter -->
+				<div class="course-filter mb-4">
+					<button class="filter-btn active" data-category="all">All Courses</button>
+					@php
+						$categories = $courses->pluck('category')->unique();
+					@endphp
+					@foreach($categories as $category)
+						<button class="filter-btn" data-category="{{ $category }}">
+							{{ $category }}
+						</button>
+					@endforeach
 				</div>
+
+				@if(count($courses) > 0)
+					<div class="courses-container">
+						<div class="{{ count($courses) > 3 ? 'courses-slider-two owl-theme owl-carousel' : 'row justify-content-center' }}">
+							@foreach ($courses as $course)
+								<div class="{{ count($courses) <= 3 ? 'col-lg-4 col-md-6' : '' }} course-item" data-category="{{ $course->category }}">
+									<div class="single-course wow fadeInUp" data-wow-delay="{{ $loop->index * 0.2 }}s">
+										<div class="course-img" style="height: 200px; position: relative; overflow: hidden;">
+											<img 
+												src="{{ asset('storage/' . $course->cover) }}" 
+												alt="{{ $course->name }}"
+												style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"
+											>
+											<div class="price">${{ round($course->price) }}</div>
+											<span class="tag">{{ $course->category }}</span>
+										</div>
+										<div class="course-content">
+											<h3 style="min-height: 48px;">{{ $course->name }}</h3>
+											<div class="course-footer">
+												<div class="course-info">
+													<i class="bx bx-video-recording"></i> {{ $course->total_videos }} Lessons
+													<i class="bx bx-user ms-2"></i> {{ $course->students }} Students
+												</div>
+												<a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="read-more">Learn More <i class="bx bx-right-arrow-alt"></i></a>
+											</div>
+										</div>
+									</div>
+								</div>
+							@endforeach
+						</div>
+					</div>
+				@else
+					<div class="text-center">
+						<p>No certifications available at the moment.</p>
+					</div>
+				@endif
 			</div>
 		</section>
 		<!-- Start Popular Courses Area -->
@@ -273,7 +280,7 @@
 									<a href="courses.html">
 										<h3>Design</h3>
 									</a>
-									<span>Over 200+ courses</span>
+									<span>Over 200+ certifications</span>
 								</div>
 							</div>
 						</div>
@@ -288,7 +295,7 @@
 									<a href="courses.html">
 										<h3>Development</h3>
 									</a>
-									<span>Over 300 courses</span>
+									<span>Over 300 certifications</span>
 								</div>
 							</div>
 						</div>
@@ -303,7 +310,7 @@
 									<a href="courses.html">
 										<h3>Business</h3>
 									</a>
-									<span>Over 150 courses</span>
+									<span>Over 150 certifications</span>	
 								</div>
 							</div>
 						</div>
@@ -318,7 +325,7 @@
 									<a href="courses.html">
 										<h3>Marketing</h3>
 									</a>
-									<span>Over 200+ courses</span>
+									<span>Over 200+ certifications</span>
 								</div>
 							</div>
 						</div>
@@ -333,7 +340,7 @@
 									<a href="courses.html">
 										<h3>IT & Software</h3>
 									</a>
-									<span>Over 250 courses</span>
+									<span>Over 250 certifications</span>
 								</div>
 							</div>
 						</div>
@@ -348,7 +355,7 @@
 									<a href="courses.html">
 										<h3>Data Science</h3>
 									</a>
-									<span>Over 50 courses</span>
+									<span>Over 50 certifications</span>
 								</div>
 							</div>
 						</div>
@@ -363,7 +370,7 @@
 									<a href="courses.html">
 										<h3>Photography</h3>
 									</a>
-									<span>Over 700 courses</span>
+									<span>Over 700 certifications</span>
 								</div>
 							</div>
 						</div>
@@ -378,7 +385,7 @@
 									<a href="courses.html">
 										<h3>Music</h3>
 									</a>
-									<span>Over 150 courses</span>
+									<span>Over 150 certifications</span>
 								</div>
 							</div>
 						</div>
@@ -395,99 +402,105 @@
 		<!-- End Categories Area -->
 
 		<!-- Start Feature Area -->
-		<section class="feature-area">
+		<section class="feature-area py-5">
 			<div class="container">
-				<div class="feature-wrap">
-					<div class="row m-0">
-						<div class="col-lg-4 col-sm-6">
-							<div class="single-feature">
-								<i class="flaticon-online"></i>
-								<h3>Learn at Your Own Pace</h3>
-								<p>Gain lifetime access to expert-led courses and advance your skills whenever and wherever you want.
+				<div class="row align-items-center">
+					<div class="col-lg-6">
+						<div class="feature-content-wrapper">
+							<div class="feature-card">
+								<div class="feature-icon">
+									<i class="fas fa-clock"></i>
+								</div>
+								<div class="feature-content">
+									<h2>Learn at Your Own Pace</h2>
+									<p>Gain lifetime access to expert-led certifications and advance your skills whenever and wherever you want.</p>
+									<div class="feature-line"></div>
+								</div>
+							</div>
 
-                                </p>
+							<div class="feature-card">
+								<div class="feature-icon">
+									<i class="fas fa-infinity"></i>
+								</div>
+								<div class="feature-content">
+									<h2>Flexible Learning, Unlimited Possibilities</h2>
+									<p>Enjoy lifetime access to a wide range of certifications and take control of your learning journey.</p>
+									<div class="feature-line"></div>
+								</div>
+							</div>
+
+							<div class="feature-card">
+								<div class="feature-icon">
+									<i class="fas fa-chart-line"></i>
+								</div>
+								<div class="feature-content">
+									<h2>Empower Your Growth</h2>
+										<p>Access high-quality certifications anytime and build expertise at your own convenience.</p>
+									<div class="feature-line"></div>
+								</div>
 							</div>
 						</div>
+					</div>
 
-						<div class="col-lg-4 col-sm-6">
-							<div class="single-feature">
-								<i class="flaticon-expert"></i>
-								<h3>Flexible Learning, Unlimited Possibilities
-                                </h3>
-								<p>Enjoy lifetime access to a wide range of courses and take control of your learning journey.
-
-                                </p>
+					<div class="col-lg-6">
+						<div class="feature-img-wrapper position-relative">
+							<div class="feature-img wow fadeInRight" data-wow-delay="0.3s">
+								<img src="assets/img/banner-img/feature-img.png" alt="Feature image" class="img-fluid">
 							</div>
-						</div>
-
-						<div class="col-lg-4 col-sm-6 offset-sm-3 offset-lg-0">
-							<div class="single-feature">
-								<i class="flaticon-online-class"></i>
-								<h3>Empower Your Growth with Lifetime Learning
-                                </h3>
-								<p>Access high-quality courses anytime and build expertise at your own convenience.
-
-                                </p>
-							</div>
+							<!-- Add floating elements for visual interest -->
+							<div class="floating-shape-1"></div>
+							<div class="floating-shape-2"></div>
 						</div>
 					</div>
 				</div>
 			</div>
+
+			
 		</section>
 		<!-- End Feature Area -->
 
-		<!-- Start Feedback Area -->
-		<section class="feedback-area ptb-100">
-			<div class="container">
-				<div class="section-title">
-					<span>Feedback</span>
-					<h2>What students say</h2>
-					<img src="assets/img/section-title-shape.png" alt="Image">
+		<!-- Start Testimonials Area -->
+		<div class="testimonials-section">
+			<!-- Add background elements -->
+			<div class="animated-bg-element element-1"></div>
+			<div class="animated-bg-element element-2"></div>
+			<div class="animated-bg-element element-3"></div>
+			<div class="animated-bg-element element-4"></div>
+			
+			<!-- Add floating squares -->
+			<div class="square square-1"></div>
+			<div class="square square-2"></div>
+
+			<div class="feedback-slider owl-theme owl-carousel">
+				<div class="feedback-item">
+					<div class="quote-mark">"</div>
+					<p class="feedback-text">I've been using this platform for a few months now, and I've learned so much. The certifications are well-structured and the instructors are knowledgeable. I highly recommend it!</p>
+					<div class="feedback-author">
+						<h3>Jessica</h3>
+						<span>Designer</span>
+					</div>
 				</div>
 
-				<div class="feedback-slider owl-theme owl-carousel">
-					<div class="feedback-item">
-						<i class="flaticon-quotation"></i>
-						<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-
-						<div class="feedback-title">
-							{{-- <img src="assets/img/feedback-img/feedback-img-1.jpg" alt="Image"> --}}
-							<h3>Jessica Molony</h3>
-							<span>Designer</span>
-						</div>
+				<div class="feedback-item">
+					<div class="quote-mark">"</div>
+					<p class="feedback-text">I've been using this platform for a while, and it's been a great experience. The certifications are easy to follow, and the instructors really know their stuff. I highly recommend it!</p>
+					<div class="feedback-author">
+						<h3>Juhon</h3>
+						<span>Marketer</span>
 					</div>
+				</div>
 
-					<div class="feedback-item">
-						<i class="flaticon-quotation"></i>
-						<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-
-						<div class="feedback-title">
-							<img src="assets/img/feedback-img/feedback-img-2.jpg" alt="Image">
-							<h3>Juhon Dew</h3>
-							<span>Marketer </span>
-						</div>
-					</div>
-
-					<div class="feedback-item">
-						<i class="flaticon-quotation"></i>
-						<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-
-						<div class="feedback-title">
-							<img src="assets/img/feedback-img/feedback-img-3.jpg" alt="Image">
-							<h3>Kilva Smith</h3>
-							<span>Designer</span>
-						</div>
+				<div class="feedback-item">
+					<div class="quote-mark">"</div>
+					<p class="feedback-text">I've been on this platform for a few months now, and it's been incredibly helpful. The certifications are clear, engaging, and the instructors are experts in their field. I highly recommend giving it a try!</p>
+					<div class="feedback-author">
+						<h3>Kilva</h3>
+						<span>Designer</span>
 					</div>
 				</div>
 			</div>
-			{{-- <div class="feedback-shape-1">
-				<img src="assets/img/feedback-img/feedback-shape-1.png" alt="Image">
-			</div>
-			<div class="feedback-shape-2">
-				<img src="assets/img/feedback-img/feedback-shape-2.png" alt="Image">
-			</div> --}}
-		</section>
-		<!-- End Feedback Area -->
+		</div>
+		<!-- End Testimonials Area -->
 
 		<!-- Start Events Area -->
 		{{-- <section class="event-area-two ptb-100">
@@ -723,68 +736,62 @@
 		<!-- End Teachers Area -->
 
 		<!-- Start Counter Area -->
-		<section class="counter-area f5f6fa-bg-color pt-100 pb-70">
+		<!-- <section class="counter-area pt-100 pb-70">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-3 col-sm-6">
 						<div class="single-counter">
-							<div class="counter-shape shape-1">
-								<img src="assets/img/counter-shape/counter-shape-1.png" alt="Image">
-
-								<h2>
-									<span class="odometer" data-count="100">00</span>
-									<span class="target">%</span>
-								</h2>
+							<div class="counter-icon">
+								<i class="bx bx-book-open"></i>
 							</div>
-
-							<p>Success rate</p>
+							<h2>
+								<span class="odometer" data-count="100">00</span>
+								<span class="target">+</span>
+							</h2>
+							<p>Available Courses</p>
 						</div>
 					</div>
 
 					<div class="col-lg-3 col-sm-6">
 						<div class="single-counter">
-							<div class="counter-shape shape-2">
-								<img src="assets/img/counter-shape/counter-shape-2.png" alt="Image">
-
-								<h2>
-									<span class="odometer" data-count="5253">00</span>
-								</h2>
+							<div class="counter-icon">
+								<i class="bx bx-user-plus"></i>
 							</div>
-
-							<p>Students enrolled</p>
+							<h2>
+								<span class="odometer" data-count="5253">00</span>
+							</h2>
+							<p>Active Students</p>
 						</div>
 					</div>
 
 					<div class="col-lg-3 col-sm-6">
 						<div class="single-counter">
-							<div class="counter-shape shape-3">
-								<img src="assets/img/counter-shape/counter-shape-3.png" alt="Image">
-
-								<h2>
-									<span class="odometer" data-count="325">00</span>
-								</h2>
+							<div class="counter-icon">
+								<i class="bx bx-certification"></i>
 							</div>
-
-							<p>Certified teachers</p>
+							<h2>
+								<span class="odometer" data-count="15000">00</span>
+								<span class="target">+</span>
+							</h2>
+							<p>Certificates Delivered</p>
 						</div>
 					</div>
 
 					<div class="col-lg-3 col-sm-6">
 						<div class="single-counter">
-							<div class="counter-shape shape-4">
-								<img src="assets/img/counter-shape/counter-shape-4.png" alt="Image">
-
-								<h2>
-									<span class="odometer" data-count="565">00</span>
-								</h2>
+							<div class="counter-icon">
+								<i class="bx bx-time-five"></i>
 							</div>
-
-							<p>Complete courses</p>
+							<h2>
+								<span class="odometer" data-count="2000">00</span>
+								<span class="target">+</span>
+							</h2>
+							<p>Hours of Content</p>
 						</div>
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> -->
 		<!-- End Counter Area -->
 
 		<!-- Start News Area -->
@@ -901,7 +908,49 @@
 			</div>
 		</div> --}}
 		<!-- End Partner Area -->
+		<!-- <section class="community-section">
+			<div class="blob-background"></div>
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-lg-6">
+						<div class="community-content">
+							<span class="sub-title">SUPPORT FOR ALL EDUCATORS</span>
+							<h2>Join a <span class="highlight">Collaborative</span> Community</h2>
+							<p class="description">Our unique partnerships and content help districts solve important challenges like:</p>
+							
+							<ul class="benefits-list">
+								<li>Adapting to the changing education landscape</li>
+								<li>Retaining top talent</li>
+								<li>Fostering career exploration</li>
+							</ul>
 
+							<p class="support-text">
+								With connections forged through the Discovery Educator Network (DEN) and 
+								<a href="#" class="link">Courageous Leaders</a>, regular feedback sessions, and embedded Educator 
+								Supports like tested strategies, on-demand <a href="#" class="link">professional learning</a>, and guides, 
+								Discovery Education is here to meet the unique needs of every educator.
+							</p>
+
+							<a href="#" class="explore-btn">
+								Explore the DEN 
+								<svg width="24" height="24" viewBox="0 0 24 24">
+									<path d="M13.1714 12.0007L8.22168 7.05093L9.63589 5.63672L15.9999 12.0007L9.63589 18.3646L8.22168 16.9504L13.1714 12.0007Z"/>
+								</svg>
+							</a>
+						</div>
+					</div>
+					
+					<div class="col-lg-6">
+						<div class="floating-images">
+							<img src="assets/img/community/img1.jpg" alt="Teacher" class="float-img img1">
+							<img src="assets/img/community/img2.jpg" alt="Teacher working" class="float-img img2">
+							<img src="assets/img/community/img3.jpg" alt="Teacher discussion" class="float-img img3">
+							<img src="assets/img/community/img4.jpg" alt="Students" class="float-img img4">
+						</div>
+					</div>
+				</div>
+			</div>
+		</section> -->
 		<!-- Start Footer  Area -->
 		@include('footer')
 		<!-- End Footer  Area -->
@@ -944,6 +993,8 @@
 		<script src="assets/js/custom.js"></script>
 
 		<script src="assets/js/popup.js"></script>
+		<script src="assets/js/navbar.js"></script>
+		<script src="assets/js/course-filter.js"></script>
 
     </body>
 </html>

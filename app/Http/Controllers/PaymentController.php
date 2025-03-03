@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Events\CoursePurchased;
+use Flasher\Prime\FlasherInterface;
 
 class PaymentController extends Controller
 {
@@ -24,7 +25,8 @@ class PaymentController extends Controller
         try {
             $cartCount = session('cart', []);
             if (empty($cartCount)) {
-                return redirect()->back()->with('error', 'Your cart is empty.');
+                flash()->error('Your cart is empty.');
+                return redirect()->back();
             }
 
             $courses = Course::whereIn('id', $cartCount)->get();
@@ -33,22 +35,34 @@ class PaymentController extends Controller
             return view('checkout', compact('subtotal'));
         } catch (\Exception $e) {
             Log::error("Error in checkout: " . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred during checkout.');
+            flash()->error('An error occurred during checkout.');
+            return redirect()->back();
         }
     }
 
     public function charge(Request $request)
     {
         try {
-            // ✅ Validation des données du formulaire
-            $validatedData = $request->validate([
+            // Validation with flash messages for each error
+            $rules = [
                 'country'        => 'required|string|max:255',
                 'street_address' => 'required|string|max:255',
-                'city'           => 'required|string|max:255',
-                'state'          => 'required|string|max:255',
-                'zip'            => 'required|string|max:20',
-                'subtotal'       => 'required|numeric|min:0',
-            ]);
+                'city'          => 'required|string|max:255',
+                'state'         => 'required|string|max:255',
+                'zip'           => 'required|string|max:20',
+                'subtotal'      => 'required|numeric|min:0',
+            ];
+
+            try {
+                $validatedData = $request->validate($rules);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                foreach ($e->errors() as $field => $messages) {
+                    foreach ($messages as $message) {
+                        flash()->error($field . ': ' . $message);
+                    }
+                }
+                return back()->withInput();
+            }
 
             $user = auth()->user();
 
@@ -68,19 +82,22 @@ class PaymentController extends Controller
 
             // ✅ Vérifier que le total payé correspond bien au total des cours sélectionnés
             if ($validatedData['subtotal'] != $totalPrice) {
-                return redirect()->back()->with('error', 'Payment total mismatch. Please refresh the page.');
+                flash()->error('Payment total mismatch. Please refresh the page.');
+                return redirect()->back();
             }
 
             // ✅ Créer la session de paiement
             $checkoutUrl = $this->paymentService->createCheckoutSession($courses, $totalPrice);
             if (!$checkoutUrl) {
-                return redirect()->back()->with('error', 'Failed to initiate payment.');
+                flash()->error('Failed to initiate payment.');
+                return redirect()->back();
             }
 
             return redirect($checkoutUrl);
         } catch (\Exception $e) {
             Log::error("Error in charge: " . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred while processing the payment.');
+            flash()->error('An error occurred while processing the payment.');
+            return redirect()->back();
         }
     }
 
@@ -92,7 +109,8 @@ class PaymentController extends Controller
             $paymentStatus = $this->paymentService->processPayment($sessionId);
 
             if ($paymentStatus === 'failed') {
-                return redirect()->route('checkout.cancel')->with('error', 'Payment failed.');
+                flash()->error('Payment failed.');
+                return redirect()->route('checkout.cancel');
             }
 
             // Assigner le rôle "student" si ce n'est pas déjà fait
@@ -102,10 +120,12 @@ class PaymentController extends Controller
                 $user->roles()->sync([$studentRole->id]);
             }
 
-            return redirect()->route('checkout.success')->with('success', 'Payment successful.');
+            flash()->success('Payment successful.');
+            return redirect()->route('checkout.success');
         } catch (\Exception $e) {
             Log::error("Error in syncPayment: " . $e->getMessage());
-            return redirect()->route('checkout.cancel')->with('error', 'An error occurred while syncing the payment.');
+            flash()->error('An error occurred while syncing the payment.');
+            return redirect()->route('checkout.cancel');
         }
     }
 

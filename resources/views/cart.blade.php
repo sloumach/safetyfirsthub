@@ -32,11 +32,14 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link rel="stylesheet" href="assets/css/cart.css">
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
+		<!-- DataTables CSS -->
+		<link rel="stylesheet" href="adminassets/vendor/datatables/dataTables.bootstrap4.min.css">
     </head>
     <body>
 
@@ -72,67 +75,46 @@
 		<section class="cart-area ptb-100">
 			<div class="container">
 				<div class="row">
-					<div class="col-lg-8 col-md-12">
+					<div class="col-lg-8">
 						<form>
 							<div class="cart-wraps">
 								<div class="cart-table table-responsive">
-									<table class="table table-bordered">
+									<table class="table table-bordered" id="cartTable">
 										<thead>
 											<tr>
-												<th scope="col">Image</th>
-												<th scope="col">Product name</th>
-												<th scope="col">Price</th>
-												<th scope="col">Total</th>
+												<th>IMAGE</th>
+												<th>PRODUCT NAME</th>
+												<th>PRICE</th>
+												<th>ACTIONS</th>
 											</tr>
 										</thead>
 
 										<tbody>
-                                            @if(!$courses->isEmpty())
-
-
-                                            <!-- ici on parcoure le contenu de la cart	-->
-                                            @foreach($courses as $course)
-                                                <tr data-id="{{ $course->id }}"
-                                                    data-remove-url="{{ route('remove.from.cart') }}">
-                                                    <td class="product-thumbnail">
-                                                        <a href="#">
-                                                            <img src="{{ asset('storage/' . $course->cover) }}" alt="Image">
-                                                        </a>
-                                                    </td>
-
-                                                    <td class="product-name">
-                                                        <a href="#">{{ $course->name }}</a>
-                                                    </td>
-
-                                                    <td class="product-price">
-                                                        <span class="unit-amount">${{ $course->price }}</span>
-                                                    </td>
-
-                                                    <td class="product-subtotal">
-                                                        <span class="subtotal-amount">${{ $course->price }}</span>
-                                                        <a href="#" class="remove">
-                                                            <i class="bx bx-x"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-
-
-                                            @endif
-
+											@if(!$courses->isEmpty())
+												@foreach($courses as $course)
+													<tr data-id="{{ $course->id }}" data-remove-url="{{ route('remove.from.cart') }}">
+														<td class="product-thumbnail" data-label="Image">
+															<img src="{{ asset('storage/' . $course->cover) }}" alt="Image">
+														</td>
+														<td class="product-name" data-label="Product Name">
+															{{ $course->name }}
+														</td>
+														<td class="product-price" data-label="Price">
+															${{ $course->price }}
+														</td>
+														<td class="remove-column" data-label="Actions">
+															<button class="remove">×</button>
+														</td>
+													</tr>
+												@endforeach
+											@endif
 										</tbody>
 									</table>
 								</div>
 
 								<div class="coupon-cart">
 									<div class="row">
-										<div class="col-lg-8 col-sm-7">
-											<div class="form-group mb-0">
-												<input type="text" class="form-control" placeholder="Coupon code">
-
-												<a href="#" class="default-btn">Apply coupon</a>
-											</div>
-										</div>
+										
                                         @if(!$courses->isEmpty())
                                             <!-- <div class="col-lg-4 col-sm-5 text-right">
                                                 <a href="#" class="default-btn update">
@@ -148,16 +130,31 @@
 					</div>
 
 					<div class="col-lg-4">
-						<h3 class="cart-checkout-title">Checkout summary</h3>
+						<div class="cart-checkout-title">
+							Checkout summary
+						</div>
 						<div class="cart-totals">
 							<ul>
 								<li>Subtotal <span>${{ $subtotal = $courses->sum('price'); }}</span></li>
 								<li>Total <span>${{ $subtotal = $courses->sum('price'); }}</span></li>
-								<li><b>Payable Total</b> <span><b>${{ $subtotal = $courses->sum('price'); }}</b></span></li>
+								<li>Payable Total <span>${{ $subtotal = $courses->sum('price'); }}</span></li>
 							</ul>
-
+							
+							<!-- Coupon Section -->
+							<div class="coupon-wrapper">
+								<div class="coupon-container">
+									<button type="button" class="coupon-trigger">
+										Have a coupon?
+									</button>
+									<div class="coupon-input-group">
+										<input type="text" class="form-control" placeholder="Coupon code">
+										<button type="button" class="coupon-apply-btn">Apply</button>
+									</div>
+								</div>
+							</div>
+							
 							<a href="{{ route('checkout') }}" class="default-btn two">
-								Buy now
+								Buy Now
 							</a>
 						</div>
 					</div>
@@ -207,7 +204,33 @@
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- DataTables JS -->
+        <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
+        <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#cartTable').DataTable({
+                    pageLength: 4,
+                    lengthMenu: [4, 8, 12],
+                    language: {
+                        lengthMenu: "Show _MENU_ items per page",
+                        info: "Showing _START_ to _END_ of _TOTAL_ items",
+                        infoEmpty: "No items available",
+                        search: "Search:",
+                        paginate: {
+                            first: "First",
+                            last: "Last",
+                            next: "Next",
+                            previous: "Previous"
+                        }
+                    },
+                    columnDefs: [
+                        { orderable: false, targets: [0, 3] } // Disable sorting for image and actions columns
+                    ]
+                });
+            });
+        </script>
     </body>
     <script src="{{ asset('assets/js/cart.js') }}"></script>
-
+    <script src="assets/js/navbar.js"></script>
 </html>

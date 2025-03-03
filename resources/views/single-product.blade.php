@@ -33,10 +33,11 @@
     <link rel="stylesheet" href="{{ asset('assets/css/dark.css') }}">
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     <!-- Title -->
+        <link rel="stylesheet" href="{{ asset('assets/css/single-product.css') }}">
     <title>Safety FirstHUB</title>
 </head>
 
@@ -80,7 +81,7 @@
 
                 <div class="col-lg-6 col-md-12">
                     <div class="product-details-desc">
-                        <h3>{{ $product->name }}</h3>
+                        <h3 style="color: #FF8A00 !important;">{{ $product->name }}</h3>
 
                         <div class="price">
                             <span>Price:</span>
@@ -98,11 +99,11 @@
                             <a href="#" class="rating-count">(5 reviews)</a>
                         </div> --}}
 
-                        <p>{{ $product->description }}</p>
+                        <p style="color: black !important;">{{ $product->description }}</p>
 
                         <ul class="product-summery">
                             {{-- <li>SUK <span>:132</span></li> --}}
-                            <li>Category <span>{{ $product->category }}</span></li>
+                            <li style="color: black !important;">Category <span style="color: #FF8A00 !important;">{{ $product->category }}</span></li>
                             {{-- <li>Tags <span>:Book</span></li> --}}
                             {{-- <li>10 in stock</li> --}}
                         </ul>
@@ -160,140 +161,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-12 col-md-12">
-                    <div class="tab products-details-tab">
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12">
-                                <ul class="tabs">
-                                    <li>
-                                        <a href="#">
-                                            Description
-                                        </a>
-                                    </li>
-                                    {{-- <li>
-                                        <a href="#">
-                                            Reviews
-                                        </a>
-                                    </li> --}}
-                                </ul>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12">
-                                <div class="tab_content">
-                                    <div class="tabs_item">
-                                        <div class="products-details-tab-content">
-                                            <h3 class="mb-2">Description</h3>
-                                            <p>{{ $product->description }}</p>
-                                        </div>
-                                    </div>
-
-                                    {{-- <div class="tabs_item">
-                                        <div class="products-details-tab-content">
-                                            <div class="product-review-form">
-                                                <h3>Customer reviews</h3>
-
-                                                <div class="review-title">
-                                                    <div class="rating">
-                                                        <i class='bx bxs-star'></i>
-                                                        <i class='bx bxs-star'></i>
-                                                        <i class='bx bxs-star'></i>
-                                                        <i class='bx bxs-star'></i>
-                                                        <i class='bx bxs-star'></i>
-                                                    </div>
-                                                    <p>Based on 2 reviews</p>
-                                                </div>
-
-                                                <div class="review-comments">
-                                                    <div class="review-item">
-                                                        <div class="rating">
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                        </div>
-                                                        <h3>Good</h3>
-                                                        <span><strong>Admin</strong> on <strong>July 21,
-                                                                2020</strong></span>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                                                            do eiusmod tempor incididunt ut labore et dolore magna
-                                                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
-                                                        </p>
-
-                                                        <a href="#" class="review-report-link">Reply</a>
-                                                    </div>
-
-                                                    <div class="review-item">
-                                                        <div class="rating">
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                        </div>
-                                                        <h3>Good</h3>
-                                                        <span><strong>Admin</strong> on <strong>July 21,
-                                                                2020</strong></span>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                                                            do eiusmod tempor incididunt ut labore et dolore magna
-                                                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
-                                                        </p>
-
-                                                        <a href="#" class="review-report-link">Reply</a>
-                                                    </div>
-                                                </div>
-
-                                                <div class="review-form">
-                                                    <h3>Write a Review</h3>
-
-                                                    <form>
-                                                        <div class="row">
-                                                            <div class="col-lg-6 col-md-6">
-                                                                <div class="form-group">
-                                                                    <label>Name</label>
-                                                                    <input type="text" id="name"
-                                                                        name="name" class="form-control">
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-lg-6 col-md-6">
-                                                                <div class="form-group">
-                                                                    <label>Email</label>
-                                                                    <input type="email" id="email"
-                                                                        name="email" class="form-control">
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-lg-12 col-md-12">
-                                                                <div class="form-group">
-                                                                    <label>Review title</label>
-                                                                    <input type="text" id="review-title"
-                                                                        name="review-title" class="form-control">
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-lg-12 col-md-12">
-                                                                <div class="form-group">
-                                                                    <label>Body of review (1500)</label>
-                                                                    <textarea name="review-body" id="review-body" cols="30" rows="8" class="form-control"></textarea>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-lg-12 col-md-12">
-                                                                <button type="submit"
-                                                                    class="btn default-btn two">Submit Review</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              
             </div>
         </div>
     </section>
@@ -521,7 +389,7 @@
 
 
     <script src="{{ asset('assets/js/single-product.js') }}"></script>
-
+    <script src="{{ asset('assets/js/navbar.js') }}"></script>
 
 </body>
 

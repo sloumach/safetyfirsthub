@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -38,97 +34,10 @@
     <link rel="stylesheet" href="assets/css/dark.css">
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="assets/css/responsive.css">
-
+    <link rel="stylesheet" href="assets/css/navbar.css">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
-    <style>
-        /* Styles généraux */
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-
-        .success-message {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 100%;
-        }
-
-        .checkmark {
-            color: #28a745;
-            font-size: 50px;
-            font-weight: bold;
-        }
-
-        h1 {
-            color: #333;
-            font-size: 24px;
-            margin-top: 10px;
-        }
-
-        p {
-            color: #666;
-            font-size: 16px;
-            margin: 10px 0;
-        }
-
-        .buttons {
-            margin-top: 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: white;
-            background-color: #007bff;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 5px;
-            transition: background 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-        }
-
-        .btn-secondary:hover {
-            background-color: #545b62;
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .success-message {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 20px;
-            }
-
-            p {
-                font-size: 14px;
-            }
-
-            .btn {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
-        }
-    </style> <!-- // ?? -->
-    <!-- Title -->
+    <link rel="stylesheet" href="assets/css/success.css">
     <title>Safety FirstHUB</title>
 </head>
 
@@ -141,14 +50,34 @@
    
     <!-- End Preloader Area -->
     <div class="container">
-        <div class="success-message">
-            <i class="crossmark">&#10008;</i>
+        <!-- Add animated background elements -->
+        <div class="animated-background">
+            <!-- Generate multiple floating circles and X marks -->
+            @for ($i = 1; $i <= 15; $i++)
+                <div class="floating-circle failed" style="
+                    width: {{ rand(20, 100) }}px;
+                    height: {{ rand(20, 100) }}px;
+                    left: {{ rand(0, 100) }}%;
+                    top: {{ rand(0, 100) }}%;
+                    animation-delay: -{{ rand(0, 8000) }}ms;
+                "></div>
+                
+                <div class="floating-check failed" style="
+                    left: {{ rand(0, 100) }}%;
+                    top: {{ rand(0, 100) }}%;
+                    animation-delay: -{{ rand(0, 10000) }}ms;
+                ">✕</div>
+            @endfor
+        </div>
+
+        <div class="success-message failed">
+            <i class="checkmark failed">✕</i>
             <h1>Payment Failed!</h1>
             <p>Unfortunately, your payment could not be processed.</p>
             <p>Please check your payment details and try again, or contact support for assistance.</p>
 
             <div class="buttons">
-                <a href="{{ route('courses') }}" class="default-btn">Try Again</a>
+                <a href="{{ route('courses') }}" class="default-btn failed">Try Again</a>
             </div>
         </div>
     </div>
@@ -199,7 +128,7 @@
     <!-- Custom JS -->
     <script src="assets/js/custom.js"></script>
     <script src="assets/js/user.js"></script>
-
+    <script src="assets/js/navbar.js"></script>
 </body>
 
 </html>

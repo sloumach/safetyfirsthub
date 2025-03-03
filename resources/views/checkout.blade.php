@@ -31,11 +31,13 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
+		<!-- Add this in the head section -->
+		<link rel="stylesheet" href="{{ asset('assets/css/checkout.css') }}">
     </head>
     <body>
 		<!-- Start Preloader Area -->
@@ -200,5 +202,6 @@
 		<script src="assets/js/custom.js"></script>
 
 		<script src="assets/js/countries.js"></script>
+		<script src="assets/js/navbar.js"></script>
     </body>
 </html>

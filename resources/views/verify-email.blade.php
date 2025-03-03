@@ -18,7 +18,7 @@
 <body>
     <div class="verify-email-container">
         <div class="verify-card">
-            <i class='bx bx-envelope mb-4' style="font-size: 50px; color: var(--main-color);"></i>
+            <i class='bx bx-envelope mb-4' style="font-size: 50px; color: #FF8A00;"></i>
             <h2 class="mb-4">Verify Your Email</h2>
             
             <div class="buttons-container">

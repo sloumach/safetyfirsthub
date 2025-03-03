@@ -540,7 +540,7 @@ body {
 }
 
 .response-radio:checked+.circle {
-    background-color: var(--main-color);
+    background-color: #FF8A00;
 }
 
 .response-radio:checked+.circle::after {
@@ -563,7 +563,7 @@ body {
 
 .btn-success {
     padding: 8px 20px;
-    background-color: var(--main-color) !important;
+    background-color: #FF8A00 !important;
     border: none;
     color: white;
     font-size: 16px;
@@ -571,14 +571,14 @@ body {
 }
 
 .btn-success:hover {
-    background-color: var(--main-color) !important;
+    background-color: #FF8A00 !important;
 }
 
 .timer {
     position: absolute;
     top: 10px;
     right: 30px;
-    background-color: var(--main-color) !important;
+    background-color: #FF8A00 !important;
     color: white;
     border-radius: 50%;
     width: 50px;
@@ -630,7 +630,7 @@ body {
 
 .question-icon {
     font-size: 24px;
-    color: var(--main-color);
+    color: #FF8A00;
 }
 
 .question-text {
@@ -670,7 +670,7 @@ body {
 
 .return-btn {
     padding: 8px 20px;
-    background-color: var(--main-color) !important;
+    background-color: #FF8A00 !important;
     border: none;
     color: white;
     font-size: 16px;

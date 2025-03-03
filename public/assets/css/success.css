@@ -2,83 +2,185 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 89vh;
     text-align: center;
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
     padding: 20px;
+    position: relative;
+    overflow: hidden;
+    max-width: 1542px;
 }
 
 .success-message {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     max-width: 500px;
     width: 100%;
+    position: relative;
+    z-index: 2;
+    backdrop-filter: blur(10px);
 }
 
 .checkmark {
     color: #28a745;
-    font-size: 50px;
+    font-size: 60px;
     font-weight: bold;
+    display: inline-block;
+    border: 4px solid #28a745;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    line-height: 70px;
+    animation: scaleIn 0.5s ease-in-out;
 }
 
 h1 {
     color: #333;
-    font-size: 24px;
-    margin-top: 10px;
+    font-size: 28px;
+    margin-top: 20px;
+    animation: fadeInUp 0.5s ease-in-out 0.3s both;
 }
 
 p {
     color: #666;
     font-size: 16px;
-    margin: 10px 0;
+    margin: 15px 0;
+    animation: fadeInUp 0.5s ease-in-out 0.5s both;
 }
 
 .buttons {
-    margin-top: 20px;
+    margin-top: 30px;
+    animation: fadeInUp 0.5s ease-in-out 0.7s both;
 }
 
-.btn {
+.default-btn {
     display: inline-block;
     padding: 10px 20px;
     font-size: 16px;
     color: white;
-    background-color: #007bff;
+    background-color: #FF8A00;
     text-decoration: none;
     border-radius: 5px;
     margin: 5px;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.btn:hover {
-    background-color: #0056b3;
+.default-btn:hover {
+    background-color: #ffff;
+    transform: translateY(-2px);
 }
 
-.btn-secondary {
-    background-color: #6c757d;
+/* Background Animation Elements */
+.animated-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
 }
 
-.btn-secondary:hover {
-    background-color: #545b62;
+.floating-circle {
+    position: absolute;
+    background: #FF8A00;
+    border-radius: 50%;
+    animation: float 8s infinite;
+}
+
+.floating-check {
+    position: absolute;
+    color: #FF8A00;
+    font-size: 30px;
+    animation: floatCheck 10s infinite;
+}
+
+@keyframes scaleIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(50px, -50px) rotate(90deg); }
+    50% { transform: translate(100px, 0) rotate(180deg); }
+    75% { transform: translate(50px, 50px) rotate(270deg); }
+}
+
+@keyframes floatCheck {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(30px, -30px) rotate(180deg); }
 }
 
 /* Responsive */
 @media (max-width: 600px) {
     .success-message {
-        padding: 20px;
+        padding: 25px;
     }
 
     h1 {
-        font-size: 20px;
+        font-size: 24px;
     }
 
     p {
         font-size: 14px;
     }
 
-    .btn {
+    .default-btn {
         font-size: 14px;
-        padding: 8px 16px;
+        padding: 10px 20px;
+    }
+}
+
+/* Failed state styles */
+.checkmark.failed {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.floating-circle.failed {
+    background: #dc3545;
+    opacity: 0.1;
+}
+
+.floating-check.failed {
+    color: #dc3545;
+    opacity: 0.1;
+}
+
+.default-btn.failed {
+    background-color: #dc3545;
+}
+
+.default-btn.failed:hover {
+    background-color: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.success-message.failed {
+    border: 1px solid rgba(220, 53, 69, 0.1);
+}
+
+/* Animation for the X mark */
+.checkmark.failed {
+    animation: scaleInRotate 0.5s ease-in-out;
+}
+
+@keyframes scaleInRotate {
+    0% { 
+        transform: scale(0) rotate(-180deg); 
+        opacity: 0; 
+    }
+    100% { 
+        transform: scale(1) rotate(0deg); 
+        opacity: 1; 
     }
 }

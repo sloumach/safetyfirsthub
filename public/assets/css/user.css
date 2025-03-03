@@ -94,7 +94,7 @@ h1 {
 
 .form-group input:focus,
 .form-group select:focus {
-    border-color: #007bff;
+    border-color: #FF8A00;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 

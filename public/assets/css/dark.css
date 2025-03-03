@@ -90,7 +90,7 @@ Default CSS
 }
 
 .theme-dark p a:hover {
-  color: #ffb607 !important;
+  color: #FF8A00 !important;
 }
 
 .theme-dark .f5f6fa-bg-color {
@@ -114,7 +114,7 @@ Default CSS
 }
 
 .theme-dark .h1 a:hover, .theme-dark .h2 a:hover, .theme-dark .h3 a:hover, .theme-dark .h4 a:hover, .theme-dark .h5 a:hover, .theme-dark .h6 a:hover, .theme-dark h1 a:hover, .theme-dark h2 a:hover, .theme-dark h3 a:hover, .theme-dark h4 a:hover, .theme-dark h5 a:hover, .theme-dark h6 a:hover {
-  color: #ffb607 !important;
+  color: #FF8A00 !important;
 }
 
 .theme-dark .preloader {
@@ -146,11 +146,11 @@ Default CSS
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item a.active {
-  color: #ffb607 !important;
+  color: #FF8A00 !important;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item:hover a, .theme-dark .main-nav .navbar .navbar-nav .nav-item:focus a, .theme-dark .main-nav .navbar .navbar-nav .nav-item.active a {
-  color: #ffb607 !important;
+  color: #FF8A00 !important;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu {
@@ -163,7 +163,7 @@ Default CSS
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li a.active {
-  color: #ffb607 !important;
+  color: #FF8A00 !important;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li a {
@@ -172,7 +172,7 @@ Default CSS
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li a.active {
-  color: #ffb607 !important;
+  color: #FF8A00 !important;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li a {
@@ -180,63 +180,43 @@ Default CSS
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li a.active {
-  color: #ffb607;
-}
-
-.theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a {
-  color: #ffffff;
-}
-
-.theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a.active {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a {
   color: #ffffff;
 }
 
-.theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a.active {
-  color: #ffb607;
+.theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a.active {
+  color: #FF8A00;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a {
   color: #ffffff;
 }
 
-.theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a.active {
-  color: #ffb607;
-}
-
-.theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a {
-  color: #ffffff;
-}
-
-.theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a.active {
-  color: #ffb607;
+.theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:hover, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a:focus, .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li a.active {
+  color: #FF8A00;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li.active a {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li.active a {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li .dropdown-menu li.active a {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li .dropdown-menu li.active a {
-  color: #ffb607;
-}
-
-.theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li .dropdown-menu li.active a {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .main-nav .navbar .navbar-nav .nav-item .dropdown-menu li.active a {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .main-nav .navbar .others-option .option-item .cart-btn a {
@@ -244,7 +224,7 @@ Default CSS
 }
 
 .theme-dark .main-nav .navbar .others-option .option-item .cart-btn a:hover {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .main-nav .navbar .others-option .option-item .search-btn-box .search-btn {
@@ -252,11 +232,11 @@ Default CSS
 }
 
 .theme-dark .main-nav .navbar .others-option .option-item .search-btn-box .search-btn:hover {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .banner-area-two {
-  background-color: #0e0e0e;
+  background: #0e0e0e;
 }
 
 .theme-dark .banner-area-two .banner-content p {
@@ -264,15 +244,36 @@ Default CSS
 }
 
 .theme-dark .page-title-area::before {
-  background-color: #000000;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1a1a1a !important;
+  opacity: -0.15 !important;
+  z-index: -1;
 }
 
-.theme-dark .page-title-area .page-title-content ul li a {
-  color: #ffffff;
+.theme-dark .page-title-area {
+  position: relative;
+  background-color: transparent !important;
 }
 
-.theme-dark .page-title-area .page-title-content ul li::before {
-  background-color: #ffffff;
+.theme-dark .page-title-content h2 {
+  color: #ffffff !important;
+}
+
+.theme-dark .page-title-content ul li {
+  color: #ffffff !important;
+}
+
+.theme-dark .page-title-content ul li a {
+  color: #FF8A00 !important;
+}
+
+.theme-dark .page-title-content ul li a:hover {
+  color: #ffffff !important;
 }
 
 .theme-dark .education-content ul li {
@@ -301,7 +302,7 @@ Default CSS
 }
 
 .theme-dark .single-course-area .single-course-tab .tabs li.current a {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .single-course-area .curriculum-content ul li {
@@ -357,7 +358,7 @@ Default CSS
 .theme-dark .enroll-wrap .courses-form .form-group .nice-select .option {
   color: #ffffff;
   background-color: #000000;
-  background-color: #ffb607;
+  background-color: #FF8A00;
 }
 
 .theme-dark .single-teachers .teachers-content {
@@ -639,7 +640,7 @@ Default CSS
 }
 
 .theme-dark .product-details-area .products-details-tab .tabs li.current a {
-  color: #ffb607;
+  color: #FF8A00;
 }
 
 .theme-dark .product-details-area .products-details-tab .tab_content .tabs_item .products-details-tab-content .product-review-form .review-comments .review-item .review-report-link {
@@ -685,6 +686,57 @@ Default CSS
   background-color: #0e0e0e;
 }
 
+.theme-dark .single-affordable {
+  background-color: #272626;
+}
+
+.theme-dark .single-affordable .affordable-content h3 {
+  color: #ffffff;
+}
+
+.theme-dark .single-affordable .affordable-content p {
+  color: #ffffff;
+}
+
+.theme-dark .feature-area {
+  background-color: #272626;
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+}
+
+.theme-dark .feature-card {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+}
+
+.theme-dark .feature-content h2,
+.theme-dark .feature-content p {
+  color: #ffffff;
+}
+
+.theme-dark .testimonials-section {
+  background-color: #272626;
+}
+
+.theme-dark .feedback-item {
+  background: rgba(26, 26, 26, 0.9);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.theme-dark .testimonials-section::before,
+.theme-dark .testimonials-section::after {
+  background: #FF8A00;
+  opacity: 0.05;
+}
+
+.theme-dark .animated-bg-element {
+  background: rgba(255, 138, 0, 0.03);
+}
+
+.theme-dark .square {
+  border-color: rgba(255, 138, 0, 0.1);
+}
+
 @media only screen and (max-width: 991px) {
   .theme-dark .mean-container .mean-bar {
     background-color: #292828;
@@ -702,4 +754,301 @@ Default CSS
     background-color: #ffffff;
   }
 }
+
+/* Dark mode styles for courses section */
+.theme-dark .courses-area-style {
+    background-color: #0e0e0e !important;
+}
+
+.theme-dark .courses-welcome {
+    background: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.theme-dark .welcome-content h1,
+.theme-dark .welcome-content p {
+    color: #ffffff !important;
+}
+
+.theme-dark .step {
+    background: #272626 !important;
+    border: 1px solid #333 !important;
+}
+
+.theme-dark .step-number {
+    background: #FF8A00 !important;
+    color: #ffffff !important;
+}
+
+.theme-dark .step p {
+    color: #ffffff !important;
+}
+
+.theme-dark .step-arrow {
+    color: #FF8A00 !important;
+}
+
+.theme-dark .course-item .single-course {
+    background: #272626 !important;
+    border: 1px solid #333 !important;
+}
+
+.theme-dark .course-content {
+    background: #1a1a1a !important;
+}
+
+.theme-dark .course-content h3 {
+    color: #ffffff !important;
+}
+
+.theme-dark .course-content p {
+    color: #cccccc !important;
+}
+
+.theme-dark .lessons li {
+    color: #ffffff !important;
+}
+
+.theme-dark .tag {
+    background: rgba(255, 138, 0, 0.2) !important;
+    color: #FF8A00 !important;
+}
+
+.theme-dark .price {
+    background: #FF8A00 !important;
+    color: #ffffff !important;
+}
+
+/* Hover effects for dark mode */
+.theme-dark .single-course:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.theme-dark .step:hover {
+    background: #333333 !important;
+    border-color: #FF8A00 !important;
+}
+
+.theme-dark .step:hover .step-number {
+    background: #ff7300 !important;
+}
+
+/* Dark mode for Shop Area */
+.theme-dark .shop-area {
+    background: linear-gradient(135deg, #1a1a1a, #0e0e0e) !important;
+}
+
+.theme-dark .single-shop {
+    background: #1f1f1f !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+.theme-dark .single-shop h3 {
+    color: #ffffff !important;
+}
+
+.theme-dark .single-shop span {
+    color: #FF8A00 !important;
+}
+
+.theme-dark .single-shop span del {
+    color: #666666 !important;
+}
+
+/* Dark mode for Single Course Area */
+.theme-dark .single-course-area {
+    background: linear-gradient(135deg, #1a1a1a, #0e0e0e) !important;
+}
+
+.theme-dark .single-course-content {
+    background: rgba(31, 31, 31, 0.9) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.theme-dark .course-content-wrapper h3,
+.theme-dark .tabs_item h3 {
+    color: #ffffff !important;
+}
+
+.theme-dark .tabs li a {
+    color: #999999 !important;
+}
+
+.theme-dark .tabs_item p {
+    color: #cccccc !important;
+}
+
+/* Dark mode for Cart Area */
+.theme-dark .cart-area {
+    background: linear-gradient(120deg, #1a1a1a, #0e0e0e) !important;
+}
+
+.theme-dark .cart-wraps,
+.theme-dark .cart-totals {
+    background: rgba(31, 31, 31, 0.9) !important;
+    border-color: #333333 !important;
+}
+
+.theme-dark .cart-table th {
+    color: #ffffff !important;
+    background: #272727 !important;
+}
+
+.theme-dark .cart-table td {
+    color: #ffffff !important;
+    border-color: #333333 !important;
+}
+
+.theme-dark .cart-checkout-title {
+    color: #ffffff !important;
+}
+
+.theme-dark .cart-totals ul li {
+    color: #cccccc !important;
+    border-color: #333333 !important;
+}
+
+.theme-dark .coupon-trigger {
+    background: #272727 !important;
+    border-color: #FF8A00 !important;
+}
+
+/* Dark mode for Product Details Area */
+.theme-dark .product-details-area {
+    background: linear-gradient(135deg, #1a1a1a, #0e0e0e) !important;
+}
+
+.theme-dark .product-details-desc {
+    color: #ffffff !important;
+}
+
+.theme-dark .product-details-desc h3 {
+    color: #ffffff !important;
+}
+
+.theme-dark .product-summery li {
+    color: #cccccc !important;
+    border-color: #333333 !important;
+}
+
+.theme-dark .product-details-desc p {
+    color: #999999 !important;
+}
+
+/* Dark mode for Contact Area */
+.theme-dark .main-contact-area {
+    background: linear-gradient(-45deg, #1a1a1a, #0e0e0e) !important;
+}
+
+.theme-dark .contact-wrap {
+    background: rgba(31, 31, 31, 0.9) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.theme-dark .section-title h2,
+.theme-dark .section-title p {
+    color: #ffffff !important;
+}
+
+.theme-dark .form-group label {
+    color: #ffffff !important;
+}
+
+.theme-dark .form-control {
+    background: #272727 !important;
+    border-color: #333333 !important;
+    color: #FF8A00 !important;
+}
+
+.theme-dark .form-control:focus {
+    border-color: #FF8A00 !important;
+    box-shadow: 0 0 0 4px rgba(255, 138, 0, 0.1) !important;
+}
+
+/* Dark mode for Exams Dashboard */
+.theme-dark .exams-dashboard {
+    background-color: #0e0e0e !important;
+}
+
+.theme-dark .exams-header h2,
+.theme-dark .exams-header .subtitle {
+    color: #ffffff !important;
+}
+
+.theme-dark .exam-card {
+    background: #272626 !important;
+    border: 1px solid #333 !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.theme-dark .exam-content h3 {
+    color: #ffffff !important;
+}
+
+.theme-dark .exam-content p {
+    color: #cccccc !important;
+}
+
+.theme-dark .exam-info .info-item {
+    color: #cccccc !important;
+}
+
+.theme-dark .exam-badge {
+    background: rgba(255, 138, 0, 0.2) !important;
+    color: #FF8A00 !important;
+}
+
+.theme-dark .exam-button {
+    background: linear-gradient(45deg, #FF8A00, #ff6b6b) !important;
+    color: #ffffff !important;
+}
+
+.theme-dark .certificate-button {
+    background: linear-gradient(45deg, #00b09b, #96c93d) !important;
+}
+
+.theme-dark .modern-pagination .page-btn,
+.theme-dark .modern-pagination .nav-btn {
+  background: #1a1a1a;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.theme-dark .modern-pagination .page-btn:hover:not(.active):not(:disabled),
+.theme-dark .modern-pagination .nav-btn:not(:disabled):hover {
+  background: #272727;
+}
+
+.theme-dark .modern-pagination .page-btn.active {
+  background: #FF8A00;
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 138, 0, 0.2);
+}
+
+.theme-dark .modern-pagination .nav-btn:disabled {
+  background: #222;
+  color: #666;
+  opacity: 0.5;
+}
+
+/* Dark mode for shop intro */
+.theme-dark .shop-intro-simple {
+    background-color: #1a1a1a !important;
+}
+
+.theme-dark .slide-in-text .word {
+    color: #ffffff !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.theme-dark .slide-in-text .word:nth-child(1) {
+    color: #FF8A00 !important; /* Accent color for "Discover" */
+}
+
+.theme-dark .slide-in-text .word:nth-child(4) {
+    color: #FF8A00 !important; /* Accent color for "Course" */
+}
+
 /*# sourceMappingURL=dark.css.map */

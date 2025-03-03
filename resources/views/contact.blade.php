@@ -28,11 +28,13 @@
     <link rel="stylesheet" href="assets/css/odometer.min.css">
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
-
+    <link rel="stylesheet" href="assets/css/navbar.css">
     <!-- Dark CSS -->
     <link rel="stylesheet" href="assets/css/dark.css">
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="assets/css/responsive.css">
+    <!-- Contact CSS -->
+    <link rel="stylesheet" href="assets/css/contact.css">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
@@ -55,7 +57,7 @@
     <div class="page-title-area bg-5">
         <div class="container">
             <div class="page-title-content">
-                <h2>Contact</h2>
+                <h2 style="color:rgb(0, 0, 0) !important;">Contact</h2>
                 <ul>
                     <li>
                         <a href="{{ route('home') }}">
@@ -63,7 +65,7 @@
                         </a>
                     </li>
 
-                    <li class="active">Contact</li>
+                    <li class="active" style="color:rgb(0, 0, 0) !important;">Contact</li>
                 </ul>
             </div>
         </div>
@@ -71,7 +73,7 @@
     <!-- End Page Title Area -->
 
     <!-- Start Contact Info Area -->
-    <section class="contact-info-area pt-100 pb-70">
+    <!-- <section class="contact-info-area pt-100 pb-70">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-sm-6">
@@ -95,13 +97,13 @@
                     <div class="single-contact-info">
                         <i class="flaticon-email"></i>
                         <h3>Email</h3>
-                        <a href="mailto:hello@eduon.com">hello@eduon.com</a>
-                        <a href="mailto:public@eduon.com">public@eduon.com</a>
+                      
+                        <a href="mailto:Support@safetyfirsthub.com">Support@safetyfirsthub.com</a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- End Contact Info Area -->
 
     <!-- Start Contact Area -->
@@ -174,10 +176,10 @@
     <!-- End Contact Area -->
 
     <!-- Start Map Area -->
-    <div class="map-area">
+    <!-- <div class="map-area">
         <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.119763973046!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sbd!4v1595487039539!5m2!1sen!2sbd"></iframe>
-    </div>
+    </div> -->
     <!-- End Map Area -->
 
     <!-- Start Footer Top Area -->
@@ -220,7 +222,7 @@
     <script src="assets/js/ajaxchimp.min.js"></script>
     <!-- Custom JS -->
     <script src="assets/js/custom.js"></script>
-
+    <script src="assets/js/navbar.js"></script>
 </body>
 
 </html>
