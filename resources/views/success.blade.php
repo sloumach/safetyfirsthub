@@ -29,7 +29,7 @@
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/user.css">
-
+    <link rel="stylesheet" href="assets/css/navbar.css">
     <!-- Dark CSS -->
     <link rel="stylesheet" href="assets/css/dark.css">
     <!-- Responsive CSS -->
@@ -51,8 +51,28 @@
    
     <!-- End Preloader Area -->
     <div class="container">
+        <!-- Add animated background elements -->
+        <div class="animated-background">
+            <!-- Generate multiple floating circles and checkmarks -->
+            @for ($i = 1; $i <= 15; $i++)
+                <div class="floating-circle" style="
+                    width: {{ rand(20, 100) }}px;
+                    height: {{ rand(20, 100) }}px;
+                    left: {{ rand(0, 100) }}%;
+                    top: {{ rand(0, 100) }}%;
+                    animation-delay: -{{ rand(0, 8000) }}ms;
+                "></div>
+                
+                <div class="floating-check" style="
+                    left: {{ rand(0, 100) }}%;
+                    top: {{ rand(0, 100) }}%;
+                    animation-delay: -{{ rand(0, 10000) }}ms;
+                ">✓</div>
+            @endfor
+        </div>
+
         <div class="success-message">
-            <i class="checkmark">&#10004;</i>
+            <i class="checkmark">✓</i>
             <h1>Payment Successful!</h1>
             <p>Thank you for your purchase. Your payment has been processed successfully.</p>
             <p>You can now access your user account or return to the homepage.</p>
@@ -102,7 +122,7 @@
     <!-- Custom JS -->
     <script src="assets/js/custom.js"></script>
     <script src="assets/js/user.js"></script>
-
+    <script src="assets/js/navbar.js"></script>
 </body>
 
 </html>

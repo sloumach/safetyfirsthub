@@ -53,7 +53,7 @@ Default Style
 
 :root {
 	--font-family: 'Rubik', sans-serif;
-	--main-color: #ffb607;
+	--main-color: #FF8A00;
 	--body-color: #616161;
 	--heading-color: #111111;
 	--white-color: #ffffff;
@@ -76,7 +76,7 @@ a {
 	color: var(--body-color);
 	&:hover {
         text-decoration: none;
-        color: var(--main-color);
+        color: #FF8A00;
 	}
 	&:focus {
 		text-decoration: none;
@@ -125,7 +125,7 @@ ul {
 }
 .form-control {
     height: 50px;
-    color: var(--main-color);
+    color: #FF8A00;
 	border: 1px solid #ececed;
 	background-color: #f5f6fa;
 	border-radius: 0;
@@ -140,7 +140,7 @@ ul {
 		background-color: transparent;
 		box-shadow: unset;
 		outline: 0;
-		border: 1px solid var(--main-color);
+		border: 1px solid #FF8A00;
 	}
 }
 .form-control:hover, .form-control {
@@ -198,14 +198,14 @@ Default Btn Area Style*/
     line-height: 1;
     transition: var(--transition);
 	text-align: center;
-	background-color: var(--main-color);
+	background-color: #FF8A00;
 	border-radius: var(--border-radius);
-	border: 1px solid var(--main-color);
+	border: 1px solid #FF8A00;
 	margin-bottom: -4px;
 	text-transform: capitalize;
 	&:hover {
-		color: var(--main-color);
-		border-color: var(--main-color) !important;
+		color: #FF8A00;
+		border-color: #FF8A00 !important;
 		background-color: transparent;
 	}
 }
@@ -220,7 +220,7 @@ Section Title Area Style*/
 		font-size: 16px;
 		display: block;
 		margin-bottom: 5px;
-		color: var(--main-color);
+		color: #FF8A00;
 	}
 	h2 {
 		font-size: 36px;
@@ -232,7 +232,7 @@ Section Title Area Style*/
 	}
 	&.white-title {
 		span {
-			color: var(--main-color);
+			color: #FF8A00;
 		}
 		h2 {
 			color: var(--white-color);
@@ -278,7 +278,7 @@ Modal Newsletter Area Style
     		right: 0;
 			z-index: 1;
 			font-size: 20px;
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			color: var(--white-color);
 		}
 	}
@@ -304,7 +304,7 @@ Modal Newsletter Area Style
 				position: absolute;
 				top: 0;
 				right: 0;
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 				color: var(--white-color);
 				height: 50px;
 				padding: 10px 20px;
@@ -404,10 +404,10 @@ Nav Area Style
 							top: 4px;
 						}
 						&:hover {
-							color: var(--main-color);
+							color: #FF8A00;
 						}
 						&.active {
-							color: var(--main-color);
+							color: #FF8A00;
 						}
 					}
 					.dropdown-menu {
@@ -425,7 +425,7 @@ Nav Area Style
 						border: none;
 						border-radius: 0;
 						transition: all 0.2s ease-in-out;
-						border-top: 2px solid var(--main-color);
+						border-top: 2px solid #FF8A00;
 						box-shadow: var(--box-shadow);
 						li {
 							position: relative;
@@ -448,10 +448,10 @@ Nav Area Style
 									font-size: 20px;
 								}
 								&:hover {
-									color: var(--main-color);
+									color: #FF8A00;
 								}
 								&.active {
-									color: var(--main-color);
+									color: #FF8A00;
 								}
 							}
 							.dropdown-menu {
@@ -488,13 +488,13 @@ Nav Area Style
 										font-size: 14px;
 										font-weight: 500;
 										&:hover {
-											color: var(--main-color);
+											color: #FF8A00;
 										}
 										&:focus {
-											color: var(--main-color);
+											color: #FF8A00;
 										}
 										&.active {
-											color: var(--main-color);
+											color: #FF8A00;
 										}
 									}
 								}
@@ -582,7 +582,7 @@ Nav Area Style
 							padding-top: 4px;
 							padding-left: 15px;
 							&:focus {
-								border-color: var(--main-color);
+								border-color: #FF8A00;
 							}
 						}
 						.search-button {
@@ -590,7 +590,7 @@ Nav Area Style
 							right: 0;
 							top: 0;
 							height: 50px;
-							background: var(--main-color);
+							background: #FF8A00;
 							border: none;
 							width: 50px;
 							outline: 0;
@@ -608,7 +608,7 @@ Nav Area Style
 				cursor: pointer;
 				transition: var(--transition);
 				color: var(--white-color);
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 				width: 40px;
 				height: 40px;
 				font-size: 20px;
@@ -623,7 +623,7 @@ Nav Area Style
 				cursor: pointer;
 				display: none;
 				transition: var(--transition);
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 				width: 40px;
 				height: 40px;
 				font-size: 20px;
@@ -659,7 +659,7 @@ Nav Area Style
 					width: 15px;
 					height: 15px;
 					line-height: 15px;
-					background-color: var(--main-color);
+					background-color: #FF8A00;
 					border-radius: 50%;
 					text-align: center;
 					color: var(--white-color);
@@ -667,7 +667,7 @@ Nav Area Style
 				}
 				&:hover {
 					i {
-						color: var(--main-color);
+						color: #FF8A00;
 					}
 				}
 			}
@@ -717,7 +717,7 @@ Nav Area Style
 		&:hover {
 			.inner {
 				.circle {
-					background-color: var(--main-color);
+					background-color: #FF8A00;
 				}
 			}
 		}
@@ -822,7 +822,7 @@ Banner Area Style
 					}
 					&:hover {
 						i {
-							color: var(--main-color);
+							color: #FF8A00;
 						}
 					}
 				}
@@ -947,7 +947,7 @@ Banner Area Style
 		margin-bottom: 0;
 		margin-top: 100px;
 		.courses-title {
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			padding: 25px 30px 20px;
 			span {
 				color: var(--white-color);
@@ -958,7 +958,7 @@ Banner Area Style
 			}
 		}
 		.courses-form {
-			border: 1px solid var(--main-color);
+			border: 1px solid #FF8A00;
 			.form-group {
 				.form-control {
 					background-color: #f8f9fb;
@@ -968,7 +968,7 @@ Banner Area Style
 						color: #616161 !important;
 					}
 					&:focus {
-						border-color: var(--main-color);
+						border-color: #FF8A00;
 					}
 				}
 				.nice-select {
@@ -985,12 +985,12 @@ Banner Area Style
 				}
 			}
 			.default-btn {
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 				color: var(--white-color);
 				&:hover {
 					background-color: var(--white-color) !important;
-					color: var(--main-color) !important;
-					border-color: var(--main-color) !important;
+					color: #FF8A00 !important;
+					border-color: #FF8A00 !important;
 				}
 			}
 		}
@@ -1118,7 +1118,7 @@ Education Area Style
 	margin-top: -5px;
     margin-bottom: -3px;
 	.top-title {
-		color: var(--main-color);
+		color: #FF8A00;
 		font-size: 16px;
 		margin-bottom: 5px;
 		display: block;
@@ -1127,7 +1127,7 @@ Education Area Style
 		font-size: 36px;
 		margin-bottom: 20px;
 		span {
-			color: var(--main-color);
+			color: #FF8A00;
 			text-transform: uppercase;
 		}
 	}
@@ -1152,7 +1152,7 @@ Education Area Style
 				line-height: 20px;
 				text-align: center;
 				color: var(--white-color);
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 				border-radius: 50%;
 			}
 		}
@@ -1214,7 +1214,7 @@ Course Area Style
 		box-shadow: var(--box-shadow);
 		padding: 20px;
 		.price {
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			width: 70px;
 			height: 70px;
 			line-height: 70px;
@@ -1230,7 +1230,7 @@ Course Area Style
 		
 		}
 		.tag {
-			color: var(--main-color);
+			color: #FF8A00;
 			font-size: 15px;
 			display: block;
 			margin-bottom: 5px;
@@ -1242,7 +1242,7 @@ Course Area Style
 			}
 			&:hover {
 				h3 {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 		}
@@ -1252,7 +1252,7 @@ Course Area Style
 			li {
 				display: inline-block;
 				i {
-					color: var(--main-color);
+					color: #FF8A00;
 					font-size: 20px;
 				}
 				span {
@@ -1320,20 +1320,20 @@ Course Area Style
 			}
 			&:hover {
 				span {
-					border-color: var(--main-color);
+					border-color: #FF8A00;
 					&::before {
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 						margin: 3px;
 					}
 				}
 			}
 			&.active {
 				span {
-					border-color: var(--main-color);
+					border-color: #FF8A00;
 					position: relative;
 					&::before {
 						margin: 3px;
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 					}
 				}
 			}
@@ -1385,9 +1385,9 @@ Course Area Style
 		}
 		&:hover {
 			i {
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 				color: var(--white-color);
-				border-color: var(--main-color);
+				border-color: #FF8A00;
 			}
 		}
 	}
@@ -1409,9 +1409,9 @@ Course Area Style
 		}
 		&:hover {
 			i {
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 				color: var(--white-color);
-				border-color: var(--main-color);
+				border-color: #FF8A00;
 			}
 		}
 	}
@@ -1503,7 +1503,7 @@ Enroll Area Style
 }
 .enroll-wrap {
 	text-align: center;
-	background-color: var(--main-color);
+	background-color: #FF8A00;
 	padding: 30px;
 	.courses-form {
 		border: 1px solid var(--white-color);
@@ -1523,7 +1523,7 @@ Enroll Area Style
 		.form-group {
 			margin-bottom: 30px;
 			.form-control {
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 				border-color: #f9d98c;
 				background-color: #f2ad09;
 				color: var(--white-color);
@@ -1623,7 +1623,7 @@ Teachers Area Style
 		padding: 30px;
 		background-color: var(--white-color);
 		ul {
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			line-height: 1;
 			max-width: 180px;
 			margin: auto;
@@ -1777,7 +1777,7 @@ Event Area Style
 				font-size: 14px;
 				margin-right: 10px;
 				i {
-					color: var(--main-color);
+					color: #FF8A00;
 					margin-right: 5px;
 				}
 			}
@@ -1789,14 +1789,14 @@ Event Area Style
 			}
 			&:hover {
 				h3 {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 		}
 		span {
 			font-size: 14px;
 			i {
-				color: var(--main-color);
+				color: #FF8A00;
 				margin-right: 5px;
 				position: relative;
 				top: 1px;
@@ -1892,20 +1892,20 @@ Feedback Area Style
 			}
 			&:hover {
 				span {
-					border-color: var(--main-color);
+					border-color: #FF8A00;
 					&::before {
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 						margin: 3px;
 					}
 				}
 			}
 			&.active {
 				span {
-					border-color: var(--main-color);
+					border-color: #FF8A00;
 					position: relative;
 					&::before {
 						margin: 3px;
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 					}
 				}
 			}
@@ -1954,7 +1954,7 @@ Feedback Area Style
 			margin-left: auto;
 			margin-right: 0;
 			i {
-				color: var(--main-color);
+				color: #FF8A00;
 			}
 			p {
 				color: var(--white-color);
@@ -1964,7 +1964,7 @@ Feedback Area Style
 				color: var(--white-color);
 			}
 			span {
-				color: var(--main-color);
+				color: #FF8A00;
 			}
 		}
 		.owl-theme .owl-nav.disabled+.owl-dots {
@@ -1986,7 +1986,7 @@ Feedback Area Style
 				margin-left: 0;
 				margin-right: auto;
 				i {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 				p {
 					color: var(--body-color);
@@ -1996,7 +1996,7 @@ Feedback Area Style
 					color: var(--heading-color);
 				}
 				span {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 			.owl-theme .owl-nav.disabled+.owl-dots {
@@ -2016,7 +2016,7 @@ Feedback Area Style
 		line-height: 1;
 		margin-bottom: 15px;
 		display: inline-block;
-		color: var(--main-color);
+		color: #FF8A00;
 	}
 	p {
 		font-size: 18px;
@@ -2089,20 +2089,20 @@ Discover Area Style
 			}
 			&:hover {
 				span {
-					border-color: var(--main-color);
+					border-color: #FF8A00;
 					&::before {
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 						margin: 3px;
 					}
 				}
 			}
 			&.active {
 				span {
-					border-color: var(--main-color);
+					border-color: #FF8A00;
 					position: relative;
 					&::before {
 						margin: 3px;
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 					}
 				}
 			}
@@ -2130,7 +2130,7 @@ Discover Area Style
 }
 .discover-content {
 	.top-title {
-		color: var(--main-color);
+		color: #FF8A00;
 		font-size: 16px;
 		margin-bottom: 5px;
 		display: block;
@@ -2166,7 +2166,7 @@ Discover Area Style
 			}
 			&:nth-child(2) {
 				span{
-					background-color: var(--main-color);
+					background-color: #FF8A00;
 				}
 			}
 			&:nth-child(3) {
@@ -2195,7 +2195,7 @@ News Area Style
 		box-shadow: var(--box-shadow);
 		padding: 20px;
 		.tag {
-			color: var(--main-color);
+			color: #FF8A00;
 			font-size: 15px;
 			display: block;
 			margin-bottom: 8px;
@@ -2208,7 +2208,7 @@ News Area Style
 			}
 			&:hover {
 				h3 {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 		}
@@ -2234,7 +2234,7 @@ News Area Style
 	background-color: var(--white-color);
 	padding: 20px;
 	.tag {
-		color: var(--main-color);
+		color: #FF8A00;
 		font-size: 15px;
 		display: block;
 		margin-bottom: 8px;
@@ -2246,7 +2246,7 @@ News Area Style
 		}
 		&:hover {
 			h3 {
-				color: var(--main-color);
+				color: #FF8A00;
 			}
 		}
 	}
@@ -2388,7 +2388,7 @@ Footer Top Area Style
 			color: var(--white-color);
 			i {
 				position: absolute;
-				color: var(--main-color);
+				color: #FF8A00;
 				left: 0;
 				top: 2px;
 			}
@@ -2401,7 +2401,7 @@ Footer Top Area Style
 				color: var(--white-color);
 				display: block;
 				&:hover {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 			&:last-child {
@@ -2409,7 +2409,7 @@ Footer Top Area Style
 			}
 			i {
 				position: absolute;
-				color: var(--main-color);
+				color: #FF8A00;
 				left: 0;
 				top: 2px;
 			}
@@ -2421,7 +2421,7 @@ Footer Top Area Style
 			a {
 				color: var(--white-color);
 				&:hover {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 			&:last-child {
@@ -2444,7 +2444,7 @@ Footer Bottom Area Style
 		p {
 			color: var(--white-color);
 			a {
-				color: var(--main-color);
+				color: #FF8A00;
 			}
 			i {
 				position: relative;
@@ -2527,7 +2527,7 @@ Categories Area Style
 				}
 				&:hover {
 					h3 {
-						color: var(--main-color);
+						color: #FF8A00;
 					}
 				}
 			}
@@ -2546,7 +2546,7 @@ Categories Area Style
 Feature Area Style
 ======================================================*/
 .feature-wrap {
-	background-color: var(--main-color);
+	background-color: #FF8A00;
 	padding: 50px 20px;
 	padding-bottom: 20px;
 }
@@ -2572,7 +2572,7 @@ Feature Area Style
 	}
 	.single-feature {
 		i {
-			border: 1px solid var(--main-color);
+			border: 1px solid #FF8A00;
 			background-color: transparent;
 		}
 	}
@@ -2588,7 +2588,7 @@ Feature Area Style
 		height: 75px;
 		line-height: 75px;
 		background-color: var(--white-color);
-		color: var(--main-color);
+		color: #FF8A00;
 		display: inline-block;
 		border-radius: 50%;
 		text-align: center;
@@ -2636,7 +2636,7 @@ Tutor Area Style
 	margin-bottom: 30px;
 	transition: var(--transition);
 	i {
-		color: var(--main-color);
+		color: #FF8A00;
 		line-height: 1;
 		font-size: 70px;
 		display: inline-block;
@@ -2797,12 +2797,12 @@ Page Title Area Style
 				a {
 					color: var(--heading-color);
 					&:hover {
-						color: var(--main-color);
+						color: #FF8A00;
 					}
 				}
 			}
 			.active {
-				color: var(--main-color);
+				color: #FF8A00;
 			}
 		}
 	}	
@@ -2879,7 +2879,7 @@ Showing Result Area Style
 	.showing-top-bar-ordering {
 		text-align: right;
 		.nice-select {
-			color: var(--main-color);
+			color: #FF8A00;
 			border-radius: 0;
 			border: none;
 			float: unset;
@@ -2905,7 +2905,7 @@ Showing Result Area Style
 					padding-left: 20px;
 					padding-right: 20px;
 					&:hover {
-						background-color: var(--main-color) !important;
+						background-color: #FF8A00 !important;
 						color: var(--white-color);
 					}
 				}
@@ -2927,7 +2927,7 @@ Showing Result Area Style
 			height: 50px;
 			width: 50px;
 			line-height: 50px;
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			color: var(--white-color);
 			font-size: 20px;
 		}
@@ -3089,7 +3089,7 @@ User Area CSS
 		margin-bottom: 0;
 		margin-top: 0;
 		padding: 30px;
-		background-color: var(--main-color);
+		background-color: #FF8A00;
 		text-align: left;
 		max-width: unset;
 		h2 {
@@ -3112,7 +3112,7 @@ User Area CSS
 				.agree-label {
 					font-weight: 600;
 					a {
-						color: var(--main-color);
+						color: #FF8A00;
 					}
 				}
 			}
@@ -3126,7 +3126,7 @@ User Area CSS
 					border: 1px solid var(--heading-color);
 					color: var(--heading-color);
 					&:hover {
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 						color: var(--white-color);
 					}
 				}
@@ -3149,7 +3149,7 @@ User Area CSS
 			a {
 				color: var(--heading-color);
 				&:hover {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 		}
@@ -3230,7 +3230,7 @@ Single Blog Area Style
 			margin-bottom: 25px;
 		}
 		.research {
-			color: var(--main-color);
+			color: #FF8A00;
 			margin-bottom: 5px;
 			display: block;
 		}
@@ -3248,7 +3248,7 @@ Single Blog Area Style
 				border-right: 1px solid var(--body-color);
 				i {
 					margin-right: 5px;
-					color: var(--main-color);
+					color: #FF8A00;
 					position: relative;
 					top: 2px;
 				}
@@ -3269,7 +3269,7 @@ Single Blog Area Style
 				left: 0;
 				width: 2px;
 				height: 100%;
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 			}
 			i {
 				position: absolute;
@@ -3410,7 +3410,7 @@ Single Blog Area Style
 			left: 0;
 			width: 150px;
 			height: 3px;
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 		}
 	}
 	&.search {
@@ -3421,7 +3421,7 @@ Single Blog Area Style
 				width: 50px;
 				height: 50px;
 				line-height: 50px;
-				background-color: var(--main-color);
+				background-color: #FF8A00;
 				top: 0;
 				right: 0;
 				font-size: 20px;
@@ -3520,7 +3520,7 @@ Single Blog Area Style
 						display: inline-block;
 						color: var(--heading-color);
 						&:hover {
-							color: var(--main-color);
+							color: #FF8A00;
 						}
 					}
 				}
@@ -3545,9 +3545,9 @@ Single Blog Area Style
 					padding: 8px 12px;
 					&:hover {
 						transform: translateY(-2px);
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 						color: var(--white-color);
-						border-color: var(--main-color);
+						border-color: #FF8A00;
 					}
 				}
 				&:last-child {
@@ -3590,9 +3590,9 @@ Shop Area Two Style
 					}
 					&:hover {
 						i {
-							background-color: var(--main-color);
+							background-color: #FF8A00;
 							color: var(--white-color);
-							border-color: var(--main-color);
+							border-color: #FF8A00;
 						}
 					}
 				}
@@ -3629,7 +3629,7 @@ Shop Area Two Style
 		border-color: var(--heading-color);
 		color: var(--heading-color);
 		&:hover {
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			color: var(--white-color);
 		}
 	}
@@ -3678,7 +3678,7 @@ Cart Area Style
 						a {
 							color: var(--heading-color);
 							&:hover {
-								color: var(--main-color);
+								color: #FF8A00;
 							}
 						}
 						&.product-subtotal {
@@ -3729,7 +3729,7 @@ Cart Area Style
 									transition: var(--transition);
 									font-size: 20px;
 									&:hover {
-										background-color: var(--main-color);
+										background-color: #FF8A00;
 										color: var(--white-color);
 									}
 								}
@@ -3746,7 +3746,7 @@ Cart Area Style
 									transition: var(--transition);
 									font-size: 20px;
 									&:hover {
-										background-color: var(--main-color);
+										background-color: #FF8A00;
 										color: var(--white-color);
 									}
 								}
@@ -3764,7 +3764,7 @@ Cart Area Style
 			.form-control {
 				border: 1px solid #e1e1e1;
 				&:focus {
-					border-color: var(--main-color);
+					border-color: #FF8A00;
 				}
 			}
 			.default-btn {
@@ -3781,15 +3781,15 @@ Cart Area Style
 				color: var(--heading-color);
 				float: right;
 				&:hover {
-					background-color: var(--main-color);
-					border-color: var(--main-color);
+					background-color: #FF8A00;
+					border-color: #FF8A00;
 					color: var(--white-color);
 				}
 			}
 		}
 	}
 	.cart-checkout-title {
-		background-color: var(--main-color);
+		background-color: #FF8A00;
 		padding: 20px 30px;
 		color: var(--white-color);
 		margin-bottom: 0;
@@ -3876,7 +3876,7 @@ Checkout Area Style
 						padding-left: 20px;
 						padding-right: 20px;
 						&:hover {
-							background-color: var(--main-color) !important;
+							background-color: #FF8A00 !important;
 							color: var(--white-color);
 						}
 					}
@@ -3889,7 +3889,7 @@ Checkout Area Style
 				}
 			}
 			.nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
-				background-color: var(--main-color) !important;
+				background-color: #FF8A00 !important;
 				color: var(--white-color) !important;
 			}
 			textarea {
@@ -3921,7 +3921,7 @@ Checkout Area Style
 		h3 {
 			margin-bottom: 0;
 			font-size: 24px;
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			padding: 20px 30px;
 			color: var(--white-color);
 		}
@@ -3964,7 +3964,7 @@ Checkout Area Style
 		h3 {
 			font-size: 24px;
 			margin-bottom: 0;
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			padding: 20px 30px;
 			color: var(--white-color);
 		}
@@ -3986,10 +3986,10 @@ Checkout Area Style
 				color: var(--heading-color);
 				&.active {
 					&::before {
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 					}
 					&::after {
-						background-color: var(--main-color);
+						background-color: #FF8A00;
 					}
 				}
 				&::before {
@@ -4014,7 +4014,7 @@ Checkout Area Style
 					border-radius: 50%;
 				}
 				&:hover {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 			.accordion-item {
@@ -4030,7 +4030,7 @@ Checkout Area Style
 				a {
 					color: var(--heading-color);
 					&:hover {
-						color: var(--main-color);
+						color: #FF8A00;
 					}
 				}
 			}
@@ -4049,7 +4049,7 @@ Wishlist Area Style
 		margin-top: -11px;
 		color: var(--white-color) !important;
 		&:hover {
-			color: var(--main-color) !important;
+			color: #FF8A00 !important;
 		}
 	}
 	.table-responsive>.table-bordered {
@@ -4101,8 +4101,8 @@ Shop Details Area Style
 				position: relative;
     			top: -5px;
 				&:hover {
-					color: var(--main-color);
-					border-color: var(--main-color);
+					color: #FF8A00;
+					border-color: #FF8A00;
 				}
 			}
 		}
@@ -4147,7 +4147,7 @@ Shop Details Area Style
 					}
 					&:hover {
 						i {
-							color: var(--main-color);
+							color: #FF8A00;
 						}
 					}
 				}
@@ -4180,7 +4180,7 @@ Shop Details Area Style
 					line-height: 34px;
 					transition: 0.5s;
 					&:hover {
-						color: var(--main-color);
+						color: #FF8A00;
 					}
 				}
 				span.minus-btn {
@@ -4249,7 +4249,7 @@ Shop Details Area Style
 					font-size: 16px;
 					font-weight: 500;
 					&:hover {
-						color: var(--main-color);
+						color: #FF8A00;
 					}
 				}
 				&:last-child {
@@ -4258,7 +4258,7 @@ Shop Details Area Style
 			}
 			li.current {
 				a {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 		}
@@ -4289,7 +4289,7 @@ Shop Details Area Style
 							span {
 								display: inline-block;
 								width: 30%;
-								color: var(--main-color);
+								color: #FF8A00;
 							}
 						}
 					}
@@ -4325,7 +4325,7 @@ Shop Details Area Style
 									border: none !important;
 									box-shadow: none !important;
 									border: 4px;
-									background-color: var(--main-color);
+									background-color: #FF8A00;
 								}
 							}
 						}
@@ -4432,7 +4432,7 @@ Event Area Style
 				border-right: 1px solid var(--body-color);
 				i {
 					margin-right: 5px;
-					color: var(--main-color);
+					color: #FF8A00;
 					position: relative;
 					top: 2px;
 				}
@@ -4483,7 +4483,7 @@ Event Area Style
 			}
 			.bold {
 				font-weight: 500;
-				color: var(--main-color);
+				color: #FF8A00;
 			}
 			span {
 				font-weight: normal;
@@ -4544,7 +4544,7 @@ Event Area Style
 					}
 					&:hover {
 						i {
-							background-color: var(--main-color);
+							background-color: #FF8A00;
 							color: var(--white-color);
 						}
 					}
@@ -4586,7 +4586,7 @@ Single Event Area Style
 				border-right: 1px solid var(--body-color);
 				i {
 					margin-right: 5px;
-					color: var(--main-color);
+					color: #FF8A00;
 					position: relative;
 					top: 2px;
 				}
@@ -4629,7 +4629,7 @@ Single Course Area Style
 			a {
 				color: var(--heading-color);
 				&:hover {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 		}
@@ -4648,7 +4648,7 @@ Single Course Area Style
 			.rating {
 				display: inline-block;
 				i {
-					color: var(--main-color);
+					color: #FF8A00;
 				}
 			}
 		}
@@ -4668,7 +4668,7 @@ Single Course Area Style
 				}
 				&.current {
 					a {
-						color: var(--main-color);
+						color: #FF8A00;
 						position: relative;
 						&::before {
 							content: "";
@@ -4677,7 +4677,7 @@ Single Course Area Style
 							left: 0;
 							width: 100%;
 							height: 2px;
-							background-color: var(--main-color);
+							background-color: #FF8A00;
 						}
 					}
 				}
@@ -4704,7 +4704,7 @@ Single Course Area Style
 				position: absolute;
 				left: 0;
 				top: -3px;
-				color: var(--main-color);
+				color: #FF8A00;
 				font-size: 30px;
 			}
 		}
@@ -4728,7 +4728,7 @@ Single Course Area Style
 				.meet-title {
 					color: var(--heading-color);
 					i {
-						color: var(--main-color);
+						color: #FF8A00;
 						font-size: 18px;
 						position: relative;
 						top: 2px;
@@ -4794,7 +4794,7 @@ Single Course Area Style
 					}
 					&:hover {
 						i {
-							background-color: var(--main-color);
+							background-color: #FF8A00;
 							color: var(--white-color);
 						}
 					}
@@ -4814,7 +4814,7 @@ Single Course Area Style
 			li {
 				display: inline-block;
 				i {
-					color: var(--main-color);
+					color: #FF8A00;
 					font-size: 18px;
 				}
 			}
@@ -4952,7 +4952,7 @@ Coming Soon Area Style
 			margin-top: 30px;
 			div {
 				display: inline-block;
-				color: var(--main-color);
+				color: #FF8A00;
 				position: relative;
 				margin-left: 35px;
 				margin-right: 35px;
@@ -5001,10 +5001,10 @@ Coming Soon Area Style
 				color: var(--white-color);
 				outline: 0;
 				transition: var(--transition);
-				border: 1px solid var(--main-color);
+				border: 1px solid #FF8A00;
 				color: var(--body-color);
 				&:focus {
-					border-color: var(--main-color);
+					border-color: #FF8A00;
 				}
 			}
 			button {
@@ -5029,7 +5029,7 @@ Coming Soon Area Style
 					width: 30px;
 					height: 30px;
 					line-height: 36px;
-					background-color: var(--main-color);
+					background-color: #FF8A00;
 					border-radius: 50%;
 					color: var(--white-color);
 					i {
@@ -5060,7 +5060,7 @@ Coming Soon Area Style
 		h1 {
 			font-size: 300px;
 			line-height: 1;
-			color: var(--main-color);
+			color: #FF8A00;
 			.a {
 				display: inline-block;
 			}
@@ -5083,7 +5083,7 @@ Coming Soon Area Style
         p {
 			margin: 20px 0 20px;
 			font-size: 19px;
-			color: var(--main-color);
+			color: #FF8A00;
         }
     }
 }
@@ -5202,7 +5202,7 @@ Go Top Style*/
 	cursor: pointer;
 	top: 88%;
 	right: -10%;
-	background-color: var(--main-color);
+	background-color: #FF8A00;
 	z-index: 4;
 	width: 40px;
 	text-align: center;
@@ -5235,14 +5235,14 @@ Go Top Style*/
 		width: 100%;
 		height: 100%;
 		z-index: -1;
-		background-color: var(--main-color);
+		background-color: #FF8A00;
 		opacity: 0;
 		visibility: hidden;
 		transition: 0.5s;
 	}
 	&:hover {
 		color: var(--white-color);
-		background-color: var(--main-color);
+		background-color: #FF8A00;
 		&::before {
 			opacity: 1;
 			visibility: visible;
@@ -5297,7 +5297,7 @@ Video wave Style*/
 	line-height: 100px;
 	text-align: center;
 	border-radius: 0;
-	color: var(--main-color);
+	color: #FF8A00;
 	position: relative;
 	top: 3px;
 	z-index: 1;
@@ -5365,12 +5365,12 @@ Nice select Area Style*/
 .nice-select {
 	.option {
 		&:hover {
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			color: var(--white-color);
 		}
 	}
 	.option.selected.focus {
-		color: var(--main-color);
+		color: #FF8A00;
 	}
 }
 
@@ -5394,8 +5394,8 @@ Page-navigation Area Style*/
 		border: 1px solid #d7d7d7;
 		&:hover {
 			color: var(--white-color);
-			border-color: var(--main-color);
-			background-color: var(--main-color);
+			border-color: #FF8A00;
+			background-color: #FF8A00;
 		}
 		i {
 			position: relative;
@@ -5405,8 +5405,8 @@ Page-navigation Area Style*/
 	}
 	.page-numbers.current {
 		color: var(--white-color);
-		border-color: var(--main-color);
-		background-color: var(--main-color);
+		border-color: #FF8A00;
+		background-color: #FF8A00;
 	}
 }
 
@@ -5481,7 +5481,7 @@ product-view-one
 					display: inline-block;
 					padding-right: 5px;
 					i {
-						color: var(--main-color);
+						color: #FF8A00;
 					}
 				}
 				.rating-count {
@@ -5618,7 +5618,7 @@ product-view-one
 						left: 0;
 						transition: var(--transition);
 						&:hover {
-							background-color: var(--main-color);
+							background-color: #FF8A00;
 							color: var(--white-color);
 						}
 					}
@@ -5626,7 +5626,7 @@ product-view-one
 						right: 0;
 						transition: var(--transition);
 						&:hover {
-							background-color: var(--main-color);
+							background-color: #FF8A00;
 							color: var(--white-color);
 						}
 					}
@@ -5671,7 +5671,7 @@ product-view-one
 							}
 							&:hover {
 								i {
-									background-color: var(--main-color);
+									background-color: #FF8A00;
 									color: var(--white-color);
 								}
 							}
@@ -5707,7 +5707,7 @@ product-view-one
 		opacity: 0;
 		transform: translateY(-25px);
 		i {
-			background-color: var(--main-color);
+			background-color: #FF8A00;
 			color: var(--white-color);
 			width: 30px;
 			height: 30px;
@@ -5728,7 +5728,7 @@ product-view-one
 		opacity: 0;
 		transform: translateY(-25px);
 		i {
-			background-color: var(--main-color) !important;
+			background-color: #FF8A00 !important;
 			color: var(--white-color);
 			width: 30px;
 			height: 30px;

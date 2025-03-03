@@ -31,7 +31,7 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
@@ -50,7 +50,7 @@
 		<div class="page-title-area bg-1">
 			<div class="container">
 				<div class="page-title-content">
-					<h2>About</h2>
+					<h2 style="color: black !important;">About</h2>
 					<ul>
 						<li>
 							<a href="{{ route('home') }}">
@@ -58,7 +58,7 @@
 							</a>
 						</li>
 
-						<li class="active">About</li>
+						<li class="active" style="color: black !important;">About</li>
 					</ul>
 				</div>
 			</div>
@@ -114,15 +114,15 @@
 					<div class="col-lg-6">
 						<div class="education-img-wrap">
 							<div class="education-img-2">
-								<img src="assets/img/education-img-2.jpg" alt="Image">
+								<img src="assets/img/banner-img/2.jpg" alt="Image">
 							</div>
 
 							<div class="education-img-3">
-								<img src="assets/img/education-img-3.jpg" alt="Image">
+								<img src="assets/img/banner-img/1.jpg" alt="Image">
 							</div>
 
 							<div class="education-img-4">
-								<img src="assets/img/education-img-4.jpg" alt="Image">
+								<img src="assets/img/banner-img/3.jpg" alt="Image">
 							</div>
 
 							<div class="education-shape-1">
@@ -140,7 +140,7 @@
 		<!-- End Education Area -->
 
 		<!-- Start Affordable Area -->
-		<section class="affordable-area f5f6fa-bg-color pt-100 pb-70">
+		<!-- <section class="affordable-area f5f6fa-bg-color pt-100 pb-70">
 			<div class="container">
 				<div class="section-title">
 					<span>Our Affordable</span>
@@ -181,7 +181,7 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> -->
 		<!-- End Affordable Area -->
 
 		<!-- Start Events Area -->
@@ -482,5 +482,6 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+		<script src="assets/js/navbar.js"></script>
     </body>
 </html>

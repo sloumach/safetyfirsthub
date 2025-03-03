@@ -78,22 +78,23 @@
     margin-top: 30px;
   }
   .banner-area .social .social-wrap li.follow-us {
-    color: var(--main-color);
+    color: #FF8A00;
   }
   .banner-area .social .social-wrap li.follow-us::before {
-    background-color: var(--main-color);
+    background-color: #FF8A00;
   }
   .banner-area .social .social-wrap li a i {
-    color: var(--main-color);
+    color: #FF8A00;
   }
   .banner-content {
     margin-top: 0;
   }
   .banner-content h1 {
-    font-size: 30px;
+    font-size: 20px;
     margin-bottom: 20px;
   }
   .banner-content p {
+    font-size: 13px;
     margin-bottom: 30px;
   }
   .banner-content .default-btn {
@@ -106,7 +107,7 @@
     font-size: 15px;
   }
   .section-title h2 {
-    font-size: 30px;
+    font-size: 20px;
   }
   .education-area .container-fluid {
     padding-left: 15px !important;
@@ -295,7 +296,8 @@
     margin-top: 0;
   }
   .banner-area-two .banner-img {
-    margin-top: 0;
+    margin-top: -172px !important;
+    
   }
   .single-feature {
     padding-left: 0;
@@ -846,6 +848,20 @@
     position: unset;
     margin-bottom: 15px;
   }
+  .row > [class*='col-lg-4'] {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+  .course-item {
+    width: 100% !important;
+    padding: 0 15px;
+  }
+  
+  .single-course {
+    max-width: 450px;
+    margin: 0 auto 30px;
+  }
 }
 
 /* Min width 576px to Max width 767px */
@@ -914,9 +930,9 @@
     padding: 10px 20px;
   }
   .navbar-area .others-option {
-    top: 20px;
+    top: 10px;
     position: absolute;
-    right: 70px;
+    right: 93px;
   }
   .navbar-area .others-option .register {
     top: 0;
@@ -968,13 +984,13 @@
     margin-top: 30px;
   }
   .banner-area .social .social-wrap li.follow-us {
-    color: var(--main-color);
+    color: #FF8A00;
   }
   .banner-area .social .social-wrap li.follow-us::before {
-    background-color: var(--main-color);
+    background-color: #FF8A00;
   }
   .banner-area .social .social-wrap li a i {
-    color: var(--main-color);
+    color: #FF8A00;
   }
   .banner-content {
     margin-top: 0;
@@ -992,7 +1008,7 @@
     font-size: 15px;
   }
   .section-title h2 {
-    font-size: 30px;
+    font-size: 20px;
   }
   .education-area .container-fluid {
     padding-left: 15px !important;
@@ -1170,11 +1186,12 @@
   }
   .banner-area-two .banner-content {
     text-align: center;
-    margin-top: 0;
+    margin-top: 0 !important;
   }
   .banner-area-two .banner-img {
     margin-top: 0;
     text-align: center;
+    left: 34px;
   }
   .single-feature {
     padding-left: 0;
@@ -1756,10 +1773,10 @@
     margin-top: 70px;
   }
   .mean-container .mean-nav ul li a:hover {
-    color: #ffb607;
+    color: #FF8A00;
   }
   .mean-container .mean-nav ul li a.active {
-    color: #ffb607;
+    color: #FF8A00;
   }
   .mean-container a.meanmenu-reveal {
     padding: 23px 15px 0 0;
@@ -1789,4 +1806,155 @@ Continuer Custom Width Area Style*/
     max-width: 1230px;
   }
 }
+
+/* Ensure proper spacing between courses */
+.courses-container {
+    padding: 0 15px;
+}
+
+.courses-grid {
+    margin: 0 -15px;
+}
+
+/* Tablet devices (768px to 991px) */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .courses-container .course-item.col-md-6 {
+        -ms-flex: 0 0 50% !important;
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        display: inline-block !important;
+        float: left !important;
+    }
+
+    .courses-container .single-course {
+        height: 100%;
+        margin-bottom: 30px;
+    }
+
+    .courses-container .course-img-wrapper img {
+        height: 200px;
+        object-fit: cover;
+    }
+}
+
+/* Mobile devices (less than 768px) */
+@media screen and (max-width: 767px) {
+    .courses-container .course-item.col-md-6 {
+        -ms-flex: 0 0 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    .courses-container .single-course {
+        margin-bottom: 20px;
+    }
+}
+
+/* Extra small devices (under 512px) */
+@media screen and (max-width: 512px) {
+    .courses-container .course-item.col-md-6 {
+        -ms-flex: 0 0 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 0 10px;
+    }
+
+    .courses-container .single-course {
+        margin-bottom: 15px;
+    }
+
+    .course-content {
+        padding: 15px !important;
+    }
+
+    .course-content h3 {
+        font-size: 16px !important;
+        line-height: 1.4 !important;
+    }
+
+    .course-content p {
+        font-size: 13px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .course-content .price {
+        font-size: 14px !important;
+        padding: 3px 10px !important;
+    }
+
+    .course-content .tag {
+        font-size: 12px !important;
+    }
+
+    .course-img-wrapper img {
+        height: 180px !important;
+        object-fit: cover;
+    }
+
+    .lessons li {
+        font-size: 12px !important;
+    }
+}
+
+/* Base styles for smallest screens (under 512px) */
+@media screen and (max-width: 512px) {
+    body .courses-container .row.courses-grid > div[class*="col-"] {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        display: block !important;
+    }
+
+    body .courses-container .single-course {
+        margin: 0 0 20px 0 !important;
+    }
+
+    body .courses-container .course-content {
+        padding: 15px !important;
+    }
+
+    body .courses-container .course-content h3 {
+        font-size: 16px !important;
+    }
+
+    body .courses-container .course-content .price {
+        right: 15px !important;
+    }
+
+    body .courses-container .course-img-wrapper img {
+        height: 180px !important;
+    }
+}
+
+/* Small devices (513px to 767px) */
+@media screen and (min-width: 513px) and (max-width: 767px) {
+    body .courses-container .row.courses-grid > div[class*="col-"] {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Medium devices (768px to 991px) */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    body .courses-container .row.courses-grid > div[class*="col-"] {
+        width: 50% !important;
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        float: left !important;
+    }
+}
+
+/* Reset container padding */
+.courses-container {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+/* Reset row margins */
+.courses-container .row {
+    margin-left: -15px !important;
+    margin-right: -15px !important;
+}
+
 /*# sourceMappingURL=responsive.css.map */

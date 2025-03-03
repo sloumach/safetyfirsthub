@@ -31,7 +31,7 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-		
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
@@ -197,5 +197,6 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+		<script src="assets/js/navbar.js"></script>
     </body>
 </html>

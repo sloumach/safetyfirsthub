@@ -31,7 +31,7 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-		
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
@@ -46,7 +46,7 @@
 		<div class="navbar-area">
 			<!-- Menu For Mobile Device -->
 			<div class="mobile-nav">
-				<a href="index.html" class="logo">
+				<a href="/" class="logo">
 					<img src="assets/img/logo.png" class="main-logo" alt="Logo">
 					<img src="assets/img/logo-2.png" class="white-logo" alt="Logo">
 				</a>
@@ -56,7 +56,7 @@
 			<div class="main-nav">
 				<div class="container-fluid">
 					<nav class="navbar navbar-expand-md">
-						<a class="navbar-brand" href="index.html">
+						<a class="navbar-brand" href="/">
 							<img src="assets/img/logo.png" class="main-logo" alt="Logo">
 							<img src="assets/img/logo-2.png" class="white-logo" alt="Logo">
 						</a>
@@ -71,7 +71,7 @@
 
 									<ul class="dropdown-menu">
 										<li class="nav-item">
-											<a href="index.html" class="nav-link">Home One</a>
+											<a href="/" class="nav-link">Home One</a>
 										</li>
 										<li class="nav-item">
 											<a href="index-2.html" class="nav-link">Home Two</a>
@@ -439,8 +439,8 @@
 
 								<li>
 									<i class="bx bxs-envelope"></i>
-									<a href="mailto:hello@eduon.com">hello@eduon.com</a>
-									<a href="mailto:public@eduon.com">public@eduon.com</a>
+									
+									<a href="mailto:Support@safetyfirsthub.com">Support@safetyfirsthub.com</a>
 								</li>
 
 								<li>
@@ -577,5 +577,6 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+		<script src="assets/js/navbar.js"></script>
     </body>
 </html>

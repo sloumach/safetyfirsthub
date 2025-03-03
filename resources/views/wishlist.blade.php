@@ -32,8 +32,11 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link rel="stylesheet" href="assets/css/navbar.css">
+		<!-- DataTables CSS -->
+		<link rel="stylesheet" href="adminassets/vendor/datatables/dataTables.bootstrap4.min.css">
 		<!-- Favicon -->
+		<link rel="stylesheet" href="assets/css/wishlist.css">
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
@@ -53,7 +56,7 @@
 		<div class="page-title-area bg-22">
 			<div class="container">
 				<div class="page-title-content">
-					<h2>Wishlist</h2>
+					<h2 style="color: black !important;">Wishlist</h2>
 					<ul>
 						<li>
 						<a href="{{ route('home') }}">
@@ -61,7 +64,7 @@
 							</a>
 						</li>
 
-						<li class="active">Wishlist</li>
+						<li class="active" style="color: black !important;">Wishlist</li>
 					</ul>
 				</div>
 			</div>
@@ -74,7 +77,7 @@
 				<form>
 					<div class="cart-wraps wishlist-wrap">
 						<div class="cart-table table-responsive">
-							<table class="table table-bordered">
+							<table class="table table-bordered" id="wishlistTable">
 								<thead>
 									<tr>
 										<th scope="col">Image</th>
@@ -90,25 +93,25 @@
                                         <tr data-id="{{ $wishlistItem->course->id }}" 
                                             data-add-url="{{ route('add.to.cart') }}"
                                             data-remove-url="{{ route('remove.from.wishlist') }}">
-                                            <td class="product-thumbnail">
+                                            <td class="product-thumbnail" data-label="Image">
                                                 <a href="#">
                                                     <img src="{{ asset('storage/' . $wishlistItem->course->cover) }}" alt="Image">
                                                 </a>
                                             </td>
 
-                                            <td class="product-name">
+                                            <td class="product-name" data-label="Product Name">
                                                 <a href="#">{{ $wishlistItem->course->name }}</a>
                                             </td>
 
-                                            <td class="product-price">
+                                            <td class="product-price" data-label="Price">
                                                 <span class="unit-amount">${{ $wishlistItem->course->price }}</span>
                                             </td>
 
-                                            <td class="product-subtotal">
+                                            <td class="product-subtotal" data-label="Total">
                                                 <span class="subtotal-amount">${{ $wishlistItem->course->price }}</span>
                                             </td>
 
-                                            <td class="product-actions">
+                                            <td class="product-actions" data-label="Actions">
                                                 <button type="button" class="wishlist-cart-btn">
                                                     <i class="flaticon-shopping-cart"></i>
                                                 </button>
@@ -118,8 +121,6 @@
                                             </td>
                                         </tr>
                                     @endforeach
-
-
 								</tbody>
 							</table>
 						</div>
@@ -155,7 +156,7 @@
 		<script src="assets/js/nice-select.min.js"></script>
         <!-- Magnific Popup Min JS -->
 		<script src="assets/js/magnific-popup.min.js"></script>
-		<!-- jarallax Min JS -->
+		<!-- Jarallax Min JS -->
 		<script src="assets/js/jarallax.min.js"></script>
 		<!-- Appear Min JS -->
         <script src="assets/js/appear.min.js"></script>
@@ -171,7 +172,31 @@
 		<script src="assets/js/custom.js"></script>
         <!-- SweetAlert2 JS -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- DataTables JS -->
+        <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
+        <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
         <!-- Wishlist JS -->
         <script src="{{ asset('assets/js/wishlist.js') }}"></script>
+		<script src="assets/js/navbar.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#wishlistTable').DataTable({
+                    pageLength: 4,
+                    lengthMenu: [4, 8, 12],
+                    language: {
+                        lengthMenu: "Show _MENU_ items per page",
+                        info: "Showing _START_ to _END_ of _TOTAL_ items",
+                        infoEmpty: "No items available",
+                        search: "Search:",
+                        paginate: {
+                            first: "First",
+                            last: "Last",
+                            next: "Next",
+                            previous: "Previous"
+                        }
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

@@ -71,7 +71,7 @@ export default {
                   icon: "error",
                   title: "Oops...",
                   text: error.response?.data?.message || "Failed to generate certificate",
-                  confirmButtonColor: "var(--main-color)",
+                  confirmButtonColor: "#FF8A00",
               });
           } finally {
               loading.value = false;
@@ -149,7 +149,7 @@ export default {
 }
 
 .custom-btn {
-  background-color: var(--main-color);
+  background-color: #FF8A00;
   color: white;
   padding: 10px 15px;
   border: none;

@@ -1,0 +1,372 @@
+/* Modern Single Course Styling */
+.single-course-area {
+    background: linear-gradient(135deg, #fff6e9 0%, #fff 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Floating Background Elements */
+.single-course-area::before,
+.single-course-area::after {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, rgba(255, 138, 0, 0.05), rgba(255, 166, 0, 0.02));
+    animation: floatElement 20s infinite ease-in-out;
+    z-index: 0;
+}
+
+.single-course-area::before {
+    top: -250px;
+    right: -250px;
+    animation-delay: -5s;
+}
+
+.single-course-area::after {
+    bottom: -250px;
+    left: -250px;
+}
+
+/* Header Layout */
+.single-course-content {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Title and Category Row */
+.single-course-content .row:first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.single-course-area .course-rating {
+    position: relative;
+    margin-bottom: -3px !important;
+    padding-left: 98% !important;
+}
+
+.single-course-content h3 {
+    font-size: 28px;
+    color: #333;
+    margin: 0;
+    padding-right: 200px;
+    margin-bottom: 30px;
+}
+
+/* Category Styling */
+.course-rating {
+    position: absolute;
+    top: 25px;
+    right: -7px;
+    background: rgba(255, 138, 0, 0.08);
+    padding: 6px 15px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.course-rating h4 {
+    color: #666;
+    margin: 0;
+    font-size: 14px;
+}
+
+.course-rating span {
+    color: #FF8A00;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Course Content Layout */
+.course-content-wrapper {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.course-image-container {
+    flex: 0 0 45%;
+    max-width: 45%;
+}
+
+.course-description-container {
+    flex: 0 0 55%;
+    max-width: 55%;
+}
+
+/* Course Description Styling */
+.course-description-container .tab {
+    height: 100%;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    width: 95%;
+}
+
+.single-course-content img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Tab Styling */
+.tab {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    height: 100%;
+    margin-top: 20px;
+}
+
+.tabs {
+    display: flex;
+    gap: 15px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    overflow-x: auto; /* Allow horizontal scroll if needed */
+    -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+}
+
+/* Hide scrollbar but keep functionality */
+.tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tabs {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.tabs li {
+    list-style: none;
+}
+
+.tabs li a {
+    white-space: nowrap;
+    padding: 8px 20px;
+    color: #666;
+    font-weight: 500;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.tabs li a:hover,
+.tabs li a.active {
+    color: #FF8A00;
+}
+
+.tabs li a::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #FF8A00;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.tabs li a:hover::after,
+.tabs li a.active::after {
+    transform: scaleX(1);
+}
+
+.tab_content {
+    padding: 15px 0;
+}
+
+.tabs_item h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.tabs_item p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Course Details Card */
+.account-wrap {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 20px;
+}
+
+.account-wrap ul li::before {
+    display: none;
+}
+
+.account-wrap ul li {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .single-course-area .course-rating {
+        padding-left: 90% !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .single-course-area .course-rating {
+        padding-left: 63% !important;
+    }
+
+    .course-content-wrapper {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .course-image-container,
+    .course-description-container {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .course-description-container .tab {
+        margin-top: 0;
+    }
+
+    .tab {
+        padding: 15px;
+    }
+
+    .tabs {
+        padding-bottom: 12px;
+        gap: 10px;
+    }
+
+    .tabs li a {
+        padding: 6px 15px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .single-course-area .course-rating {
+        padding-left: 60% !important;
+    }
+
+    .course-content-wrapper {
+        gap: 15px;
+    }
+
+    .tab {
+        margin-top: 15px;
+    }
+
+    .tabs_item h3 {
+        font-size: 18px;
+    }
+
+    .tabs_item p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .single-course-area .course-rating {
+        padding-left: 0 !important;
+        position: relative;
+        display: block;
+        margin-top: 10px;
+    }
+
+    .course-rating {
+        position: absolute;
+        top: 23px !important;
+        right: -200px !important;
+        background: rgba(255, 138, 0, 0.08);
+        padding: 0px 0px !important;
+        border-radius: 20px;
+        display: inline-flex
+    ;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .course-content-wrapper {
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .course-description-container .tab {
+        padding: 15px;
+    }
+
+    .tabs {
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+
+    .tabs li a {
+        padding: 5px 12px;
+        font-size: 13px;
+    }
+
+    .tabs_item h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 512px) {
+    .single-course-content {
+        padding: 15px;
+    }
+
+    .single-course-content h3 {
+        font-size: 24px;
+    }
+
+    .single-course-content img {
+        height: 200px;
+    }
+}
+
+/* Keep animations but make them more subtle */
+.single-course-content {
+    transition: transform 0.3s ease;
+}
+
+.single-course-content:hover {
+    transform: translateY(-3px);
+}
+
+.account-wrap {
+    animation: floatCard 3s infinite ease-in-out;
+}
+
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Animations */
+@keyframes floatElement {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(20px, 20px) rotate(5deg); }
+    50% { transform: translate(0, 40px) rotate(0deg); }
+    75% { transform: translate(-20px, 20px) rotate(-5deg); }
+} 
