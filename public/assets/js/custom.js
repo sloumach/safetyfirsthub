@@ -439,6 +439,37 @@
 	// Switch Btn
 	$('body').append("<div class='switch-box'><label id='switch' class='switch'><input type='checkbox' onchange='toggleTheme()' id='slider'><span class='slider round'></span></label></div>");
 
+	// Course filtering functionality
+	document.addEventListener('DOMContentLoaded', function() {
+		const filterButtons = document.querySelectorAll('.filter-btn');
+		const courseItems = document.querySelectorAll('.course-item');
+
+		filterButtons.forEach(button => {
+			button.addEventListener('click', () => {
+				// Remove active class from all buttons
+				filterButtons.forEach(btn => btn.classList.remove('active'));
+				// Add active class to clicked button
+				button.classList.add('active');
+
+				const category = button.getAttribute('data-category');
+
+				courseItems.forEach(item => {
+					if (category === 'all' || item.getAttribute('data-category') === category) {
+						item.classList.remove('hidden');
+					} else {
+						item.classList.add('hidden');
+					}
+				});
+
+				// Refresh owl carousel if it exists
+				const owlCarousel = $('.courses-slider-two');
+				if (owlCarousel.length) {
+					owlCarousel.trigger('refresh.owl.carousel');
+				}
+			});
+		});
+	});
+
 })(jQuery);
 
 // function to set a given theme/color-scheme

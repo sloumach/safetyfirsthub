@@ -31,7 +31,7 @@
         <link rel="stylesheet" href="{{ asset('assets/css/dark.css') }}">
         <!-- Responsive CSS -->
         <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
-        
+        <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}">
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
         <!-- Title -->

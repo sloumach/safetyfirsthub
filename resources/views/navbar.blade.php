@@ -1,7 +1,8 @@
+
 <div class="navbar-area">
     <!-- Menu For Mobile Device -->
     <div class="mobile-nav">
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
             <img src="{{ asset('assets/img/logo.png') }}" class="main-logo" alt="Logo">
             <img src="{{ asset('assets/img/logo-2.png') }}" class="white-logo" alt="Logo">
         </a>
@@ -17,7 +18,7 @@
                 </a>
 
                 <div class="collapse navbar-collapse mean-menu">
-                    <ul class="navbar-nav m-auto">
+                    <ul class="navbar-nav m-auto circleBehind">
                         <li class="nav-item">
                             <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
                                 Home
@@ -26,7 +27,7 @@
 
                             {{-- <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a href="index.html" class="nav-link active">Home One</a>
+                                    <a href="/" class="nav-link active">Home One</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="index-2.html" class="nav-link">Home Two</a>
@@ -39,7 +40,7 @@
 
                         <li class="nav-item">
                             <a href="{{ route('courses') }}" class="nav-link {{ request()->routeIs('courses*') ? 'active' : '' }}">
-                                Courses
+                                Certifications
                                 {{-- <i class="bx bx-chevron-down"></i> --}}
                             </a>
 
@@ -239,17 +240,22 @@
                         </div>
                         @else
                         <div class="register">
-                            <a href="{{ route('profile') }}" class="default-btn">
-                                {{ Auth::user()->firstname }}
-                        </a>
-                        </div>
-                        <div class="register">
-                            <div class="default-btn">
-                                <a href="{{ route('logout') }}"
-                                       {{-- onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();" --}}>
+                            <div class="nav-profile-dropdown">
+                                <a href="#" onclick="toggleProfileMenu(event)" style="text-decoration: none;">
+                                    <div class="nav-profile-icon">
+                                        <img src="{{ asset('assets/img/man.png') }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                </a>
+                                <div class="profile-dropdown-menu" id="profileDropdown">
+                                    <a href="{{ route('profile') }}" class="dropdown-item">
+                                        <i class='bx bx-user-circle'></i>
+                                        Profile
+                                    </a>
+                                    <a href="{{ route('logout') }}" class="dropdown-item">
+                                        <i class='bx bx-log-out'></i>
                                         Logout
                                     </a>
+                                </div>
                             </div>
                         </div>
                         @endguest
@@ -312,5 +318,21 @@
             </div>
         </div>
     </div>
-    <!-- End Others Option For Responsive -->
 </div>
+
+<script>
+function toggleProfileMenu(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.toggle('show');
+
+    // Close when clicking outside
+    document.addEventListener('click', function closeDropdown(e) {
+        if (!e.target.closest('.nav-profile-dropdown')) {
+            dropdown.classList.remove('show');
+            document.removeEventListener('click', closeDropdown);
+        }
+    });
+}
+</script>
+

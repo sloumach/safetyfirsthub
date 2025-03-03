@@ -28,6 +28,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        flash()
+            ->option('timeout', 8000)  // Set timeout to 3000ms (3 seconds)
+            ->success('Welcome back!');
+
         return redirect()->intended(route('home', absolute: false));
     }
 

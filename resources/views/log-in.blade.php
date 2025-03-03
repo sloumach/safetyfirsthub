@@ -31,11 +31,13 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
+		<!-- Login CSS -->
+		<link rel="stylesheet" href="assets/css/login.css">
     </head>
     <body>
 
@@ -54,7 +56,7 @@
 					<h2>Log in</h2>
 					<ul>
 						<li>
-							<a href="index.html">
+							<a href="/">
 								Home
 							</a>
 						</li>
@@ -68,79 +70,48 @@
 
 		<!-- Start Log In Area -->
 		<section class="user-area-style ptb-100">
+			<div class="background-shapes">
+				<div class="shape shape-1"></div>
+				<div class="shape shape-2"></div>
+				<div class="shape shape-3"></div>
+			</div>
 			<div class="container">
-				<div class="log-in-area">
-					<div class="section-title">
-						<h2>Log In</h2>
+				<div class="login-container">
+					<div class="login-title">
+						<h2 style="color:rgb(0, 0, 0) !important;">Login to your account</h2>
 					</div>
 
-					<div class="contact-form-action">
-						<!-- Add Error Messages Display -->
-						@if ($errors->any())
-							<div class="alert alert-danger">
-								<ul class="mb-0">
-									@foreach ($errors->all() as $error)
-										<li>{{ $error }}</li>
-									@endforeach
-								</ul>
-							</div>
-						@endif
+					<form method="POST" action="{{ route('login') }}">
+						@csrf
+						<div class="login-form-group">
+							<label>Email or Phone</label>
+							<input class="@error('email') is-invalid @enderror" 
+								   type="text" 
+								   name="email" 
+								   value="{{ old('email') }}">
+						</div>
 
-						<!-- Add Success Message Display -->
-						@if (session('status'))
-							<div class="alert alert-success" role="alert">
-								{{ session('status') }}
-							</div>
-						@endif
+						<div class="login-form-group">
+							<label>Password</label>
+							<input class="@error('password') is-invalid @enderror" 
+								   type="password" 
+								   name="password">
+						</div>
 
-						<form method="POST" action="{{ route('login') }}">
-							@csrf
-							<div class="row">
-								<div class="col-12">
-									<div class="form-group">
-										<label>Email or Phone</label>
-										<input class="form-control @error('email') is-invalid @enderror" 
-											   type="text" 
-											   name="email" 
-											   value="{{ old('email') }}">
-										
-									</div>
-								</div>
+						<div class="login-actions">
+							<span class="forgot-password">
+								<a href="{{ route('password.request') }}">Forgot your password?</a>
+							</span>
+						</div>
 
-								<div class="col-12">
-									<div class="form-group">
-										<label>Password</label>
-										<input class="form-control @error('password') is-invalid @enderror" 
-											   type="password" 
-											   name="password">
-										
-									</div>
-								</div>
+						<button class="login-button" type="submit">
+							Log In Now
+						</button>
 
-								<div class="col-12">
-									<div class="login-action">
-										<!-- <span class="log-rem">
-											<input id="remember" type="checkbox">
-											<label for="remember">Remember me!</label>
-										</span> -->
-										<span class="forgot-login">
-											<a href="{{ route('password.request') }}">Forgot your password?</a>
-										</span>
-									</div>
-								</div>
-
-								<div class="col-12">
-									<button class="default-btn" type="submit">
-										Log In Now
-									</button>
-								</div>
-
-								<div class="col-12">
-									<p>Have an account? <a href="{{ route('register') }}">Registration Now!</a></p>
-								</div>
-							</div>
-						</form>
-					</div>
+						<div class="login-register">
+							<p>Don't have an account? <a href="{{ route('register') }}" style="color: #FF8A00 !important;">Register Now!</a></p>
+						</div>
+					</form>
 				</div>
 			</div>
 		</section>

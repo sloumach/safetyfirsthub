@@ -1,0 +1,158 @@
+/* Contact Section Animations */
+@keyframes floatIn {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 82, 204, 0.1); }
+    50% { box-shadow: 0 0 40px rgba(0, 82, 204, 0.2); }
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Main Contact Area Styling */
+.main-contact-area {
+    position: relative !important;
+    background: linear-gradient(-45deg, #f8f9fa, #ffffff, #f0f7ff, #ffffff) !important;
+    background-size: 400% 400% !important;
+    animation: gradientBG 15s ease infinite !important;
+    padding: 80px 0 !important;
+    overflow: hidden !important;
+}
+
+/* Decorative Elements */
+.main-contact-area::before,
+.main-contact-area::after {
+    content: '' !important;
+    position: absolute !important;
+    width: 300px !important;
+    height: 300px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(45deg, rgba(0, 82, 204, 0.05), rgba(0, 123, 255, 0.05)) !important;
+    z-index: 0 !important;
+}
+
+.main-contact-area::before {
+    top: -150px !important;
+    left: -150px !important;
+    animation: float 20s infinite !important;
+}
+
+.main-contact-area::after {
+    bottom: -150px !important;
+    right: -150px !important;
+    animation: float 25s infinite reverse !important;
+}
+
+/* Contact Form Container */
+.contact-wrap {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 20px !important;
+    padding: 40px !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+    animation: floatIn 0.8s ease-out forwards !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Section Title */
+.section-title {
+    text-align: center !important;
+    margin-bottom: 40px !important;
+}
+
+.section-title h2 {
+    color: #1a1f36 !important;
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 15px !important;
+    position: relative !important;
+    display: inline-block !important;
+}
+
+.section-title h2::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -10px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 50% !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #0052cc, #00a3ff) !important;
+    border-radius: 2px !important;
+}
+
+.section-title p {
+    color: #4f566b !important;
+    font-size: 1.1rem !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 25px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.form-group label {
+    color: #1a1f36 !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    transform: translateY(0) !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control {
+    background: #f8fafc !important;
+    border: 2px solid #e5e9f2 !important;
+    border-radius: 12px !important;
+    padding: 12px 20px !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+}
+
+.form-control:focus {
+    border-color: #0052cc !important;
+    box-shadow: 0 0 0 4px rgba(0, 82, 204, 0.1) !important;
+    background: #ffffff !important;
+    outline: none !important;
+}
+
+
+
+/* Success Message */
+.alert-success {
+    background: linear-gradient(45deg, #00b09b, #96c93d) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 15px 20px !important;
+    animation: floatIn 0.5s ease-out !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .contact-wrap {
+        padding: 30px 20px !important;
+    }
+
+    .section-title h2 {
+        font-size: 2rem !important;
+    }
+
+    .form-control {
+        padding: 10px 15px !important;
+    }
+} 

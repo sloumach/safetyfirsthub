@@ -32,7 +32,7 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
@@ -173,5 +173,6 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <!-- Wishlist JS -->
         <script src="{{ asset('assets/js/wishlist.js') }}"></script>
+		<script src="assets/js/navbar.js"></script>
     </body>
 </html>

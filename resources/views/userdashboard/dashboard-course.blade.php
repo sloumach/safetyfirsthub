@@ -37,7 +37,7 @@
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-		
+		<link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}">
     </head>
     <body>
 
@@ -107,6 +107,6 @@
 		<script src="{{ asset('assets/js/ajaxchimp.min.js') }}"></script>
         <!-- Custom JS -->
 		<script src="{{ asset('assets/js/custom.js') }}"></script>
-		
+		<script src="{{ asset('assets/js/navbar.js') }}"></script>
     </body>
 </html>

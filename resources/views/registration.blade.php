@@ -31,11 +31,12 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
+		<link rel="stylesheet" href="assets/css/register.css">
     </head>
     <body>
 
@@ -65,76 +66,59 @@
 			</div>
 		</div>
 		<section class="user-area-style ptb-100">
+			<div class="register-shapes">
+				<div class="register-shape register-shape-1"></div>
+				<div class="register-shape register-shape-2"></div>
+				<div class="register-shape register-shape-3"></div>
+			</div>
 			<div class="container">
-				<div class="registration-area">
-					<div class="section-title">
-						<h2>Registration</h2>
+				<div class="registration-container">
+					<div class="registration-title">
+						<h2 style="color:rgb(0, 0, 0) !important;">Create Account</h2>
 					</div>
-
-					
 
 					<div id="notification-container"></div>
 
-					<div class="contact-form-action">
-						<form method="POST" action="{{ route('register') }}">
-                            @csrf
-							<div class="row">
-								<div class="col-12">
-									<div class="form-group">
-										<label>First name</label>
-										<input class="form-control" type="text" name="firstname">
-									</div>
-								</div>
-								<div class="col-12">
-									<div class="form-group">
-										<label>Last name</label>
-										<input class="form-control" type="text" name="lastname">
-									</div>
-								</div>
+					<form method="POST" action="{{ route('register') }}">
+						@csrf
+						<div class="register-form-group">
+							<label>First Name</label>
+							<input type="text" name="firstname" required>
+						</div>
 
-								<div class="col-12">
-									<div class="form-group">
-										<label>Email address</label>
-										<input class="form-control" type="email" name="email">
-									</div>
-								</div>
+						<div class="register-form-group">
+							<label>Last Name</label>
+							<input type="text" name="lastname" required>
+						</div>
 
-								<div class="col-12">
-									<div class="form-group">
-										<label>Password</label>
-										<input class="form-control" type="password" name="password" required>
-									</div>
-								</div>
-								</div>
+						<div class="register-form-group">
+							<label>Email Address</label>
+							<input type="email" name="email" required>
+						</div>
 
-								<div class="col-12">
-									<div class="form-group">
-										<label>Confirm password</label>
-										<input class="form-control" name="password_confirmation" type="password" required>
-									</div>
-								</div>
+						<div class="register-form-group">
+							<label>Password</label>
+							<input type="password" name="password" required>
+						</div>
 
-								<div class="col-12">
-									<div class="row align-items-center">
-										<div class="col-lg-6">
-											<button class="default-btn register" type="submit">
-												Register Now
-											</button>
-										</div>
+						<div class="register-form-group">
+							<label>Confirm Password</label>
+							<input type="password" name="password_confirmation" required>
+						</div>
 
-										<div class="col-lg-6 text-right">
-											<input id="remember" type="checkbox">
-											<label for="remember">Show password</label>
-										</div>
-									</div>
-								</div>
+						<div class="password-toggle">
+							<input id="show-password" type="checkbox">
+							<label for="show-password">Show password</label>
+						</div>
 
-								<div class="col-12">
-									<p>Have an account? <a href="{{ route('login') }}">Login Now!</a></p>
-								</div>
-							</div>
-						</form>
-					</div>
+						<button class="register-button" type="submit">
+							Create Account
+						</button>
+
+						<div class="login-link">
+							<p>Already have an account? <a href="{{ route('login') }}" style="color: #FF8A00 !important;">Log In</a></p>
+						</div>
+					</form>
 				</div>
 			</div>
 		</section>
@@ -180,6 +164,8 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
-
+        <!-- Register JS -->
+        <script src="assets/js/register.js"></script>
+		<script src="assets/js/navbar.js"></script>
     </body>
 </html>

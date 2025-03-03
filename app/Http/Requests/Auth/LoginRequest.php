@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Flasher\Prime\FlasherInterface;
 
 class LoginRequest extends FormRequest
 {
@@ -43,7 +44,16 @@ class LoginRequest extends FormRequest
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
-
+            
+            $seconds = RateLimiter::availableIn($this->throttleKey());
+            
+            flash()
+                ->option('timeout', 8000)  // Set timeout to 8000ms (8 seconds)
+                ->error(trans('auth.throttle', [
+                    'seconds' => $seconds,
+                    'minutes' => ceil($seconds / 60),
+                ]));
+            
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
@@ -66,6 +76,13 @@ class LoginRequest extends FormRequest
         event(new Lockout($this));
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
+        
+        flash()
+            ->option('timeout', 8000)  // Set timeout to 8000ms (8 seconds)
+            ->error(trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]));
 
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [

@@ -44,3 +44,26 @@ $(document).on('click', '.remove', function(e) {
         }
     });
 });
+
+// Coupon handling
+$(document).ready(function() {
+    const $couponTrigger = $('.coupon-trigger');
+    const $couponInputGroup = $('.coupon-input-group');
+    const $couponInput = $('.coupon-input-group .form-control');
+
+    $couponTrigger.on('click', function() {
+        $(this).addClass('hidden');
+        $couponInputGroup.addClass('visible');
+        setTimeout(() => {
+            $couponInput.focus();
+        }, 300);
+    });
+
+    // Optional: Reset to initial state when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.coupon-wrapper').length) {
+            $couponTrigger.removeClass('hidden');
+            $couponInputGroup.removeClass('visible');
+        }
+    });
+});

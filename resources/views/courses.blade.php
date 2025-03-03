@@ -31,8 +31,9 @@
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
-
+		<link rel="stylesheet" href="assets/css/navbar.css">
 		<!-- Favicon -->
+		<link rel="stylesheet" href="assets/css/courses.css">
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
@@ -47,7 +48,7 @@
 		<div class="page-title-area bg-4">
 			<div class="container">
 				<div class="page-title-content">
-					<h2>Courses</h2>
+					<h2 style="color:rgb(0, 0, 0) !important;">Certified Courses</h2>
 					<ul>
 						<li>
 							<a href="{{ route('home') }}">
@@ -55,7 +56,7 @@
 							</a>
 						</li>
 
-						<li class="active">courses</li>
+						<li class="active" style="color:rgb(0, 0, 0) !important;">Certified Courses</li>
 					</ul>
 				</div>
 			</div>
@@ -65,6 +66,31 @@
 		<!-- Start Popular Courses Area -->
 		<section class="courses-area-style ptb-100">
 			<div class="container">
+				<!-- Add welcome section -->
+				<div class="courses-welcome">
+					<div class="welcome-content">
+						<h1>Start Your Learning Journey</h1>
+						<p>Browse through our courses and take the first step towards your goals</p>
+						
+						<div class="welcome-steps">
+							<div class="step">
+								<span class="step-number">1</span>
+								<p>Choose a Certified Course</p>
+							</div>
+							<div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+							<div class="step">
+								<span class="step-number">2</span>
+								<p>Enroll Now</p>
+							</div>
+							<div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+							<div class="step">
+								<span class="step-number">3</span>
+								<p>Start Learning</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<div class="showing-result">
 					<div class="row align-items-center">
 						<!-- <div class="col-lg-6 col-md-4">
@@ -98,75 +124,50 @@
 					</div>
 				</div>
 
-				<div class="row">
-                    <!-- ici on parcoure les courses -->
-                    @foreach ($courses as $course)
-                        <div class="col-lg-4 col-md-6">
-                            <div class="single-course">
-                                <a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="course-img-wrapper">
-                                    <img src="{{ asset('storage/' . $course->cover) }}" alt="Cover for {{ $course->category }}">
+				<div class="courses-container">
+					<div class="row courses-grid" id="coursesGrid">
+						@foreach ($courses as $course)
+							<div class="course-item col-lg-4 col-md-6 col-sm-12">
+								<div class="single-course">
+									<a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="course-img-wrapper">
+										<img src="{{ asset('storage/' . $course->cover) }}" alt="Cover for {{ $course->category }}">
+									</a>
 
-                                </a>
+									<div class="course-content">
+										<span class="price">${{ $course->price }}</span>
+										<span class="tag">{{ $course->category }}</span>
 
-                                <div class="course-content">
-                                    <span class="price">$39</span>
-                                    <span class="tag">{{ $course->category }}</span>
+										<a href="{{ route('singlecourse', ['id' => $course->id]) }}" style="padding-top: 2%;">
+											<h3>{{ $course->name }}</h3>
+										</a>
 
-                                    <a href="{{ route('singlecourse', ['id' => $course->id]) }}" style="padding-top: 2%;">
+										<p>{{ $course->short_description }}</p>
 
-                                        <h3>{{ $course->name }}</h3>
-                                    </a>
+										<ul class="lessons">
+											<li class="float"> <i class="bx bx-user ms-2"></i>{{ $course->students }} Students</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						@endforeach
+					</div>
 
-                                    {{-- <ul class="rating">
-                                        <li>
-                                            <i class="bx bxs-star"></i>
-                                        </li>
-                                        <li>
-                                            <i class="bx bxs-star"></i>
-                                        </li>
-                                        <li>
-                                            <i class="bx bxs-star"></i>
-                                        </li>
-                                        <li>
-                                            <i class="bx bxs-star"></i>
-                                        </li>
-                                        <li>
-                                            <i class="bx bxs-star"></i>
-                                        </li>
-                                        <li>
-                                            <span>0.5</span>
-                                            <a href="#">(1 rating)</a>
-                                        </li>
-                                    </ul> --}}
-
-                                    <p>{{ $course->short_description }}</p>
-
-                                    <ul class="lessons">
-                                        {{-- <li>0 Lessons</li> --}}
-                                        <li class="float">{{ $course->students }} Students</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                    <!-- pagination -->
-					<div class="col-lg-12 col-md-12">
-                        <div class="pagination-area">
-							<!--
-                            <a href="#" class="prev page-numbers">
-								<i class="bx bx-chevron-left"></i>
-							</a>
-							-->
-                            <!-- <span class="page-numbers current" aria-current="page">1</span>
-                            <a href="#" class="page-numbers">2</a>
-                            <a href="#" class="page-numbers">3</a>
-							<a href="#" class="page-numbers">4</a>
-
-                            <a href="#" class="next page-numbers">
-								<i class="bx bx-chevron-right"></i>
-							</a> -->
-                        </div>
-                    </div>
+					<!-- Simple Pagination -->
+					<div class="pagination-container">
+						<ul class="pagination" id="pagination">
+							<li class="page-item">
+								<a class="page-link" href="#" id="prevPage">
+									<i class="bx bx-chevron-left"></i>
+								</a>
+							</li>
+							<div id="pageNumbers" class="d-flex"></div>
+							<li class="page-item">
+								<a class="page-link" href="#" id="nextPage">
+									<i class="bx bx-chevron-right"></i>
+								</a>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -212,5 +213,7 @@
 		<script src="assets/js/ajaxchimp.min.js"></script>
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
+		<script src="assets/js/navbar.js"></script>
+		<script src="assets/js/pagination.js"></script>
     </body>
 </html>

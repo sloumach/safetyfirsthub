@@ -1,0 +1,316 @@
+/* Modern User Dashboard Styles */
+.ud-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* Tab Navigation */
+.ud-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    border-bottom: none;
+}
+
+.ud-tab {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.ud-tab.active {
+    color: #FF8A00;
+    background: rgba(255, 138, 0, 0.1);
+}
+
+.ud-tab:not(.active) {
+    background: #f5f5f5;
+    color: #666;
+}
+
+/* Form Styles */
+.ud-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.ud-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ud-label {
+    font-weight: 500;
+    color: #333;
+    font-size: 1rem;
+}
+
+.ud-label::after {
+    content: ' *';
+    color: #FF8A00;
+}
+
+.ud-input {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fff;
+}
+
+.ud-input:focus {
+    border-color: #FF8A00;
+    box-shadow: 0 0 0 3px rgba(255, 138, 0, 0.1);
+    outline: none;
+}
+
+/* Custom Select Styling */
+.ud-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.ud-select {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fff;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.ud-select:focus {
+    border-color: #FF8A00;
+    box-shadow: 0 0 0 3px rgba(255, 138, 0, 0.1);
+    outline: none;
+}
+
+.ud-select-arrow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #666;
+}
+
+/* Dark mode support */
+.theme-dark .ud-select {
+    background: #2d2d2d;
+    border-color: #333;
+    color: #fff;
+}
+
+.theme-dark .ud-select-arrow {
+    border-top-color: #fff;
+}
+
+.theme-dark .ud-select option {
+    background: #2d2d2d;
+    color: #fff;
+}
+
+/* Button Group */
+.ud-button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.ud-btn {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ud-btn-primary {
+    background: #FF8A00;
+    color: white;
+}
+
+.ud-btn-secondary {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.ud-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Payment History Table */
+.ud-table-container {
+    overflow-x: auto;
+    margin-top: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.ud-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.ud-table th {
+    background: #f8f9fa;
+    padding: 1rem;
+    font-weight: 600;
+    text-align: left;
+    color: #333;
+}
+
+.ud-table td {
+    padding: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.ud-status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    min-width: 100px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Success status */
+.ud-status-success { 
+    background: #28c76f !important;
+    color: white !important;
+}
+
+/* Failed status */
+.ud-status-failed { 
+    background: #ea5455 !important;
+    color: white !important;
+}
+
+/* Pending status */
+.ud-status-pending { 
+    background: #FF8A00 !important;
+    color: white !important;
+}
+
+/* Hover effects */
+.ud-status-badge:hover {
+    transform: translateY(-2px);
+}
+
+/* Dark mode support */
+.theme-dark .ud-status-success { 
+    box-shadow: 0 2px 8px rgba(40, 199, 111, 0.3);
+}
+
+.theme-dark .ud-status-failed { 
+    box-shadow: 0 2px 8px rgba(234, 84, 85, 0.3);
+}
+
+.theme-dark .ud-status-pending { 
+    box-shadow: 0 2px 8px rgba(255, 138, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ud-form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ud-button-group {
+        flex-direction: column;
+    }
+    
+    .ud-btn {
+        width: 100%;
+    }
+}
+
+/* Dark Mode */
+.theme-dark .ud-container {
+    background: #1a1a1a;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.theme-dark .ud-tab {
+    color: #bbb;
+}
+
+.theme-dark .ud-tab.active {
+    background: rgba(255, 138, 0, 0.2);
+}
+
+.theme-dark .ud-label {
+    color: #fff;
+}
+
+.theme-dark .ud-input {
+    background: #2d2d2d;
+    border-color: #333;
+    color: #fff;
+}
+
+.theme-dark .ud-input:focus {
+    background: #333;
+}
+
+.theme-dark .ud-btn-secondary {
+    background: #333;
+    color: #fff;
+}
+
+.theme-dark .ud-table th {
+    background: #2d2d2d;
+    color: #fff;
+}
+
+.theme-dark .ud-table td {
+    border-color: #333;
+    color: #fff;
+}
+
+.theme-dark .ud-table tr:hover {
+    background: #2d2d2d;
+}
+
+/* Animation Effects */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ud-container {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .ud-container {
+        animation: none;
+    }
+} 
