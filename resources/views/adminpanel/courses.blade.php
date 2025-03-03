@@ -60,76 +60,92 @@
                                         enctype="multipart/form-data">
                                         @csrf
 
-                                        <!-- Champ pour le prix -->
+                                        <div class="form-group">
+                                            <label>📌 Course Name</label>
+                                            <input type="text" name="name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>📁 Category</label>
+                                            <input type="text" name="category" required>
+                                        </div>
                                         <div class="form-group">
                                             <label for="price">Price</label>
                                             <input type="number" step="0.01" class="form-control" id="price"
                                                 name="price" placeholder="Enter course price" required>
                                         </div>
-                                        <!-- Champ pour le prix -->
                                         <div class="form-group">
-                                            <label for="name">name</label>
-                                            <input type="text"  class="form-control" id="name"
-                                                name="name" placeholder="Enter course name" required>
+                                            <label>📝 Short Description</label>
+                                            <textarea name="short_description" required></textarea>
                                         </div>
-
-                                        <!-- Champ pour la catégorie -->
-                                        <div class="form-group">
-                                            <label for="category">Category</label>
-                                            <input type="text" class="form-control" id="category" name="category"
-                                                placeholder="Enter course category" required>
-                                        </div>
-
-                                        <!-- Champ pour le nombre total de vidéos -->
-                                        <div class="form-group">
-                                            <label for="total_videos">Total Videos</label>
-                                            <input type="number" class="form-control" id="total_videos"
-                                                name="total_videos" placeholder="Enter total number of videos" required>
-                                        </div>
-
-                                        <!-- Champ pour la description courte -->
-                                        <div class="form-group">
-                                            <label for="short_description">Short Description</label>
-                                            <textarea class="form-control" id="short_description" name="short_description" rows="2"
-                                                placeholder="Enter a short course description" required></textarea>
-                                        </div>
-
-                                        <!-- Champ pour la description détaillée -->
                                         <div class="form-group">
                                             <label for="description">Full Description</label>
                                             <textarea class="form-control" id="description" name="description" rows="3"
                                                 placeholder="Enter full course description" required></textarea>
                                         </div>
-
-                                        <!-- Champ pour le nombre d'étudiants inscrits -->
                                         <div class="form-group">
-                                            <label for="students">Students</label>
-                                            <input type="number" class="form-control" id="students" name="students"
-                                                value="0" readonly> <!-- Valeur par défaut à 0 -->
+                                            <label>📆 Duration (Months)</label>
+                                            <input type="number" name="duration" min="1" required>
                                         </div>
-
                                         <div class="form-group">
-                                            <label>Durée de validité du cours (en mois)</label>
-                                            <input type="number" name="duration" class="form-control" required min="1" value="3">
+                                            <label>🖼 Cover Image</label>
+                                            <input type="file" name="cover" accept="image/*" required>
                                         </div>
-
-
-                                        <!-- Champ pour l'image de couverture -->
                                         <div class="form-group">
-                                            <label for="cover">Upload Course Cover</label>
-                                            <input type="file" class="form-control-file" id="cover"
-                                                name="cover" accept="image/*" required>
+                                            <label for="total_videos">Total Videos</label>
+                                            <input type="number" class="form-control" id="total_videos"
+                                                name="total_videos" placeholder="Enter total number of videos" required>
                                         </div>
-                                        <!-- Champ pour la vidéo -->
                                         <div class="form-group">
-                                            <label for="video">Upload Course Video</label>
-                                            <input type="file" class="form-control-file" id="video" name="video" accept="video/*" required>
+                                            <h3>📚 Sections</h3>
+                                            <div id="sections">
+                                                <div class="section" data-section-index="0">
+                                                    <label>🔹 Section Title</label>
+                                                    <input type="text" name="sections[0][title]" required>
+
+                                                    <!-- SLIDES -->
+                                                    <div class="slides-container">
+                                                        <h4>📑 Slides</h4>
+                                                        <div class="slide" data-slide-index="0">
+                                                            <div class="form-group">
+                                                                <label>📝 Slide Title</label>
+                                                                <input type="text" name="sections[0][slides][0][title]" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>🖊 Slide Content</label>
+                                                                <textarea name="sections[0][slides][0][content]"></textarea>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>📎 Attach PDF/Image</label>
+                                                                <input type="file" name="sections[0][slides][0][file]" accept="application/pdf,image/*">
+                                                            </div>
+                                                        </div>
+                                                        <button type="button" class="add-slide-btn">➕ Add Slide</button>
+                                                    </div>
+
+                                                    <!-- VIDEOS -->
+                                                    <div class="videos-container">
+                                                        <h4>🎥 Videos</h4>
+                                                        <div class="video" data-video-index="0">
+                                                            <div class="form-group">
+                                                                <label>🎞 Video Title</label>
+                                                                <input type="text" name="sections[0][videos][0][title]" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>📤 Upload Video</label>
+                                                                <input type="file" name="sections[0][videos][0][video]" accept="video/*">
+                                                            </div>
+                                                        </div>
+                                                        <button type="button" class="add-video-btn">➕ Add Video</button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <div class="form-group">
+                                            <button type="button" id="add-section-btn">➕ Add Section</button>
+                                            <button type="submit">✅ Save Course</button>
+                                        </div>
+                                    </form> {{-- // w9eft hne bech ntasti l'ajout de cours --}}
 
-
-                                        <!-- Bouton de soumission -->
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </form>
 
 
                                 </div>
@@ -157,8 +173,7 @@
                                             <td>
                                                 <!-- Button Edit (ouvre le modal) -->
                                                 <button class="btn btn-warning btn-sm edit-btn"
-                                                    data-id="{{ $course->id }}"
-                                                    data-name="{{ $course->name }}"
+                                                    data-id="{{ $course->id }}" data-name="{{ $course->name }}"
                                                     data-price="{{ $course->price }}"
                                                     data-category="{{ $course->category }}"
                                                     data-total_videos="{{ $course->total_videos }}"
@@ -168,7 +183,8 @@
                                                 </button>
 
                                                 <!-- Button Delete -->
-                                                <form action="{{ route('delete.course', $course->id) }}" method="POST" style="display:inline-block;">
+                                                <form action="{{ route('delete.course', $course->id) }}"
+                                                    method="POST" style="display:inline-block;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"
@@ -184,12 +200,14 @@
                         </div>
 
                         <!-- MODAL POUR L'ÉDITION -->
-                        <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="editCourseModal" tabindex="-1"
+                            aria-labelledby="editCourseModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="editCourseModalLabel">Edit Course</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
@@ -200,22 +218,26 @@
 
                                             <div class="form-group">
                                                 <label for="edit-name">Course Name</label>
-                                                <input type="text" class="form-control" id="edit-name" name="name" required>
+                                                <input type="text" class="form-control" id="edit-name"
+                                                    name="name" required>
                                             </div>
 
                                             <div class="form-group">
                                                 <label for="edit-price">Price</label>
-                                                <input type="number" step="0.01" class="form-control" id="edit-price" name="price" required>
+                                                <input type="number" step="0.01" class="form-control"
+                                                    id="edit-price" name="price" required>
                                             </div>
 
                                             <div class="form-group">
                                                 <label for="edit-category">Category</label>
-                                                <input type="text" class="form-control" id="edit-category" name="category" required>
+                                                <input type="text" class="form-control" id="edit-category"
+                                                    name="category" required>
                                             </div>
 
                                             <div class="form-group">
                                                 <label for="edit-total-videos">Total Videos</label>
-                                                <input type="number" class="form-control" id="edit-total-videos" name="total_videos" required>
+                                                <input type="number" class="form-control" id="edit-total-videos"
+                                                    name="total_videos" required>
                                             </div>
 
                                             <div class="form-group">
@@ -238,9 +260,7 @@
                     </div>
 
                 </div>
-                <!-- /.container-fluid -->
 
-            </div>
             <!-- End of Main Content -->
 
             <!-- Footer -->
@@ -318,6 +338,94 @@
             // Ouvrir le modal
             $('#editCourseModal').modal('show');
         });
+    </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    let sectionCounter = document.querySelectorAll(".section").length;
+
+    // ➕ Ajouter une nouvelle section
+    document.getElementById("add-section-btn").addEventListener("click", function() {
+        sectionCounter++;
+        let newSection = document.querySelector(".section").cloneNode(true);
+
+        // 🔹 Mettre à jour l'index de la section
+        newSection.setAttribute("data-section-index", sectionCounter);
+        newSection.innerHTML = newSection.innerHTML.replace(/\[0\]/g, `[${sectionCounter}]`);
+
+        // 🔹 Réinitialiser les valeurs des inputs de la nouvelle section
+        newSection.querySelectorAll("input, textarea").forEach(input => {
+            input.value = "";
+        });
+
+        // 🔹 Réinitialiser les index des slides et vidéos de cette nouvelle section
+        let slidesContainer = newSection.querySelector(".slides-container");
+        slidesContainer.innerHTML = `<h4>📑 Slides</h4><button type="button" class="add-slide-btn">➕ Add Slide</button>`;
+
+        let videosContainer = newSection.querySelector(".videos-container");
+        videosContainer.innerHTML = `<h4>🎥 Videos</h4><button type="button" class="add-video-btn">➕ Add Video</button>`;
+
+        document.getElementById("sections").appendChild(newSection);
+    });
+
+    // ➕ Ajouter un slide à une section
+    document.addEventListener("click", function(event) {
+        if (event.target.classList.contains("add-slide-btn")) {
+            let section = event.target.closest(".section");
+            let sectionIndex = section.getAttribute("data-section-index");
+
+            let slidesContainer = section.querySelector(".slides-container");
+            let slideIndex = slidesContainer.querySelectorAll(".slide").length;
+
+            let newSlide = document.createElement("div");
+            newSlide.classList.add("slide");
+            newSlide.setAttribute("data-slide-index", slideIndex);
+            newSlide.innerHTML = `
+                <div class="form-group">
+                    <label>📝 Slide Title</label>
+                    <input type="text" name="sections[${sectionIndex}][slides][${slideIndex}][title]" required>
+                </div>
+                <div class="form-group">
+                    <label>🖊 Slide Content</label>
+                    <textarea name="sections[${sectionIndex}][slides][${slideIndex}][content]"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>📎 Attach PDF/Image</label>
+                    <input type="file" name="sections[${sectionIndex}][slides][${slideIndex}][file]" accept="application/pdf,image/*">
+                </div>
+            `;
+            slidesContainer.insertBefore(newSlide, event.target);
+        }
+    });
+
+    // ➕ Ajouter une vidéo à une section
+    document.addEventListener("click", function(event) {
+        if (event.target.classList.contains("add-video-btn")) {
+            let section = event.target.closest(".section");
+            let sectionIndex = section.getAttribute("data-section-index");
+
+            let videosContainer = section.querySelector(".videos-container");
+            let videoIndex = videosContainer.querySelectorAll(".video").length;
+
+            let newVideo = document.createElement("div");
+            newVideo.classList.add("video");
+            newVideo.setAttribute("data-video-index", videoIndex);
+            newVideo.innerHTML = `
+                <div class="form-group">
+                    <label>🎞 Video Title</label>
+                    <input type="text" name="sections[${sectionIndex}][videos][${videoIndex}][title]" required>
+                </div>
+                <div class="form-group">
+                    <label>📤 Upload Video</label>
+                    <input type="file" name="sections[${sectionIndex}][videos][${videoIndex}][video]" accept="video/*">
+                </div>
+            `;
+            videosContainer.insertBefore(newVideo, event.target);
+        }
+    });
+});
+
+
+
     </script>
 
 
