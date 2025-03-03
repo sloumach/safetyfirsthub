@@ -81,7 +81,7 @@
 
                 <div class="col-lg-6 col-md-12">
                     <div class="product-details-desc">
-                        <h3>{{ $product->name }}</h3>
+                        <h3 style="color: #FF8A00 !important;">{{ $product->name }}</h3>
 
                         <div class="price">
                             <span>Price:</span>
@@ -99,11 +99,11 @@
                             <a href="#" class="rating-count">(5 reviews)</a>
                         </div> --}}
 
-                        <p>{{ $product->description }}</p>
+                        <p style="color: black !important;">{{ $product->description }}</p>
 
                         <ul class="product-summery">
                             {{-- <li>SUK <span>:132</span></li> --}}
-                            <li>Category <span>{{ $product->category }}</span></li>
+                            <li style="color: black !important;">Category <span style="color: #FF8A00 !important;">{{ $product->category }}</span></li>
                             {{-- <li>Tags <span>:Book</span></li> --}}
                             {{-- <li>10 in stock</li> --}}
                         </ul>

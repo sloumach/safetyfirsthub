@@ -95,8 +95,8 @@
 										</ul>
 										<div class="tab_content">
 											<div class="tabs_item">
-												<h4>Course Description</h4>
-												<p>{{ $course->description }}</p>
+												<h4 style="color: #FF8A00 !important;">Course Description</h4>
+												<p style="color: black !important;">{{ $course->description }}</p>
 											</div>
 										</div>
 									</div>
@@ -115,22 +115,16 @@
 									Product: <span class="bold bg">Owned</span>
 								</li>
                                 @else
-                                <li>
-                                    Price <span class="bold">${{ $course->price }}</span>
+                                <li style="color: black !important;">
+                                    Price <span class="bold" style="color: #FF8A00 !important;">${{ $course->price }}</span>
                                 </li>
                                 @endif
 
-								{{-- <li>
-									Start <span>Sep 01, 2020</span>
+								<li style="color: black !important;">
+									Event Category <span style="color: var(--body-color) !important;">{{ $course->category }}</span>
 								</li>
-								<li>
-									End <span>Sep 02, 2020</span>
-								</li> --}}
-								<li>
-									Event Category <span>{{ $course->category }}</span>
-								</li>
-								<li>
-									Total videos: <span>{{ $course->total_videos }}</span>
+								<li style="color: black !important;">
+									Total videos: <span style="color: var(--body-color) !important;">{{ $course->total_videos }}</span>
 								</li>
 								{{-- <li>
 									Booked Slot: <span>00</span>
