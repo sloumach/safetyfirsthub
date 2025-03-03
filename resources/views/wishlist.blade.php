@@ -53,7 +53,7 @@
 		<div class="page-title-area bg-22">
 			<div class="container">
 				<div class="page-title-content">
-					<h2>Wishlist</h2>
+					<h2 style="color: black !important;">Wishlist</h2>
 					<ul>
 						<li>
 						<a href="{{ route('home') }}">
@@ -61,7 +61,7 @@
 							</a>
 						</li>
 
-						<li class="active">Wishlist</li>
+						<li class="active" style="color: black !important;">Wishlist</li>
 					</ul>
 				</div>
 			</div>
