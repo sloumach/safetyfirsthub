@@ -1,0 +1,207 @@
+@media (min-width: 768px) {
+    .col-md-6 {
+        flex: 0 0 auto;
+        width: 42% !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .col-md-5 {
+        flex: 0 0 auto;
+        width: 28.666667% !important;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .cart-table table {
+        width: 100% !important;
+    }
+
+    .cart-table thead {
+        display: none;
+    }
+
+    .cart-table tr {
+        display: block;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+    }
+
+    .cart-table td {
+        display: block;
+        text-align: right;
+        padding: 10px;
+        position: relative;
+        padding-left: 50% !important;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .cart-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: bold;
+    }
+
+    .cart-table td.product-thumbnail {
+        text-align: center;
+        padding-left: 10px !important;
+    }
+
+    .cart-table td.product-thumbnail img {
+        max-width: 150px;
+        margin: 0 auto;
+    }
+
+    .cart-table td.product-actions {
+        text-align: center;
+        padding-left: 10px !important;
+    }
+
+    .cart-table td.product-actions button {
+        margin: 5px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .cart-area {
+        padding: 50px 0;
+    }
+
+    .cart-table td.product-thumbnail img {
+        max-width: 100px;
+        margin-left: 139px;
+    }
+}
+
+/* DataTable Controls Container */
+.row {
+    margin: 20px 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 20px !important;
+}
+
+/* Length Control (Show entries) */
+.dataTables_length {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.dataTables_length label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 14px !important;
+    color: #4B5563 !important;
+    margin: 0 !important;
+}
+
+.dataTables_length select {
+    padding: 6px 32px 6px 12px !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 6px !important;
+    background-color: #FFFFFF !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 8px center !important;
+    background-size: 16px !important;
+}
+
+.dataTables_length select:hover {
+    border-color: #FF8A00 !important;
+}
+
+.dataTables_length select:focus {
+    outline: none !important;
+    border-color: #FF8A00 !important;
+    box-shadow: 0 0 0 2px rgba(255, 138, 0, 0.1) !important;
+}
+
+/* Search Control */
+.dataTables_filter {
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+.dataTables_filter label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 14px !important;
+    color: #4B5563 !important;
+    margin: 0 !important;
+}
+
+.dataTables_filter input {
+    padding: 8px 12px !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 6px !important;
+    background-color: #FFFFFF !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    min-width: 200px !important;
+}
+
+.dataTables_filter input:hover {
+    border-color: #FF8A00 !important;
+}
+
+.dataTables_filter input:focus {
+    outline: none !important;
+    border-color: #FF8A00 !important;
+    box-shadow: 0 0 0 2px rgba(255, 138, 0, 0.1) !important;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 767px) {
+    .row {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    .col-sm-12 {
+        width: 100% !important;
+    }
+
+    .dataTables_filter {
+        justify-content: flex-start !important;
+    }
+
+    .dataTables_length,
+    .dataTables_filter {
+        width: 100% !important;
+    }
+
+    .dataTables_filter input {
+        flex: 1 !important;
+        min-width: unset !important;
+    }
+
+    .dataTables_length label,
+    .dataTables_filter label {
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
+}
+
+/* Custom Select Styling */
+.custom-select-sm {
+    height: auto !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+/* Form Control Styling */
+.form-control-sm {
+    height: auto !important;
+    line-height: 1.5 !important;
+}

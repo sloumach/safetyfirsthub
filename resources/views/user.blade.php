@@ -35,6 +35,8 @@
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="assets/css/responsive.css">
     <link rel="stylesheet" href="assets/css/navbar.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="adminassets/vendor/datatables/dataTables.bootstrap4.min.css">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     <!-- Title -->
@@ -113,7 +115,7 @@
 
         <div id="payment-tab" class="ud-tab-content" style="display: none;">
             <div class="ud-table-container">
-                <table class="ud-table">
+                <table class="ud-table" id="paymentTable">
                     <thead>
                         <tr>
                             
@@ -126,23 +128,22 @@
                     <tbody>
                         @forelse($payments as $index => $payment)
                             <tr>
-                                
-                                <td>
+                                <td data-label="Course Name">
                                     @foreach($payment->orders as $order)
                                         <span>{{ $order->course->name ?? 'No Course Found' }}</span>
                                     @endforeach
                                 </td>
-                                <td>${{ number_format($payment->amount, 2) }}</td>
-                                <td>
+                                <td data-label="Amount">${{ number_format($payment->amount, 2) }}</td>
+                                <td data-label="Status">
                                     <span class="ud-status-badge {{ strtolower($payment->status) === 'completed' ? 'ud-status-success' : (strtolower($payment->status) === 'failed' ? 'ud-status-failed' : 'ud-status-pending') }}">
                                         {{ ucfirst($payment->status) }}
                                     </span>
                                 </td>
-                                <td>{{ $payment->date->format('d M Y') }}</td>
+                                <td data-label="Payment Date">{{ $payment->date->format('d M Y') }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">No payment history found.</td>
+                                <td colspan="4" class="text-center">No payment history found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -175,7 +176,12 @@
     </script>
 
     <!-- End Contact Area -->
-
+    <div class="switch-box">
+    <label id="switch" class="switch">
+        <input type="checkbox" onchange="toggleTheme()" id="slider">
+        <span class="slider round"></span>
+    </label>
+    </div>
     <!-- Start Footer Top Area -->
     @include('footer')
     <!-- End Footer Bottom Area -->
@@ -215,8 +221,31 @@
     <script src="assets/js/ajaxchimp.min.js"></script>
     <!-- Custom JS -->
     <script src="assets/js/custom.js"></script>
-    <script src="assets/js/user.js"></script>
     <script src="assets/js/navbar.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#paymentTable').DataTable({
+                pageLength: 4,
+                lengthMenu: [4, 8, 12],
+                language: {
+                    lengthMenu: "Show _MENU_ items per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ items",
+                    infoEmpty: "No items available",
+                    search: "Search:",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

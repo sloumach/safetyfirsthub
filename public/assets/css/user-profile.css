@@ -1,11 +1,11 @@
 /* Modern User Dashboard Styles */
 .ud-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border-radius: 20px;
-    background: #ffffff;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    max-width: 1200px !important;
+    margin: 96px auto 2rem auto !important;
+    padding: 2rem !important;
+    border-radius: 20px !important;
+    background: #ffffff !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Tab Navigation */
@@ -163,16 +163,17 @@
 
 /* Payment History Table */
 .ud-table-container {
-    overflow-x: auto;
-    margin-top: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    width: 100% !important;
+    overflow-x: hidden !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05) !important;
+    margin: 20px 0 !important;
 }
 
 .ud-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    width: 100% !important;
+    border-collapse: collapse !important;
 }
 
 .ud-table th {
@@ -236,18 +237,147 @@
     box-shadow: 0 2px 8px rgba(255, 138, 0, 0.3);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive Design */
+@media screen and (max-width: 1280px) {
+    .ud-container {
+        max-width: 95% !important;
+        padding: 2rem !important;
+        margin: 0 auto !important;
+        margin-bottom: 19rem !important;
+        position: relative !important;
+        top: 96px !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .ud-container {
+        max-width: 100% !important;
+        padding: 1.5rem !important;
+        border-radius: 15px !important;
+        margin: 0 1rem !important;
+        margin-bottom: 19rem !important;
+        position: relative !important;
+        top: 93px !important;
+    }
+
     .ud-form-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    .ud-tabs {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+
+    .ud-tab {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Mobile table styles */
+    .ud-table {
+        border: 0 !important;
     }
     
+    .ud-table thead {
+        display: none !important;
+    }
+    
+    .ud-table tr {
+        display: block !important;
+        margin-bottom: 20px !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+        background: #fff !important;
+    }
+    
+    .ud-table td {
+        display: block !important;
+        text-align: right !important;
+        padding: 12px 15px !important;
+        position: relative !important;
+        border-bottom: 1px solid #e5e7eb !important;
+    }
+    
+    .ud-table td:last-child {
+        border-bottom: 0 !important;
+    }
+    
+    .ud-table td::before {
+        content: attr(data-label) !important;
+        position: absolute !important;
+        left: 15px !important;
+        font-weight: 600 !important;
+        color: #374151 !important;
+    }
+
+    /* Status badge adjustments */
+    .ud-table td:has(.ud-status-badge) {
+        text-align: left !important;
+    }
+
+    .ud-status-badge {
+        margin-left: 120px !important; /* Adjust based on your label width */
+    }
+
+    /* Button group adjustments */
     .ud-button-group {
-        flex-direction: column;
+        flex-direction: column !important;
+        gap: 0.75rem !important;
     }
-    
+
     .ud-btn {
-        width: 100%;
+        width: 100% !important;
+        padding: 0.75rem 1.5rem !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .ud-container {
+        padding: 1rem !important;
+        border-radius: 10px !important;
+        margin: 0 !important;
+        margin-bottom: 19rem !important;
+        position: relative !important;
+        top: 91px !important;
+    }
+
+    .ud-label {
+        font-size: 0.9rem !important;
+    }
+
+    .ud-input, 
+    .ud-select {
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .ud-status-badge {
+        min-width: 80px !important;
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* DataTable controls responsive */
+@media screen and (max-width: 768px) {
+    .dataTables_filter {
+        width: 100% !important;
+        justify-content: flex-start !important;
+        margin-top: 1rem !important;
+    }
+
+    .dataTables_filter label {
+        width: 100% !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+
+    .dataTables_filter input {
+        width: 100% !important;
+        min-width: unset !important;
     }
 }
 
@@ -314,3 +444,185 @@
         animation: none;
     }
 } 
+
+.dataTables_filter {
+    display: flex !important
+;
+    justify-content: flex-end !important;
+}
+
+.dataTables_filter label {
+    display: flex !important
+;
+    justify-content: flex-end !important;
+}
+
+.dataTables_filter input {
+    padding: 8px 12px !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 6px !important;
+    background-color: #FFFFFF !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    min-width: 200px !important;
+}
+.form-control-sm {
+    height: auto !important;
+    line-height: 1.5 !important;
+}
+
+/* Light Mode Styles */
+.ud-container {
+    max-width: 1200px !important;
+    padding: 2rem !important;
+    border-radius: 20px !important;
+    background: #ffffff !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05) !important;
+    margin: 0 auto !important;
+    margin-bottom: 19rem !important;
+    position: relative !important;
+    top: 96px !important;
+}
+
+/* Dark Mode Styles */
+.theme-dark .ud-container {
+    background: #1a1a1a !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.theme-dark .ud-tabs {
+    border-bottom-color: #333 !important;
+}
+
+.theme-dark .ud-tab {
+    color: #999 !important;
+    background: #272727 !important;
+    border: none !important;
+}
+
+.theme-dark .ud-tab.active {
+    color: #FF8A00 !important;
+    background: rgba(255, 138, 0, 0.1) !important;
+}
+
+.theme-dark .ud-tab:not(.active):hover {
+    background: #333 !important;
+}
+
+.theme-dark .ud-label {
+    color: #ffffff !important;
+}
+
+.theme-dark .ud-input,
+.theme-dark .form-control {
+    background-color: #272727 !important;
+    border-color: #333 !important;
+    color: #ffffff !important;
+}
+
+.theme-dark .ud-input:focus,
+.theme-dark .form-control:focus {
+    border-color: #FF8A00 !important;
+    box-shadow: 0 0 0 3px rgba(255, 138, 0, 0.1) !important;
+}
+
+.theme-dark .ud-select,
+.theme-dark .custom-select {
+    background-color: #272727 !important;
+    border-color: #333 !important;
+    color: #ffffff !important;
+}
+
+.theme-dark .ud-table-container {
+    background: #272727 !important;
+}
+
+.theme-dark .ud-table thead th,
+.theme-dark .dataTable thead th {
+    background-color: #333 !important;
+    color: #ffffff !important;
+    border-bottom: 2px solid #444 !important;
+}
+
+.theme-dark .ud-table tbody td,
+.theme-dark .dataTable tbody td {
+    color: #ffffff !important;
+    border-color: #333 !important;
+}
+
+.theme-dark .ud-table tbody tr:hover,
+.theme-dark .dataTable tbody tr:hover {
+    background-color: #2a2a2a !important;
+}
+
+.theme-dark .dataTables_wrapper .dataTables_length,
+.theme-dark .dataTables_wrapper .dataTables_filter,
+.theme-dark .dataTables_wrapper .dataTables_info,
+.theme-dark .dataTables_wrapper .dataTables_processing {
+    color: #ffffff !important;
+}
+
+.theme-dark .dataTables_wrapper .dataTables_filter input {
+    background-color: #272727 !important;
+    border: 1px solid #333 !important;
+    color: #ffffff !important;
+}
+
+.theme-dark .dataTables_length select {
+    background-color: #272727 !important;
+    color: #ffffff !important;
+    border: 1px solid #333 !important;
+}
+
+.theme-dark .paginate_button {
+    background: #272727 !important;
+    color: #ffffff !important;
+    border: 1px solid #333 !important;
+}
+
+.theme-dark .paginate_button.current,
+.theme-dark .paginate_button:hover {
+    background: #FF8A00 !important;
+    color: #ffffff !important;
+    border-color: #FF8A00 !important;
+}
+
+.theme-dark .ud-status-badge {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark .ud-status-badge.ud-status-success {
+    background: rgba(40, 167, 69, 0.2) !important;
+    color: #28a745 !important;
+}
+
+.theme-dark .ud-status-badge.ud-status-pending {
+    background: rgba(255, 193, 7, 0.2) !important;
+    color: #ffc107 !important;
+}
+
+.theme-dark .ud-status-badge.ud-status-failed {
+    background: rgba(220, 53, 69, 0.2) !important;
+    color: #dc3545 !important;
+}
+
+/* Dark mode for buttons */
+.theme-dark .ud-btn-primary {
+    background: #FF8A00 !important;
+    color: #ffffff !important;
+}
+
+.theme-dark .ud-btn-secondary {
+    background: #272727 !important;
+    color: #ffffff !important;
+    border: 1px solid #333 !important;
+}
+
+.theme-dark .ud-btn-primary:hover {
+    background: #ff7300 !important;
+}
+
+.theme-dark .ud-btn-secondary:hover {
+    background: #333 !important;
+    border-color: #444 !important;
+}

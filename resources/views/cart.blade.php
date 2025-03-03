@@ -38,6 +38,8 @@
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
+		<!-- DataTables CSS -->
+		<link rel="stylesheet" href="adminassets/vendor/datatables/dataTables.bootstrap4.min.css">
     </head>
     <body>
 
@@ -77,35 +79,35 @@
 						<form>
 							<div class="cart-wraps">
 								<div class="cart-table table-responsive">
-									<table class="table">
+									<table class="table table-bordered" id="cartTable">
 										<thead>
 											<tr>
 												<th>IMAGE</th>
 												<th>PRODUCT NAME</th>
 												<th>PRICE</th>
-												<th></th>
+												<th>ACTIONS</th>
 											</tr>
 										</thead>
 
 										<tbody>
-                                            @if(!$courses->isEmpty())
-                                                @foreach($courses as $course)
-                                                    <tr data-id="{{ $course->id }}" data-remove-url="{{ route('remove.from.cart') }}">
-                                                        <td class="product-thumbnail">
-                                                            <img src="{{ asset('storage/' . $course->cover) }}" alt="Image">
-                                                        </td>
-                                                        <td class="product-name">
-                                                            {{ $course->name }}
-                                                        </td>
-                                                        <td class="product-price">
-                                                            ${{ $course->price }}
-                                                        </td>
-                                                        <td class="remove-column">
-                                                            <button class="remove">×</button>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
+											@if(!$courses->isEmpty())
+												@foreach($courses as $course)
+													<tr data-id="{{ $course->id }}" data-remove-url="{{ route('remove.from.cart') }}">
+														<td class="product-thumbnail" data-label="Image">
+															<img src="{{ asset('storage/' . $course->cover) }}" alt="Image">
+														</td>
+														<td class="product-name" data-label="Product Name">
+															{{ $course->name }}
+														</td>
+														<td class="product-price" data-label="Price">
+															${{ $course->price }}
+														</td>
+														<td class="remove-column" data-label="Actions">
+															<button class="remove">×</button>
+														</td>
+													</tr>
+												@endforeach
+											@endif
 										</tbody>
 									</table>
 								</div>
@@ -202,6 +204,32 @@
         <!-- Custom JS -->
 		<script src="assets/js/custom.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- DataTables JS -->
+        <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
+        <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#cartTable').DataTable({
+                    pageLength: 4,
+                    lengthMenu: [4, 8, 12],
+                    language: {
+                        lengthMenu: "Show _MENU_ items per page",
+                        info: "Showing _START_ to _END_ of _TOTAL_ items",
+                        infoEmpty: "No items available",
+                        search: "Search:",
+                        paginate: {
+                            first: "First",
+                            last: "Last",
+                            next: "Next",
+                            previous: "Previous"
+                        }
+                    },
+                    columnDefs: [
+                        { orderable: false, targets: [0, 3] } // Disable sorting for image and actions columns
+                    ]
+                });
+            });
+        </script>
     </body>
     <script src="{{ asset('assets/js/cart.js') }}"></script>
     <script src="assets/js/navbar.js"></script>

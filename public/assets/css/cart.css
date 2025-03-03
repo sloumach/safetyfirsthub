@@ -478,3 +478,126 @@
         height: 80px !important;
     }
 }
+
+.dataTables_length {
+    display: flex !important
+;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.dataTables_length label {
+    display: flex !important
+;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 14px !important;
+    color: #4B5563 !important;
+    margin: 0 !important;
+}
+
+.dataTables_length select {
+    padding: 6px 32px 6px 12px !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 6px !important;
+    background-color: #FFFFFF !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 8px center !important;
+    background-size: 16px !important;
+}
+
+.form-control-sm {
+    height: auto !important;
+    line-height: 1.5 !important;
+}
+
+.custom-select-sm {
+    height: auto !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+.dataTables_filter {
+    display: flex !important
+;
+    justify-content: flex-end !important;
+}
+
+.dataTables_filter label {
+    display: flex !important
+;
+    justify-content: flex-end !important;
+}
+
+.dataTables_filter input {
+    padding: 8px 12px !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 6px !important;
+    background-color: #FFFFFF !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    min-width: 200px !important;
+}
+.form-control-sm {
+    height: auto !important;
+    line-height: 1.5 !important;
+}
+div.table-responsive>div.dataTables_wrapper>div.row {
+    margin: 18px !important;
+}
+
+/* Fix for horizontal scroll */
+.dataTables_wrapper {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.dataTables_wrapper .row {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 10px 0 !important;
+}
+
+.ud-table-container {
+    overflow-x: hidden !important;
+    width: 100% !important;
+}
+
+.ud-table-container .dataTables_wrapper {
+    padding: 0 !important;
+}
+
+/* Adjust table width */
+#paymentTable {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* Adjust columns layout */
+.dataTables_wrapper .col-sm-12 {
+    padding: 0 !important;
+}
+
+@media (max-width: 767px) {
+    .dataTables_wrapper .row {
+        margin: 0 !important;
+    }
+    
+    .dataTables_length, 
+    .dataTables_filter {
+        padding: 10px 0 !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .col-md-5 {
+        flex: 0 0 auto;
+        width: 30.666667% !important;
+    }
+}
