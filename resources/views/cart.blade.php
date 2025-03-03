@@ -45,7 +45,7 @@
 		@include('navbar')
 		<!-- End Navbar Area -->
 		<!-- Start Preloader Area -->
-		
+
 		<!-- End Preloader Area -->
 
 
