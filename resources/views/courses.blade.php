@@ -153,21 +153,21 @@
 					</div>
 
 					<!-- Simple Pagination -->
-					<div class="pagination-container">
-						<ul class="pagination" id="pagination">
-							<li class="page-item">
-								<a class="page-link" href="#" id="prevPage">
-									<i class="bx bx-chevron-left"></i>
+					<nav aria-label="Courses pagination" class="mt-4">
+						<ul class="pagination justify-content-center">
+							<li class="page-item" id="prevPageItem">
+								<a class="page-link" href="#" id="prevPage" aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
 								</a>
 							</li>
-							<div id="pageNumbers" class="d-flex"></div>
-							<li class="page-item">
-								<a class="page-link" href="#" id="nextPage">
-									<i class="bx bx-chevron-right"></i>
+							<div id="paginationNumbers"></div>
+							<li class="page-item" id="nextPageItem">
+								<a class="page-link" href="#" id="nextPage" aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
 								</a>
 							</li>
 						</ul>
-					</div>
+					</nav>
 				</div>
 			</div>
 		</section>
