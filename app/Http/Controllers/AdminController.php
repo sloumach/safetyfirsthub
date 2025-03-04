@@ -10,6 +10,8 @@ use App\Models\Order;
 use App\Models\Course;
 use App\Models\User;
 use Flasher\Prime\FlasherInterface;
+use App\Jobs\ProcessVideoUpload;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -25,10 +27,13 @@ class AdminController extends Controller
     public function index()
     {
         return view('adminpanel.index');
+
     }
 
     public function courses()
-    {
+    {        /* $course = Course::with(['sections.slides', 'sections.videos'])->findOrFail(17);
+        return view('adminpanel.courses', compact('course'));
+        dd($course); */
         try {
             $courses = $this->courseService->getAllCourses();
             return view('adminpanel.courses', compact('courses'));
@@ -40,59 +45,99 @@ class AdminController extends Controller
 
     public function addCourse(Request $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
-                'price' => 'required|numeric|min:0',
-                'category' => 'required|string|max:255',
-                'total_videos' => 'required|integer|min:1',
-                'short_description' => 'required|string|max:500',
-                'description' => 'required|string|max:2000',
-                'cover' => 'required|file|mimes:jpg,jpeg,png|max:2048',
-                'video' => 'required|file|mimes:mp4,mov,avi|max:50000',
-                'duration' => 'required|integer|min:1', // Validation de la durée
 
+        try {
+            // 🔹 Validation des données
+            $validatedData = $request->validate([
+                'name'              => 'required|string|max:255',
+                'total_videos'              => 'required|integer|min:1',
+                'price'             => 'required|numeric|min:0',
+                'category'          => 'required|string|max:255',
+                'short_description' => 'required|string|max:500',
+                'description'       => 'required|string|max:2000',
+                'cover'             => 'required|file|mimes:jpg,jpeg,png|max:2048',
+                'duration'          => 'required|integer|min:1', // Durée en mois
+
+                // Sections validation
+                'sections'                  => 'required|array',
+                'sections.*.title'          => 'required|string|max:255',
+
+                // Slides validation
+                'sections.*.slides'                 => 'array',
+                'sections.*.slides.*.title'         => 'required|string|max:255',
+                'sections.*.slides.*.content'       => 'nullable|string|max:5000',
+                'sections.*.slides.*.file'          => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240', // PDF / Image
+
+                // Videos validation
+                'sections.*.videos'                 => 'array',
+                'sections.*.videos.*.title'         => 'required|string|max:255',
+                'sections.*.videos.*.video'         => 'required|file|mimes:mp4,mov,avi|max:500000', // Jusqu'à 500MB
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            foreach ($e->errors() as $field => $messages) {
-                foreach ($messages as $message) {
-                    flash()->error($field . ': ' . $message);
+
+            // 🔹 Sauvegarde de l'image de couverture
+            $coverPath = $request->file('cover')->store('courses/covers', 'public');
+
+            // 🔹 Création du cours
+            $course = Course::create([
+                'name'              => $validatedData['name'],
+                'price'             => $validatedData['price'],
+                'category'          => $validatedData['category'],
+                'total_videos'          => $validatedData['total_videos'],
+                'short_description' => $validatedData['short_description'],
+                'description'       => $validatedData['description'],
+                'cover'             => $coverPath,
+                'students'          => 0,
+                'duration'          => $validatedData['duration'],
+            ]);
+
+            // 🔹 Ajout des sections
+            foreach ($validatedData['sections'] as $sectionData) {
+                $section = $course->sections()->create([
+                    'title' => $sectionData['title'],
+                ]);
+
+                // 🔹 Ajout des slides
+                if (!empty($sectionData['slides'])) {
+                    foreach ($sectionData['slides'] as $slideData) {
+                        $filePath = null;
+
+                        if (!empty($slideData['file'])) {
+                            $filePath = $slideData['file']->store('courses/slides', 'public');
+                        }
+
+                        $section->slides()->create([
+                            'title'    => $slideData['title'],
+                            'content'  => $slideData['content'] ?? null,
+                            'file_path'=> $filePath,
+                        ]);
+                    }
+                }
+
+                // 🔹 Ajout des vidéos
+                if (!empty($sectionData['videos'])) {
+                    foreach ($sectionData['videos'] as $videoData) {
+                        $file = $videoData['video'];
+                        $tempVideoPath = "courses/videos/temp/" . uniqid() . '.' . $file->getClientOriginalExtension();
+
+                        // 🔹 Stockage temporaire avant traitement en queue
+                        Storage::disk('local')->put($tempVideoPath, file_get_contents($file));
+
+                        // 🔹 Création d'une entrée vidéo en base de données
+                        $video = $section->videos()->create([
+                            'title' => $videoData['title'],
+                            'video_path' => 'processing', // Statut en cours de traitement
+                        ]);
+
+                        // 🔹 Dispatch du job de traitement vidéo
+                        ProcessVideoUpload::dispatch($video->id, $tempVideoPath);
+                    }
                 }
             }
-            return back()->withInput();
-        }
 
-        try {
-
-
-            // Sauvegarde de l'image de couverture
-            $coverPath = $request->file('cover')->store('courses/covers', 'public');
-            // Teste si le fichier est lisible
-            $file = $request->file('video');
-            // Sauvegarde de la vidéo
-            $videoPath = $request->file('video')->store('courses/videos', 'private');
-
-            // Création du cours
-            Course::create([
-                'name' => $validatedData['name'],
-                'price' => $validatedData['price'],
-                'category' => $validatedData['category'],
-                'total_videos' => $validatedData['total_videos'],
-                'short_description' => $validatedData['short_description'],
-                'description' => $validatedData['description'],
-                'cover' => $coverPath,
-                'video' => $videoPath, // Enregistre le chemin sécurisé de la vidéo
-                'students' => 0,
-                'duration' => $validatedData['duration'],
-
-            ]);
-
-            flash()->success('Course added successfully!');
-            return redirect()->back();
+            return response()->json(['message' => 'Course added successfully!'], 201);
         } catch (\Exception $e) {
-            Log::error("Error in addCourse: " . $e->getMessage());
-            flash()->error('An error occurred while adding the course.');
-            return back()->withInput();
+            \Log::error("Error in addCourse: " . $e->getMessage());
+            return response()->json(['error' => $e->getmessage() ], 500);
         }
     }
 
