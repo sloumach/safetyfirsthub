@@ -1,0 +1,436 @@
+/* Course Form Styling */
+.course-form {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.course-form .form-group {
+    margin-bottom: 20px;
+}
+
+.course-form label {
+    font-weight: 600;
+    color: #4e73df;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.course-form input[type="text"],
+.course-form input[type="number"],
+.course-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e3e6f0;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+.course-form input[type="text"]:focus,
+.course-form input[type="number"]:focus,
+.course-form textarea:focus {
+    border-color: #4e73df;
+    outline: none;
+}
+
+.course-form .section {
+    background: #f8f9fc;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e3e6f0;
+}
+
+.course-form .slides-container,
+.course-form .videos-container {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 10px 0;
+}
+
+.course-form .slide,
+.course-form .video {
+    border-left: 3px solid #4e73df;
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+
+.course-form button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.course-form button[type="submit"] {
+    background: #4e73df;
+    color: white;
+    margin-right: 10px;
+}
+
+.course-form button[type="button"] {
+    background: #1cc88a;
+    color: white;
+}
+
+.course-form button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.course-form .section-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.course-form .section-header label {
+    margin-bottom: 0;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.course-form .section-header input {
+    flex: 1;
+}
+
+.course-form .file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.course-form .file-input-wrapper input[type="file"] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.course-form .file-input-button {
+    background: #4e73df;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .course-form {
+        padding: 15px;
+    }
+    
+    .course-form .section {
+        padding: 15px;
+    }
+}
+
+.accordion-section {
+    border: 1px solid #4e73df;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.accordion-header {
+    background: #f8f9fc;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #4e73df;
+}
+
+.accordion-header.active {
+    background: white;
+    color: #4e73df;
+}
+
+.accordion-content {
+    display: none;
+    padding: 20px;
+    background: white;
+}
+
+.accordion-content.show {
+    display: block;
+}
+
+.accordion-toggle {
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+    margin-left: 10px;
+    color: #4e73df;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.accordion-header.active .accordion-toggle {
+    transform: rotate(180deg);
+}
+
+.sub-accordion {
+    margin: 10px 0;
+}
+
+.sub-accordion-header {
+    background: #f1f3f9;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.sub-accordion-content {
+    display: none;
+    padding: 10px;
+}
+
+.sub-accordion-content.show {
+    display: block;
+}
+
+/* Add these styles to your existing CSS */
+
+.card {
+    border: none;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+    padding: 1rem 1.25rem;
+}
+
+.card-header h4 {
+    margin: 0;
+    color: #4e73df;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Make the sections card minimum height match the basic info card */
+.col-lg-6 .card {
+    height: 100%;
+}
+
+/* Style the main submit button */
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    margin-top: 2rem;
+}
+
+/* Adjust accordion within the card */
+.card .accordion-section {
+    border: 1px solid #4e73df;
+    margin-bottom: 10px;
+}
+
+.card .accordion-section:last-child {
+    margin-bottom: 0;
+}
+
+.slide-accordion {
+    border: 1px solid #e3e6f0;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.slide-accordion .sub-accordion-header {
+    background: #f8f9fc;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.slide-accordion .sub-accordion-header h5 {
+    color: #4e73df;
+}
+
+.slide-accordion .sub-accordion-content {
+    padding: 15px;
+    display: none;
+    background: white;
+}
+
+.slide-accordion .sub-accordion-header.active {
+    background: white;
+    color: #4e73df;
+}
+
+.slide-accordion .sub-accordion-header.active h5 {
+        color:#4e73df ;
+}
+
+.slide-accordion .sub-accordion-content.show {
+    display: block;
+}
+
+.main-sub-header {
+    cursor: default !important;
+    background: #f1f3f9 !important;
+}
+
+.slides-wrapper {
+    padding: 15px;
+    background: white;
+}
+
+.accordion-toggle {
+    transition: transform 0.3s ease;
+}
+
+.sub-accordion-header.active .accordion-toggle {
+    transform: rotate(180deg);
+}
+
+.video-accordion {
+    border: 1px solid #e3e6f0;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.video-accordion .sub-accordion-header {
+    background: #f8f9fc;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.video-accordion .sub-accordion-header h5 {
+    color: #4e73df;
+}
+
+.video-accordion .sub-accordion-content {
+    padding: 15px;
+    display: none;
+    background: white;
+}
+
+.video-accordion .sub-accordion-header.active {
+    background: #4e73df;
+    color: white;
+}
+
+.video-accordion .sub-accordion-header.active h5 {
+    color: white;
+}
+
+.video-accordion .sub-accordion-content.show {
+    display: block;
+}
+
+.videos-wrapper {
+    padding: 15px;
+    background: white;
+}
+
+/* Shared styles for both slide and video wrappers */
+.slides-wrapper,
+.videos-wrapper {
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+/* Style adjustments for main headers */
+.main-sub-header {
+    background: #f1f3f9 !important;
+    border-radius: 5px;
+    margin-bottom: 0;
+}
+
+.main-sub-header h4 {
+    font-size: 1.1rem;
+}
+
+/* Button adjustments */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.btn-danger {
+    background-color: #e74a3b;
+    border-color: #e74a3b;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #be3e32;
+    border-color: #be3e32;
+}
+
+.remove-slide-btn,
+.remove-video-btn {
+    padding: 0.15rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.remove-section-btn {
+    margin-left: 15px;
+}
+
+.ml-2 {
+    margin-left: 0.5rem;
+}
+
+/* Update the remove button styles */
+.btn-icon {
+    background: white !important;
+    border: 1px solid red !important;
+    padding: 5px 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.btn-icon:hover {
+    background: #fff;
+    box-shadow: 0 0 5px rgba(231, 74, 59, 0.3);
+}
+
+.btn-icon i {
+    font-size: 1rem;
+    color: #e74a3b;
+}
+
+.text-danger {
+    color: #e74a3b !important;
+}
+
+.remove-section-btn {
+    background: white !important;
+    border: 1px solid red !important;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+
+.remove-section-btn:hover {
+    background: white;
+    box-shadow: 0 0 5px rgba(231, 74, 59, 0.3);
+}
+
+.remove-slide-btn,
+.remove-video-btn {
+    margin-left: 8px;
+}
+
+/* For sub-accordions (slides and videos) */
+.sub-accordion-header .accordion-toggle {
+    transition: transform 0.3s ease;
+} 

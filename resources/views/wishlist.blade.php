@@ -76,7 +76,7 @@
 			<div class="container">
 				<form>
 					<div class="cart-wraps wishlist-wrap">
-						<div class="cart-table table-responsive">
+						<div class="cart-table">
 							<table class="table table-bordered" id="wishlistTable">
 								<thead>
 									<tr>

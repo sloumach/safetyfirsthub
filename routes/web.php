@@ -111,7 +111,8 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('adminindex', 'index')->name('adminindex');
     Route::get('adminfinanceindex', 'finance')->name('adminfinanceindex');
     Route::get('usersmanagement', 'usersManagement')->name('usersManagement');
-    Route::get('admincourses', 'courses')->name('admincourses');
+    Route::get('admincourses', 'addcourses')->name('admincourses');
+    Route::get('removecourses', 'removecourses')->name('removecourses');
     Route::post('addcourse', 'addcourse')->name('addcourse');
     // Route pour mettre à jour un cours
     Route::post('/admin/course/update/{id}', 'updateCourse')->name('update.course');

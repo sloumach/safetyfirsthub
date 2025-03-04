@@ -26,11 +26,24 @@
         Management
     </div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item active">
-        <a class="nav-link" href="{{ route('admincourses') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>courses</span></a>
+    <!-- Nav Item - Courses Dropdown -->
+    <li class="nav-item">
+        <a class="nav-link" href="#" data-toggle="collapse" data-target="#coursesDropdown"
+            aria-expanded="true" aria-controls="coursesDropdown" style="color: white;">
+            <i class="fas fa-fw fa-book"></i>
+            <span>Courses</span>
+        </a>
+        <div id="coursesDropdown" class="collapse" aria-labelledby="headingCourses" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Course Management:</h6>
+                <a class="collapse-item" href="{{ route('admincourses') }}">
+                    <i class="fas fa-plus fa-sm fa-fw mr-2"></i>Add Course
+                </a>
+                <a class="collapse-item" href="{{ route('removecourses') }}">
+                    <i class="fas fa-list fa-sm fa-fw mr-2"></i>List Courses
+                </a>
+            </div>
+        </div>
     </li>
     <li class="nav-item active">
         <a class="nav-link" href="{{ route('adminfinanceindex') }}">
@@ -52,6 +65,8 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Messages</span></a>
     </li>
+
+   
 
  {{--    <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">

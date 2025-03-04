@@ -12,58 +12,6 @@
     }
 }
 
-@media screen and (max-width: 767px) {
-    .cart-table table {
-        width: 100% !important;
-    }
-
-    .cart-table thead {
-        display: none;
-    }
-
-    .cart-table tr {
-        display: block;
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-    }
-
-    .cart-table td {
-        display: block;
-        text-align: right;
-        padding: 10px;
-        position: relative;
-        padding-left: 50% !important;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .cart-table td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-weight: bold;
-    }
-
-    .cart-table td.product-thumbnail {
-        text-align: center;
-        padding-left: 10px !important;
-    }
-
-    .cart-table td.product-thumbnail img {
-        max-width: 150px;
-        margin: 0 auto;
-    }
-
-    .cart-table td.product-actions {
-        text-align: center;
-        padding-left: 10px !important;
-    }
-
-    .cart-table td.product-actions button {
-        margin: 5px;
-    }
-}
 
 @media screen and (max-width: 480px) {
     .cart-area {
@@ -71,8 +19,35 @@
     }
 
     .cart-table td.product-thumbnail img {
-        max-width: 100px;
-        margin-left: 139px;
+        max-width: 97px;
+        margin-left: -17px;
+    }
+    .col-sm-12 {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+    .dataTables_length, .dataTables_filter {
+        width: 73% !important;
+    }
+    /* Add table responsiveness */
+    .table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Ensure action buttons are visible */
+    .table td.product-actions {
+        white-space: nowrap;
+        min-width: 120px;
+        text-align: right;
+    }
+
+    /* Adjust cell padding for better spacing */
+    .table td {
+        padding: 12px 8px !important;
+        vertical-align: middle;
     }
 }
 
@@ -161,37 +136,6 @@
     box-shadow: 0 0 0 2px rgba(255, 138, 0, 0.1) !important;
 }
 
-/* Responsive Design */
-@media screen and (max-width: 767px) {
-    .row {
-        flex-direction: column !important;
-        gap: 15px !important;
-    }
-
-    .col-sm-12 {
-        width: 100% !important;
-    }
-
-    .dataTables_filter {
-        justify-content: flex-start !important;
-    }
-
-    .dataTables_length,
-    .dataTables_filter {
-        width: 100% !important;
-    }
-
-    .dataTables_filter input {
-        flex: 1 !important;
-        min-width: unset !important;
-    }
-
-    .dataTables_length label,
-    .dataTables_filter label {
-        width: 100% !important;
-        justify-content: space-between !important;
-    }
-}
 
 /* Custom Select Styling */
 .custom-select-sm {
@@ -205,3 +149,162 @@
     height: auto !important;
     line-height: 1.5 !important;
 }
+
+/* DataTable Wrapper Improvements */
+.dataTables_wrapper {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Controls Row Styling */
+.dataTables_wrapper .row:first-child {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin: 0 0 15px 0 !important;
+    padding: 0 15px !important;
+    flex-direction: row !important;
+}
+
+/* Table Container */
+.dataTables_wrapper .row:nth-child(2) {
+    margin: 0 !important;
+    padding: 0 15px !important;
+}
+
+/* Pagination Row */
+.dataTables_wrapper .row:last-child {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    margin: 15px 0 0 0 !important;
+    padding: 0 !important;
+}
+
+/* Remove Horizontal Scroll */
+.dataTables_wrapper .table-responsive {
+    overflow-x: visible !important;
+}
+
+/* Table Width Control */
+#wishlistTable {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* Empty Table Message */
+.dataTables_empty {
+    text-align: center !important;
+    padding: 20px !important;
+    font-size: 15px !important;
+    color: #6B7280 !important;
+    background: #F9FAFB !important;
+}
+
+/* Hide "No items available" message */
+.dataTables_info {
+    display: none !important;
+}
+
+/* Pagination Styling */
+.dataTables_paginate {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-left: -103px !important;
+    padding-right: 15px !important;
+}
+
+.paginate_button {
+    padding: 6px 12px !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 6px !important;
+    background: #FFFFFF !important;
+    color: #374151 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.paginate_button:hover {
+    background: #F3F4F6 !important;
+    border-color: #D1D5DB !important;
+}
+
+.paginate_button.current {
+    background: #FF8A00 !important;
+    border-color: #FF8A00 !important;
+    color: white !important;
+}
+
+.paginate_button.disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    /* Controls positioning */
+    .dataTables_wrapper .row:first-child {
+        flex-direction: column !important;
+        gap: 15px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .dataTables_length{
+        width: 100% !important;
+    }
+
+    .dataTables_filter input {
+        width: 100% !important;
+        min-width: unset !important;
+    }
+
+    /* Keep table headers visible */
+    .table thead {
+        display: table-header-group !important;
+    }
+
+    .table thead th {
+        font-size: 12px !important;
+        padding: 12px 8px !important;
+        white-space: nowrap !important;
+        background: #f9fafb !important;
+        color: #6B7280 !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+    }
+
+    /* Table body adjustments */
+   
+    .table td {
+        padding: 12px 8px !important;
+    }
+
+    /* Product thumbnail adjustments */
+    .product-thumbnail {
+        width: 80px !important;
+    }
+
+    .product-thumbnail img {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    /* Pagination adjustments */
+    .dataTables_paginate {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 15px 0 !important;
+        margin: 0 !important;
+    }
+
+    .paginate_button {
+        padding: 6px 10px !important;
+        font-size: 13px !important;
+    }
+}
+

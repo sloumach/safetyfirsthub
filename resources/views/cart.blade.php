@@ -214,19 +214,21 @@
                     lengthMenu: [4, 8, 12],
                     language: {
                         lengthMenu: "Show _MENU_ items per page",
-                        info: "Showing _START_ to _END_ of _TOTAL_ items",
-                        infoEmpty: "No items available",
+                        info: "",
+                        infoEmpty: "",
                         search: "Search:",
                         paginate: {
                             first: "First",
                             last: "Last",
                             next: "Next",
                             previous: "Previous"
-                        }
+                        },
+                        zeroRecords: "No data available in table"
                     },
                     columnDefs: [
-                        { orderable: false, targets: [0, 3] } // Disable sorting for image and actions columns
-                    ]
+                        { orderable: false, targets: [0, 3] }
+                    ],
+                    dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12"p>>'
                 });
             });
         </script>
