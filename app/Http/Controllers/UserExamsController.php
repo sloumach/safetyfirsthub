@@ -321,35 +321,75 @@ class UserExamsController extends Controller
         $request->validate([
             'current_time'   => 'required|integer|min:0',
             'total_duration' => 'required|integer|min:1',
-            'course_id'      => 'required|exists:courses,id',
+            'section_id'     => 'required|exists:sections,id',
             'is_completed'   => 'boolean'
         ]);
 
-        $course_id = $request->course_id;
         $user = Auth::user();
-
-        if (! $user->courses->contains($course_id)) {
-            return response()->json(['error' => 'You do not have access to this course'], 403);
-        }
+        $section_id = $request->section_id;
 
         $progress = VideoProgress::firstOrCreate(
-            ['user_id' => $user->id, 'course_id' => $course_id],
+            ['user_id' => $user->id, 'section_id' => $section_id],
             ['total_duration' => $request->total_duration, 'watched_segments' => json_encode([])]
         );
 
-        $segments   = json_decode($progress->watched_segments, true) ?? [];
+        $segments = json_decode($progress->watched_segments, true) ?? [];
         $segments[] = $request->current_time;
 
-        // Only update is_completed if explicitly set to true via markAsCompleted
+        $isCompleted = $this->checkCompletion($segments, $request->total_duration);
+
+        // Met à jour la progression de la vidéo
         $progress->update([
             'watched_segments' => json_encode($segments),
-            'is_completed'     => $request->boolean('is_completed', false),
+            'is_completed'     => $isCompleted,
         ]);
+
+        // Vérifier si toutes les vidéos de la section sont terminées
+        if ($isCompleted) {
+            $this->checkSectionCompletion($user, $section_id);
+        }
 
         return response()->json([
             'message' => 'Progress updated',
             'is_completed' => $progress->is_completed
         ]);
+    }
+
+    private function checkSectionCompletion($user, $section_id)
+    {
+        $section = Section::findOrFail($section_id);
+
+        // Vérifier si toutes les vidéos de la section sont complétées
+        $allCompleted = $section->videos->every(function ($video) use ($user) {
+            return VideoProgress::where('user_id', $user->id)
+                ->where('video_id', $video->id)
+                ->where('is_completed', true)
+                ->exists();
+        });
+
+        if ($allCompleted) {
+            // Vérifier si toutes les sections du cours sont complétées
+            $this->checkCourseCompletion($user, $section->course_id);
+        }
+    }
+
+    private function checkCourseCompletion($user, $course_id)
+    {
+        $course = Course::findOrFail($course_id);
+
+        $allSectionsCompleted = $course->sections->every(function ($section) use ($user) {
+            return VideoProgress::where('user_id', $user->id)
+                ->where('section_id', $section->id)
+                ->where('is_completed', true)
+                ->exists();
+        });
+
+        if ($allSectionsCompleted) {
+            CourseProgress::updateOrCreate(
+                ['user_id' => $user->id, 'course_id' => $course_id],
+                ['is_completed' => true]
+            );
+        }
     }
 
     private function checkCompletion($segments, $total_duration)
