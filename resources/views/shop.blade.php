@@ -5,6 +5,8 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="csrf-token" content="{{ csrf_token() }}">
+		<meta name="description" content="Safety FirstHUB">
+		<meta name="keywords" content="Safety FirstHUB">
 		<!-- Bootstrap Min CSS -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 		<!-- Owl Theme Default Min CSS -->
@@ -28,6 +30,7 @@
 		<!-- Style CSS -->
 		<link rel="stylesheet" href="assets/css/style.css">
 		<link rel="stylesheet" href="assets/css/navbar.css">
+		<link rel="stylesheet" href="assets/css/footer.css">
 		<!-- Dark CSS -->
 		<link rel="stylesheet" href="assets/css/dark.css">
 		<!-- Responsive CSS -->
@@ -36,26 +39,21 @@
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<link rel="stylesheet" href="assets/css/shop.css">
-		<!-- Title -->
+		<!-- Title -->	
 		<title>Safety FirstHUB</title>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
     <body>
 
-        		<!-- Start Navbar Area -->
+        <!-- Start Navbar Area -->
 		@include('navbar')
 		<!-- End Navbar Area -->
-		<!-- Start Preloader Area -->
-		
-		<!-- End Preloader Area -->
-
-
 
 		<!-- Start Page Title Area -->
 		<div class="page-title-area bg-19">
 			<div class="container">
 				<div class="page-title-content">
-					<h2>Shop</h2>
+					<h1>Shop</h1>
 					<ul>
 						<li>
 						<a href="{{ route('home') }}">
@@ -224,37 +222,9 @@
 		</div>
 		<!-- End Go Top Area -->
 
-
-        <!-- Jquery Min JS -->
-        <script src="assets/js/jquery.min.js"></script>
-        <!-- Bootstrap Bundle Min JS -->
-        <script src="assets/js/bootstrap.bundle.min.js"></script>
-        <!-- Meanmenu Min JS -->
-		<script src="assets/js/meanmenu.min.js"></script>
-		<!-- Owl Carousel Min JS -->
-		<script src="assets/js/owl.carousel.min.js"></script>
-		<!-- Wow Min JS -->
-        <script src="assets/js/wow.min.js"></script>
-        <!-- Nice Select Min JS -->
-		<script src="assets/js/nice-select.min.js"></script>
-        <!-- Magnific Popup Min JS -->
-		<script src="assets/js/magnific-popup.min.js"></script>
-		<!-- jarallax Min JS -->
-		<script src="assets/js/jarallax.min.js"></script>
-		<!-- Appear Min JS -->
-        <script src="assets/js/appear.min.js"></script>
-		<!-- Odometer JS -->
-		<script src="assets/js/odometer.min.js"></script>
-		<!-- Form Validator Min JS -->
-		<script src="assets/js/form-validator.min.js"></script>
-		<!-- Contact JS -->
-		<script src="assets/js/contact-form-script.js"></script>
-		<!-- Ajaxchimp Min JS -->
-		<script src="assets/js/ajaxchimp.min.js"></script>
-        <!-- Custom JS -->
-		<script src="assets/js/custom.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="assets/js/shop.js"></script>
-		<script src="assets/js/navbar.js"></script>
     </body>
+    @include('layouts.scripts')
+    <!-- Page Specific Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/shop.js"></script>
 </html>

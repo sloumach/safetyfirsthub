@@ -12,15 +12,16 @@
 }
 
 .success-message {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
-    width: 100%;
-    position: relative;
-    z-index: 2;
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95) !important;
+    padding: 40px !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+    max-width: 500px !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 2 !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(40, 167, 69, 0.1) !important;
 }
 
 .checkmark {
@@ -155,6 +156,11 @@ p {
     opacity: 0.1;
 }
 
+.floating-circle.success-message {
+    background: #28a745;
+    opacity: 0.1;
+}
+
 .default-btn.failed {
     background-color: #dc3545;
 }
@@ -183,4 +189,42 @@ p {
         transform: scale(1) rotate(0deg); 
         opacity: 1; 
     }
+}
+
+/* Success state floating circles */
+.success .floating-circle {
+    background: #28a745 !important;
+    opacity: 0.1 !important;
+}
+
+/* Success state check marks */
+.success .floating-check {
+    color: #28a745 !important;
+    opacity: 0.1 !important;
+}
+
+/* Dynamic floating elements styles */
+.floating-circle {
+    position: absolute;
+    background: #FF8A00;
+    border-radius: 50%;
+    animation: float 8s infinite;
+}
+
+.floating-check {
+    position: absolute;
+    color: #FF8A00;
+    font-size: 30px;
+    animation: floatCheck 10s infinite;
+}
+
+/* Failed state specific styles */
+.floating-circle.failed {
+    background: #dc3545;
+    opacity: 0.1;
+}
+
+.floating-check.failed {
+    color: #dc3545;
+    opacity: 0.1;
 }

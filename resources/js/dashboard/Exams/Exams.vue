@@ -2,7 +2,7 @@
   <div class="exams-dashboard exams-section">
 
     <div class="exams-header">
-      <h2>Available Exams</h2>
+      <h1>Available Exams</h1>
       <p class="subtitle">Test your knowledge and earn certificates</p>
     </div>
 
@@ -27,8 +27,8 @@
 
             <div class="exam-info">
               <div class="info-item">
-                <i class='bx bx-user'></i>
-                <span>{{ course.students || 0 }} students</span>
+                <!-- <i class='bx bx-user'></i>
+                <span>{{ course.students || 0 }} students</span> -->
               </div>
               <div class="info-item">
                 <i class='bx bx-time'></i>
@@ -89,25 +89,23 @@ import Swal from 'sweetalert2'
 export default {
   name: 'Exams',
   setup() {
-    const router = useRouter()
-    const isCompleted = ref(false)
-    const courses = ref([])
-    const route = useRoute()
-    const currentPage = ref(1)
-    const itemsPerPage = ref(4)  // Change from 6 to 2
+    const router = useRouter();
+    const isCompleted = ref(false);
+    const courses = ref([]);
+    const route = useRoute();
+    const currentPage = ref(1);
+    const itemsPerPage = ref(4);  // Change from 6 to 2
 
     const handleImageError = (e) => {
-      e.target.src = 'https://placehold.co/600x400/003366/ffffff?text=Course'
+      e.target.src = 'https://placehold.co/600x400/003366/ffffff?text=Course';
     }
 
     const fetchCourses = async () => {
       try {
-        const response = await axios.get('/api/courses')
-        console.log('API Response:', response.data)
-        courses.value = [...response.data]
-        console.log('Courses after update:', courses.value.length)
+        const response = await axios.get('/api/courses'); 
+        courses.value = [...response.data];
       } catch (error) {
-        console.error('Error fetching courses:', error)
+        console.error('Error fetching courses:', error);
       }
     }
 
@@ -146,59 +144,55 @@ export default {
       return course.examcheck ? 'Get Your Certificate' : 'Take Exam';
     }
 
-    // Debugging: Watch if courses update properly
-    watch(courses, (newValue) => {
+    
+
+    const totalPages = computed(() => {
+      return Math.ceil(courses.value.length / itemsPerPage.value)
+    })
+
+    const shouldShowPagination = computed(() => {
+      return courses.value.length > itemsPerPage.value
+    })  
+
+    const paginatedCourses = computed(() => {
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      const end = start + itemsPerPage.value;
+      return courses.value.slice(start, end);
+    })    
+
+    const displayedPages = computed(() => {
+      const pages = [] ;
+      const maxVisiblePages = 5 ;
+      let start = Math.max(1, currentPage.value - Math.floor(maxVisiblePages / 2));
+      let end = Math.min(totalPages.value, start + maxVisiblePages - 1);
+
+      if (end - start + 1 < maxVisiblePages) {
+        start = Math.max(1, end - maxVisiblePages + 1);
+      }
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      return pages;
+    })
+
+    const changePage = (page) => {
+      if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page;
+      }
+    }
+// Debugging: Watch if courses update properly
+  watch(courses, (newValue) => {
       console.log('Courses changed:', {
         length: newValue.length,
         totalPages: totalPages.value,
         currentPage: currentPage.value
       })
     })
-
-    const totalPages = computed(() => {
-      console.log('Computing total pages:', {
-        coursesLength: courses.value.length,
-        itemsPerPage: itemsPerPage.value,
-        result: Math.ceil(courses.value.length / itemsPerPage.value)
-      })
-      return Math.ceil(courses.value.length / itemsPerPage.value)
-    })
-
-    const shouldShowPagination = computed(() => {
-      return courses.value.length > itemsPerPage.value
-    })
-
-    const paginatedCourses = computed(() => {
-      const start = (currentPage.value - 1) * itemsPerPage.value
-      const end = start + itemsPerPage.value
-      return courses.value.slice(start, end)
-    })
-
-    const displayedPages = computed(() => {
-      const pages = []
-      const maxVisiblePages = 5
-      let start = Math.max(1, currentPage.value - Math.floor(maxVisiblePages / 2))
-      let end = Math.min(totalPages.value, start + maxVisiblePages - 1)
-
-      if (end - start + 1 < maxVisiblePages) {
-        start = Math.max(1, end - maxVisiblePages + 1)
-      }
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i)
-      }
-      return pages
-    })
-
-    const changePage = (page) => {
-      if (page >= 1 && page <= totalPages.value) {
-        currentPage.value = page
-      }
-    }
-
     onMounted(() => {
       console.log('Component mounted')
       fetchCourses()
+
     })
 
     return {
@@ -396,7 +390,7 @@ export default {
 
 @media (max-width: 768px) {
     .exams-dashboard {
-        padding: 1rem !important;
+        padding: 3rem !important;
     }
 
     .exams-header h2 {

@@ -11,7 +11,27 @@
 	});
 
 	// Nice Select JS
-	$('select').niceSelect();
+	try {
+		if (typeof $.fn.niceSelect === 'function') {
+			$('select').niceSelect();
+		} else {
+			// Fallback to default select styling
+			console.info('Using default select styling - Nice Select plugin not available');
+			$('select').css({
+				'display': 'block',
+				'width': '100%',
+				'padding': '0.375rem 0.75rem',
+				'font-size': '1rem',
+				'line-height': '1.5',
+				'color': '#495057',
+				'background-color': '#fff',
+				'border': '1px solid #ced4da',
+				'border-radius': '0.25rem'
+			});
+		}
+	} catch (error) {
+		console.error('Error handling select elements:', error);
+	}
 	
 	// Header Sticky JS
 	$(window).on('scroll', function() {
@@ -468,6 +488,76 @@
 				}
 			});
 		});
+	});
+
+	// Function to generate floating elements
+	function generateFloatingElements() {
+		const container = document.getElementById('animatedBackground');
+		if (!container) return;
+
+		// Clear existing elements
+		container.innerHTML = '';
+
+		// Generate 15 sets of elements
+		for (let i = 0; i < 8; i++) {
+			// Create floating circle
+			const circle = document.createElement('div');
+			circle.className = 'floating-circle failed';
+			const size = Math.random() * (100 - 20) + 20;
+			circle.style.width = `${size}px`;
+			circle.style.height = `${size}px`;
+			circle.style.left = `${Math.random() * 100}%`;
+			circle.style.top = `${Math.random() * 100}%`;
+			circle.style.animationDelay = `-${Math.random() * 8000}ms`;
+			container.appendChild(circle);
+
+			// Create floating X mark
+			const check = document.createElement('div');
+			check.className = 'floating-check failed';
+			check.textContent = '✕';
+			check.style.left = `${Math.random() * 100}%`;
+			check.style.top = `${Math.random() * 100}%`;
+			check.style.animationDelay = `-${Math.random() * 10000}ms`;
+			container.appendChild(check);
+		}
+	}
+
+	// Function to generate floating elements for success page
+	function generateSuccessFloatingElements() {
+		const container = document.getElementById('animatedBackgroundSuccess');
+		if (!container) return;
+
+		// Clear existing elements
+		container.innerHTML = '';
+
+		// Generate 15 sets of elements
+		for (let i = 0; i < 8; i++) {
+			// Create floating circle
+			const circle = document.createElement('div');
+			circle.className = 'floating-circle';
+			const size = Math.random() * (100 - 20) + 20;
+			circle.style.width = `${size}px`;
+			circle.style.height = `${size}px`;
+			circle.style.left = `${Math.random() * 100}%`;
+			circle.style.top = `${Math.random() * 100}%`;
+			circle.style.animationDelay = `-${Math.random() * 8000}ms`;
+			container.appendChild(circle);
+
+			// Create floating checkmark
+			const check = document.createElement('div');
+			check.className = 'floating-check';
+			check.textContent = '✓';
+			check.style.left = `${Math.random() * 100}%`;
+			check.style.top = `${Math.random() * 100}%`;
+			check.style.animationDelay = `-${Math.random() * 10000}ms`;
+			container.appendChild(check);
+		}
+	}
+
+	// Call both functions when the document is ready
+	document.addEventListener('DOMContentLoaded', function() {
+		generateFloatingElements(); // For failed page
+		generateSuccessFloatingElements(); // For success page
 	});
 
 })(jQuery);

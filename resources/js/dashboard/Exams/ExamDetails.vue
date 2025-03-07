@@ -85,43 +85,72 @@ const fetchNextQuestion = async () => {
 
     try {
         const response = await axios.get(`/exams/${sessionId.value}/question`);
-
-        if (response.data.exam_completed) {
-            const score = response.data.score ?? 0;
-            const passingScore = response.data.passing_score || 60;
-
-            if (score >= passingScore) {
-                await Swal.fire({
-                    title: 'Congratulations! 🎉',
-                    text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
-                    icon: 'success',
-                    confirmButtonColor: '#3085d6'
-                });
-            } else {
-                if (response.data.retry_allowed) {
+        
+        if (response.data) {
+            if (response.data.exam_completed) {
+                // Handle exam completion
+                const score = response.data.score ?? 0;
+                const passingScore = response.data.passing_score || 60;
+                
+                if (score >= passingScore) {
                     await Swal.fire({
-                        title: 'Exam Failed',
-                        text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${response.data.attempts_left || 0} attempts left.`,
-                        icon: 'error',
+                        title: 'Congratulations! 🎉',
+                        text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
+                        icon: 'success',
                         confirmButtonColor: '#3085d6'
                     });
                 } else {
-                    await Swal.fire({
-                        title: 'Exam Failed',
-                        text: `Your score is ${score}%, while ${passingScore}% was required. You cannot retry.`,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6'
-                    });
+                    if (response.data.retry_allowed) {
+                        await Swal.fire({
+                            title: 'Exam Failed',
+                            text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${response.data.attempts_left || 0} attempts left.`,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6'
+                        });
+                    } else {
+                        await Swal.fire({
+                            title: 'Exam Failed',
+                            text: `Your score is ${score}%, while ${passingScore}% was required. You cannot retry.`,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6'
+                        });
+                    }
                 }
+                router.push("/dashboard/exams");
+            } else if (response.data.question) {
+                // Handle new question
+                currentQuestion.value = response.data.question;
+                startTimer();
+            } else {
+                // No question data in response
+                await Swal.fire({
+                    title: 'No Question Available',
+                    text: 'Unable to load the next question. Please try again.',
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6'
+                });
+                router.push("/dashboard/exams");
             }
+        } else {
+            // No response data at all
+            await Swal.fire({
+                title: 'Error',
+                text: 'Failed to get question data from server',
+                icon: 'error',
+                confirmButtonColor: '#3085d6'
+            });
             router.push("/dashboard/exams");
-            return;
         }
-
-        currentQuestion.value = response.data.question;
-        startTimer();
     } catch (error) {
+        // Handle API error
         console.error("Error fetching next question:", error);
+        await Swal.fire({
+            title: 'Error',
+            text: 'Failed to load the next question. Please try again.',
+            icon: 'error',
+            confirmButtonColor: '#3085d6'
+        });
+        router.push("/dashboard/exams");
     }
 };
 
@@ -306,6 +335,41 @@ const handleTabChange = async () => {
   }
 };
 
+let inactivityTimer;
+
+const resetInactivityTimer = () => {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(async () => {
+    if (sessionId.value) {
+      try {
+        await axios.post(`/exams/${sessionId.value}/complete`);
+        await Swal.fire({
+            title: 'Session Closed',
+            text: 'Exam session closed due to inactivity.',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6'
+        });
+        router.push("/dashboard/exams");
+      } catch (error) {
+        console.error("Error marking exam as completed:", error);
+      }
+    }
+  }, 300000); // 5 minutes d'inactivité
+};
+
+// Add this function to capitalize first letter
+const capitalizeFirstLetter = (string) => {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+// Instead, add this to handle refresh cleanup
+window.addEventListener('unload', async () => {
+    if (sessionId.value) {
+        // Using navigator.sendBeacon for more reliable cleanup during page unload
+        navigator.sendBeacon(`/exams/${sessionId.value}/complete`);
+    }
+});
 window.addEventListener("popstate", async () => {
   if (sessionId.value) {
     try {
@@ -356,29 +420,6 @@ window.addEventListener("offline", async () => {
     }
   }
 });
-
-let inactivityTimer;
-
-const resetInactivityTimer = () => {
-  clearTimeout(inactivityTimer);
-  inactivityTimer = setTimeout(async () => {
-    if (sessionId.value) {
-      try {
-        await axios.post(`/exams/${sessionId.value}/complete`);
-        await Swal.fire({
-            title: 'Session Closed',
-            text: 'Exam session closed due to inactivity.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-        });
-        router.push("/dashboard/exams");
-      } catch (error) {
-        console.error("Error marking exam as completed:", error);
-      }
-    }
-  }, 300000); // 5 minutes d'inactivité
-};
-
 // Détecter les mouvements et clics
 window.addEventListener("mousemove", resetInactivityTimer);
 window.addEventListener("keydown", resetInactivityTimer);
@@ -445,19 +486,9 @@ onUnmounted(() => {
 
 });
 
-// Add this function to capitalize first letter
-const capitalizeFirstLetter = (string) => {
-    if (!string) return '';
-    return string.charAt(0).toUpperCase() + string.slice(1);
-};
 
-// Instead, add this to handle refresh cleanup
-window.addEventListener('unload', async () => {
-    if (sessionId.value) {
-        // Using navigator.sendBeacon for more reliable cleanup during page unload
-        navigator.sendBeacon(`/exams/${sessionId.value}/complete`);
-    }
-});
+
+
 </script>
 
 <style scoped>

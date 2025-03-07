@@ -5,7 +5,8 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="csrf-token" content="{{ csrf_token() }}">
-
+		<meta name="description" content="Safety FirstHUB">
+		<meta name="keywords" content="Safety FirstHUB">
 		<!-- Bootstrap Min CSS -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 		<!-- Owl Theme Default Min CSS -->
@@ -34,6 +35,7 @@
 		<link rel="stylesheet" href="assets/css/responsive.css">
 		<link rel="stylesheet" href="assets/css/cart.css">
 		<link rel="stylesheet" href="assets/css/navbar.css">
+		<link rel="stylesheet" href="assets/css/footer.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
@@ -46,17 +48,12 @@
         <!-- Start Navbar Area -->
 		@include('navbar')
 		<!-- End Navbar Area -->
-		<!-- Start Preloader Area -->
-
-		<!-- End Preloader Area -->
-
-
 
 		<!-- Start Page Title Area -->
 		<div class="page-title-area bg-20">
 			<div class="container">
 				<div class="page-title-content">
-					<h2>Cart</h2>
+					<h1>Cart</h1>
 					<ul>
 						<li>
 						<a href="{{ route('home') }}">
@@ -172,67 +169,11 @@
 			<i class='bx bx-chevrons-up'></i>
 			<i class='bx bx-chevrons-up'></i>
 		</div>
-		<!-- End Go Top Area -->
-
-
-        <!-- Jquery Min JS -->
-        <script src="assets/js/jquery.min.js"></script>
-        <!-- Bootstrap Bundle Min JS -->
-        <script src="assets/js/bootstrap.bundle.min.js"></script>
-        <!-- Meanmenu Min JS -->
-		<script src="assets/js/meanmenu.min.js"></script>
-		<!-- Owl Carousel Min JS -->
-		<script src="assets/js/owl.carousel.min.js"></script>
-		<!-- Wow Min JS -->
-        <script src="assets/js/wow.min.js"></script>
-        <!-- Nice Select Min JS -->
-		<script src="assets/js/nice-select.min.js"></script>
-        <!-- Magnific Popup Min JS -->
-		<script src="assets/js/magnific-popup.min.js"></script>
-		<!-- jarallax Min JS -->
-		<script src="assets/js/jarallax.min.js"></script>
-		<!-- Appear Min JS -->
-        <script src="assets/js/appear.min.js"></script>
-		<!-- Odometer JS -->
-		<script src="assets/js/odometer.min.js"></script>
-		<!-- Form Validator Min JS -->
-		<script src="assets/js/form-validator.min.js"></script>
-		<!-- Contact JS -->
-		<script src="assets/js/contact-form-script.js"></script>
-		<!-- Ajaxchimp Min JS -->
-		<script src="assets/js/ajaxchimp.min.js"></script>
-        <!-- Custom JS -->
-		<script src="assets/js/custom.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <!-- DataTables JS -->
-        <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
-        <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $('#cartTable').DataTable({
-                    pageLength: 4,
-                    lengthMenu: [4, 8, 12],
-                    language: {
-                        lengthMenu: "Show _MENU_ items per page",
-                        info: "",
-                        infoEmpty: "",
-                        search: "Search:",
-                        paginate: {
-                            first: "First",
-                            last: "Last",
-                            next: "Next",
-                            previous: "Previous"
-                        },
-                        zeroRecords: "No data available in table"
-                    },
-                    columnDefs: [
-                        { orderable: false, targets: [0, 3] }
-                    ],
-                    dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12"p>>'
-                });
-            });
-        </script>
+ 
     </body>
-    <script src="{{ asset('assets/js/cart.js') }}"></script>
-    <script src="assets/js/navbar.js"></script>
+    @include('layouts.scripts')
+    <!-- Page Specific Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 </html>

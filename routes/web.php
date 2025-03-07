@@ -62,7 +62,6 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         /* Route::post('/pay', 'pay')->name('pay'); */
         Route::post('/charge', 'charge')->name('charge');
         Route::get('/sync-payment',  'syncPayment')->name('syncPayment');
-        //Route::get('/success', 'success')->name('success');
     });
     Route::controller(ProductController::class)->group(function () {
         Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');

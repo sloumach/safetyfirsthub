@@ -282,108 +282,21 @@ window.addEventListener("popstate", async () => {
     }
 });
 
-// Move the blur event listener to onMounted
-onMounted(() => {
-    // Add blur event listener
-    const handleBlur = async () => {
-        if (route.path.includes('/video')) {  // Only show alert if we're on the video page
-            await Swal.fire({
-                title: 'Window Unfocused',
-                text: 'Your video session has ended due to switching applications.',
-                icon: 'warning',
-                confirmButtonColor: '#3085d6',
-            });
-            router.push("/dashboard/courses");
-        }
-    };
-    window.addEventListener("blur", handleBlur);
-
-    // Add other existing event listeners
-    document.addEventListener("fullscreenchange", onFullScreenChange);
-    document.addEventListener("webkitfullscreenchange", onFullScreenChange);
-    document.addEventListener("mozfullscreenchange", onFullScreenChange);
-    document.addEventListener("msfullscreenchange", onFullScreenChange);
-    document.addEventListener("contextmenu", disableRightClick);
-    document.addEventListener("keydown", blockDevTools);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    // Handle refresh attempts (Ctrl+R or F5)
-    window.addEventListener('keydown', async (e) => {
-        if ((e.ctrlKey && e.key === 'r') || e.key === 'F5') {
-            e.preventDefault();
-            const result = await Swal.fire({
-                title: 'Refresh Attempted',
-                text: 'Refreshing will end your video session. Do you want to continue?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, refresh',
-                cancelButtonText: 'Cancel'
-            });
-
-            if (result.isConfirmed) {
-                // Use navigator.sendBeacon for cleanup before refresh
-                if (route.params.id) {
-                    navigator.sendBeacon(`/api/course/${route.params.id}/end-session`);
-                }
-                window.location.reload();
-            }
-        }
-    });
-
-    // Add a simple unload handler without preventing default behavior
-    window.addEventListener('unload', () => {
-        if (route.params.id) {
-            navigator.sendBeacon(`/api/course/${route.params.id}/end-session`);
-        }
-    });
-
-    fetchCourse();
-    fetchVideo();
-
-    // Store handleBlur function for cleanup
-    window._handleBlur = handleBlur;
-
-    // Add progress check
-    
-    // Automatically select doc1 and open section 1
-    selectContent('doc1');
-    openSections.value[1] = true;
-});
-
-onBeforeUnmount(async () => {
-    try {
-        // Only mark as incomplete if we haven't completed the video
-        if (!isCompleted.value && videoPlayer.value) {
-            await markAsIncomplete();
-        }
-    } catch (error) {
-        console.error('Error during cleanup:', error);
-    } finally {
-        // Remove event listeners
-        if (window._handleBlur) {
-            window.removeEventListener("blur", window._handleBlur);
-        }
-        
-        document.removeEventListener("fullscreenchange", onFullScreenChange);
-        document.removeEventListener("webkitfullscreenchange", onFullScreenChange);
-        document.removeEventListener("mozfullscreenchange", onFullScreenChange);
-        document.removeEventListener("msfullscreenchange", onFullScreenChange);
-        document.removeEventListener("visibilitychange", handleVisibilityChange);
-        document.removeEventListener("contextmenu", disableRightClick);
-        document.removeEventListener("keydown", blockDevTools);
-
-        // Redirect to Courses page when leaving this page
-        router.push("/dashboard/courses");
-    }
-});
-
 const fetchVideo = async () => {
     try {
         const courseId = route.params.id;
-        // Fixed URL template string
-        videoUrl.value = `/api/courses/${courseId}`;
+        if (courseId) {
+            videoUrl.value = `/api/courses/${courseId}`;
+        } else {
+            videoUrl.value = '';
+            console.error('No course ID available');
+            await Swal.fire({
+                title: 'Error',
+                text: 'Invalid course ID. Cannot load video.',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+            });
+        }
     } catch (error) {
         await Swal.fire({
             title: 'Error',
@@ -398,25 +311,33 @@ const fetchVideo = async () => {
 const fetchCourse = async () => {
     try {
         const response = await axios.get(`/api/course/${route.params.id}`);
-        const fetchedCourse = response.data.data || response.data;
-
-        course.value = {
-            id: fetchedCourse.id,
-            name: fetchedCourse.name || fetchedCourse.title,
-            description: fetchedCourse.description || "No description available",
-            cover: fetchedCourse.cover,
-            total_videos: fetchedCourse.total_videos || 0,
-            students: fetchedCourse.students || 0,
-            videoUrl: fetchedCourse.videoUrl || fetchedCourse.cover,
-            instructor: fetchedCourse.instructor || "John Doe",
-            price: fetchedCourse.price || "Free",
-            duration: fetchedCourse.duration || "2h 30min",
-            email: fetchedCourse.email || "student@example.com",
-        };
-
-        previewImage.value = course.value.cover;
-        // Correct template string for watermark
-        watermarkText.value = `${course.value.email} | safetyfirsthub.com`;
+        if (response.data) {
+            const fetchedCourse = response.data.data || response.data;
+            course.value = {
+                id: fetchedCourse.id,
+                name: fetchedCourse.name || fetchedCourse.title,
+                description: fetchedCourse.description || "No description available",
+                cover: fetchedCourse.cover,
+                total_videos: fetchedCourse.total_videos || 0,
+                students: fetchedCourse.students || 0,
+                videoUrl: fetchedCourse.videoUrl || fetchedCourse.cover,
+                instructor: fetchedCourse.instructor || "John Doe",
+                price: fetchedCourse.price || "Free",
+                duration: fetchedCourse.duration || "2h 30min",
+                email: fetchedCourse.email || "student@example.com",
+            };
+            previewImage.value = course.value.cover;
+            watermarkText.value = `${course.value.email} | safetyfirsthub.com`;
+        } else {
+            console.error('No course data received');
+            await Swal.fire({
+                title: 'Error',
+                text: 'Failed to load course details. No data received.',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+            });
+            router.push("/dashboard/courses");
+        }
     } catch (error) {
         await Swal.fire({
             title: 'Error',
@@ -438,13 +359,7 @@ const blockDevTools = (event) => {
     }
 };
 
-// Watch for changes in route parameters and refetch data
-watch(() => route.params.id, async (newId, oldId) => {
-    if (newId !== oldId) {
-        await fetchCourse();
-        await fetchVideo();
-    }
-});
+
 
 const updateProgress = async () => {
     if (!videoPlayer.value) return;
@@ -564,6 +479,111 @@ const attemptSelectContent = (contentId) => {
 
     selectContent(contentId);
 };
+
+// Watch for changes in route parameters and refetch data
+watch(() => route.params.id, async (newId, oldId) => {
+    if (newId !== oldId) {
+        await fetchCourse();
+        await fetchVideo();
+    }
+});
+
+// Move the blur event listener to onMounted
+onMounted(() => {
+    // Add blur event listener
+    const handleBlur = async () => {
+        if (route.path.includes('/video')) {  // Only show alert if we're on the video page
+            await Swal.fire({
+                title: 'Window Unfocused',
+                text: 'Your video session has ended due to switching applications.',
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+            });
+            router.push("/dashboard/courses");
+        }
+    };
+    window.addEventListener("blur", handleBlur);
+
+    // Add other existing event listeners
+    document.addEventListener("fullscreenchange", onFullScreenChange);
+    document.addEventListener("webkitfullscreenchange", onFullScreenChange);
+    document.addEventListener("mozfullscreenchange", onFullScreenChange);
+    document.addEventListener("msfullscreenchange", onFullScreenChange);
+    document.addEventListener("contextmenu", disableRightClick);
+    document.addEventListener("keydown", blockDevTools);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Handle refresh attempts (Ctrl+R or F5)
+    window.addEventListener('keydown', async (e) => {
+        if ((e.ctrlKey && e.key === 'r') || e.key === 'F5') {
+            e.preventDefault();
+            const result = await Swal.fire({
+                title: 'Refresh Attempted',
+                text: 'Refreshing will end your video session. Do you want to continue?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, refresh',
+                cancelButtonText: 'Cancel'
+            });
+
+            if (result.isConfirmed) {
+                // Use navigator.sendBeacon for cleanup before refresh
+                if (route.params.id) {
+                    navigator.sendBeacon(`/api/course/${route.params.id}/end-session`);
+                }
+                window.location.reload();
+            }
+        }
+    });
+
+    // Add a simple unload handler without preventing default behavior
+    window.addEventListener('unload', () => {
+        if (route.params.id) {
+            navigator.sendBeacon(`/api/course/${route.params.id}/end-session`);
+        }
+    });
+
+    fetchCourse();
+    fetchVideo();
+
+    // Store handleBlur function for cleanup
+    window._handleBlur = handleBlur;
+
+    // Add progress check
+    
+    // Automatically select doc1 and open section 1
+    selectContent('doc1');
+    openSections.value[1] = true;
+});
+
+onBeforeUnmount(async () => {
+    try {
+        // Only mark as incomplete if we haven't completed the video
+        if (!isCompleted.value && videoPlayer.value) {
+            await markAsIncomplete();
+        }
+    } catch (error) {
+        console.error('Error during cleanup:', error);
+    } finally {
+        // Remove event listeners
+        if (window._handleBlur) {
+            window.removeEventListener("blur", window._handleBlur);
+        }
+        
+        document.removeEventListener("fullscreenchange", onFullScreenChange);
+        document.removeEventListener("webkitfullscreenchange", onFullScreenChange);
+        document.removeEventListener("mozfullscreenchange", onFullScreenChange);
+        document.removeEventListener("msfullscreenchange", onFullScreenChange);
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        document.removeEventListener("contextmenu", disableRightClick);
+        document.removeEventListener("keydown", blockDevTools);
+
+        // Redirect to Courses page when leaving this page
+        router.push("/dashboard/courses");
+    }
+});
 </script>
 
 

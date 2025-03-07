@@ -1134,7 +1134,7 @@ Banner Area Style
     }
     
     .banner-img img {
-        max-width: 42%;
+        max-width: 30%;
     }
     .img-fluid {
       max-width: 53% !important;
@@ -4928,7 +4928,7 @@ Shop Details Area Style
 
 .product-details-area .product-details-desc .price {
   margin-bottom: 10px;
-  color: #333333;
+  color: white;
   font-size: 20px;
   font-weight: 500;
 }

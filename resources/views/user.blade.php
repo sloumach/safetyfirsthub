@@ -5,7 +5,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <meta name="description" content="Safety FirstHUB">
+	<meta name="keywords" content="Safety FirstHUB">
     <!-- Bootstrap Min CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <!-- Owl Theme Default Min CSS -->
@@ -35,6 +36,7 @@
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="assets/css/responsive.css">
     <link rel="stylesheet" href="assets/css/navbar.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="adminassets/vendor/datatables/dataTables.bootstrap4.min.css">
     <!-- Favicon -->
@@ -151,30 +153,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-    function switchTab(tab) {
-        // Hide all tab contents
-        document.querySelectorAll('.ud-tab-content').forEach(content => {
-            content.style.display = 'none';
-        });
-        
-        // Remove active class from all tabs
-        document.querySelectorAll('.ud-tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        
-        // Show selected tab content and activate tab
-        if (tab === 'profile') {
-            document.getElementById('profile-tab').style.display = 'block';
-            document.querySelector('.ud-tab:first-child').classList.add('active');
-        } else {
-            document.getElementById('payment-tab').style.display = 'block';
-            document.querySelector('.ud-tab:last-child').classList.add('active');
-        }
-    }
-    </script>
-
     <!-- End Contact Area -->
     <div class="switch-box">
     <label id="switch" class="switch">
@@ -193,64 +171,11 @@
     </div>
     <!-- End Go Top Area -->
 
-
-    <!-- Jquery Min JS -->
-    <script src="assets/js/jquery.min.js"></script>
-    <!-- Bootstrap Bundle Min JS -->
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <!-- Meanmenu Min JS -->
-    <script src="assets/js/meanmenu.min.js"></script>
-    <!-- Owl Carousel Min JS -->
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <!-- Wow Min JS -->
-    <script src="assets/js/wow.min.js"></script>
-
-    <!-- Magnific Popup Min JS -->
-    <script src="assets/js/magnific-popup.min.js"></script>
-    <!-- jarallax Min JS -->
-    <script src="assets/js/jarallax.min.js"></script>
-    <!-- Appear Min JS -->
-    <script src="assets/js/appear.min.js"></script>
-    <!-- Odometer JS -->
-    <script src="assets/js/odometer.min.js"></script>
-    <!-- Form Validator Min JS -->
-    <script src="assets/js/form-validator.min.js"></script>
-    <!-- Contact JS -->
-    <script src="assets/js/contact-form-script.js"></script>
-    <!-- Ajaxchimp Min JS -->
-    <script src="assets/js/ajaxchimp.min.js"></script>
-    <!-- Custom JS -->
-    <script src="assets/js/custom.js"></script>
-    <script src="assets/js/navbar.js"></script>
-
-    <!-- DataTables JS -->
-    <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#paymentTable').DataTable({
-                pageLength: 4,
-                lengthMenu: [4, 8, 12],
-                language: {
-                    lengthMenu: "Show _MENU_ items per page",
-                    info: "",
-                    infoEmpty: "",
-                    search: "Search:",
-                    paginate: {
-                        first: "First",
-                        last: "Last",
-                        next: "Next",
-                        previous: "Previous"
-                    },
-                    zeroRecords: "No data available in table"
-                },
-                columnDefs: [
-                    { orderable: false, targets: [2] }
-                ],
-                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12"p>>'
-            });
-        });
-    </script>
 </body>
 
+    @include('layouts.scripts')
+    <!-- Page Specific Scripts -->
+    <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="assets/js/user.js"></script>
 </html>

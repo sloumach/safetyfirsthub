@@ -88,3 +88,22 @@ $(document).ready(function() {
         });
     });
 }); 
+
+$(document).ready(function() {
+    $('#wishlistTable').DataTable({
+        pageLength: 4,
+        lengthMenu: [4, 8, 12],
+        language: {
+            lengthMenu: "Show _MENU_ items per page",
+            info: "Showing _START_ to _END_ of _TOTAL_ items",
+            infoEmpty: "No items available",
+            search: "Search:",
+            paginate: {
+                first: "First",
+                last: "Last",
+                next: "Next",
+                previous: "Previous"
+            }
+        }
+    });
+});

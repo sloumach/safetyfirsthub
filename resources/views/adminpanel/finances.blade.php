@@ -123,12 +123,16 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-
-
-
+   
+    <script>
+        window.salesByCourse = @json($salesByCourse);
+        window.revenueByCourse = @json($revenueByCourse);
+    </script>
+ 
 </body>
-    <!-- Bootstrap core JavaScript-->
-    <script src="adminassets/vendor/jquery/jquery.min.js"></script>
+
+ <!-- Bootstrap core JavaScript-->
+ <script src="adminassets/vendor/jquery/jquery.min.js"></script>
     <script src="adminassets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
@@ -136,82 +140,7 @@
 
     <!-- Custom scripts for all pages-->
     <script src="adminassets/js/sb-admin-2.min.js"></script>
-    <script>
-        $(document).on('click', '.edit-btn', function() {
-            let courseId = $(this).data('id');
-            let name = $(this).data('name');
-            let price = $(this).data('price');
-            let category = $(this).data('category');
-            let totalVideos = $(this).data('total_videos');
-            let shortDescription = $(this).data('short_description');
-            let description = $(this).data('description');
-            // Remplir les champs du formulaire dans le modal
-            $('#edit-course-id').val(courseId);
-            $('#edit-name').val(name);
-            $('#edit-price').val(price);
-            $('#edit-category').val(category);
-            $('#edit-total-videos').val(totalVideos);
-            $('#edit-short-description').val(shortDescription);
-            $('#edit-description').val(description);
-            // Définir l'action du formulaire avec l'ID du cours
-            $('#editCourseForm').attr('action', '/admin/course/update/' + courseId);
-            // Ouvrir le modal
-            $('#editCourseModal').modal('show');
-        });
-    </script>
-
-    <!-- Chart.js Graph -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            let salesCtx = document.getElementById('salesChart').getContext('2d');
-            let revenueCtx = document.getElementById('revenueChart').getContext('2d');
-
-            let salesData = @json($salesByCourse);
-            let revenueData = @json($revenueByCourse);
-            let labels = [];
-            let salesDatasets = [];
-            let revenueDatasets = [];
-
-            Object.keys(salesData).forEach((course, index) => {
-                let courseData = salesData[course].map(sale => sale.total_sales);
-                let months = salesData[course].map(sale => sale.month);
-
-                if (labels.length === 0) labels = months;
-
-                salesDatasets.push({
-                    label: course,
-                    data: courseData,
-                    borderColor: `hsl(${index * 60}, 70%, 50%)`,
-                    backgroundColor: `hsl(${index * 60}, 70%, 70%)`,
-                    fill: false,
-                    tension: 0.3
-                });
-
-                revenueDatasets.push({
-                    label: course,
-                    data: revenueData[course].map(rev => rev.total_revenue),
-                    borderColor: `hsl(${index * 60}, 70%, 50%)`,
-                    backgroundColor: `hsl(${index * 60}, 70%, 70%)`,
-                    fill: false,
-                    tension: 0.3
-                });
-            });
-
-            new Chart(salesCtx, {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: salesDatasets
-                }
-            });
-            new Chart(revenueCtx, {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: revenueDatasets
-                }
-            });
-        });
-    </script>
+       <!-- Chart.js Graph -->
+       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('adminassets/js/finances.js') }}"></script>
 </html>

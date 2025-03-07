@@ -94,8 +94,30 @@
                         </div>
                     </div>
 
-                    <!-- Edit Course Modal -->
-                    <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+                   
+                </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Your Website 2020</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+ <!-- Edit Course Modal -->
+ <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -145,27 +167,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- End of Main Content -->
-
-                <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2020</span>
-                        </div>
-                    </div>
-                </footer>
-                <!-- End of Footer -->
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
+   
+</body>
 
     <!-- Bootstrap core JavaScript-->
     <script src="adminassets/vendor/jquery/jquery.min.js"></script>
@@ -181,33 +184,5 @@
     <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            // Initialize DataTable
-            $('#coursesTable').DataTable();
-
-            // Edit button click handler
-            $('.edit-btn').click(function() {
-                let id = $(this).data('id');
-                let name = $(this).data('name');
-                let price = $(this).data('price');
-                let category = $(this).data('category');
-                let totalVideos = $(this).data('total_videos');
-                let shortDescription = $(this).data('short_description');
-                let description = $(this).data('description');
-
-                $('#edit-course-id').val(id);
-                $('#edit-name').val(name);
-                $('#edit-price').val(price);
-                $('#edit-category').val(category);
-                $('#edit-total-videos').val(totalVideos);
-                $('#edit-short-description').val(shortDescription);
-                $('#edit-description').val(description);
-
-                $('#editCourseForm').attr('action', '/admin/course/update/' + id);
-                $('#editCourseModal').modal('show');
-            });
-        });
-    </script>
-</body>
+    <script src="{{ asset('adminassets/js/removecourses.js') }}"></script>
 </html> 

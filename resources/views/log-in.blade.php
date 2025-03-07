@@ -4,7 +4,8 @@
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+		<meta name="description" content="Safety FirstHUB">
+		<meta name="keywords" content="Safety FirstHUB">
 		<!-- Bootstrap Min CSS -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 		<!-- Owl Theme Default Min CSS -->
@@ -32,6 +33,7 @@
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
 		<link rel="stylesheet" href="assets/css/navbar.css">
+		<link rel="stylesheet" href="assets/css/footer.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
@@ -44,10 +46,6 @@
         <!-- Start Navbar Area -->
 		@include('navbar')
 		<!-- End Navbar Area -->
-		<!-- Start Preloader Area -->
-	
-		<!-- End Preloader Area -->
-
 
 		<!-- Start Page Title Area -->
 		<div class="page-title-area bg-8">
@@ -78,7 +76,7 @@
 			<div class="container">
 				<div class="login-container">
 					<div class="login-title">
-						<h2 style="color:rgb(0, 0, 0) !important;">Login to your account</h2>
+						<h1 style="color:rgb(0, 0, 0) !important;">Login to your account</h1>
 					</div>
 
 					<form method="POST" action="{{ route('login') }}">
@@ -126,34 +124,6 @@
 		</div>
 		<!-- End Go Top Area -->
 
-
-        <!-- Jquery Min JS -->
-        <script src="assets/js/jquery.min.js"></script>
-        <!-- Bootstrap Bundle Min JS -->
-        <script src="assets/js/bootstrap.bundle.min.js"></script>
-        <!-- Meanmenu Min JS -->
-		<script src="assets/js/meanmenu.min.js"></script>
-		<!-- Owl Carousel Min JS -->
-		<script src="assets/js/owl.carousel.min.js"></script>
-		<!-- Wow Min JS -->
-        <script src="assets/js/wow.min.js"></script>
-        <!-- Nice Select Min JS -->
-		<script src="assets/js/nice-select.min.js"></script>
-        <!-- Magnific Popup Min JS -->
-		<script src="assets/js/magnific-popup.min.js"></script>
-		<!-- jarallax Min JS -->
-		<script src="assets/js/jarallax.min.js"></script>
-		<!-- Appear Min JS -->
-        <script src="assets/js/appear.min.js"></script>
-		<!-- Odometer JS -->
-		<script src="assets/js/odometer.min.js"></script>
-		<!-- Form Validator Min JS -->
-		<script src="assets/js/form-validator.min.js"></script>
-		<!-- Contact JS -->
-		<script src="assets/js/contact-form-script.js"></script>
-		<!-- Ajaxchimp Min JS -->
-		<script src="assets/js/ajaxchimp.min.js"></script>
-        <!-- Custom JS -->
-		<script src="assets/js/custom.js"></script>
     </body>
+    @include('layouts.scripts')
 </html>
