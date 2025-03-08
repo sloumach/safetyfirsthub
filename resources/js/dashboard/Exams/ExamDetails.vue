@@ -60,436 +60,156 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import axios from "axios";
-import { useRoute, useRouter } from "vue-router";
-import Swal from 'sweetalert2';
+    import { ref, onMounted, onUnmounted } from "vue";
+    import axios from "axios";
+    import { useRoute, useRouter } from "vue-router";
+    import Swal from "sweetalert2";
 
-const route = useRoute();
-const router = useRouter();
+    const route = useRoute();
+    const router = useRouter();
 
-const sessionId = ref(null);
-const currentQuestionIndex = ref(0);
-const currentQuestion = ref(null);
-const userAnswers = ref([]);
-const timer = ref(10);
-let timerInterval = null;
-let isActive = true; // Prevents background API calls
-let axiosSource = axios.CancelToken.source(); // Create a cancel token
-const hasAttemptsExhausted = ref(false);
-const noQuestionsAvailable = ref(false);
+    const sessionId = ref(null);
+    const currentQuestion = ref(null);
+    const userAnswers = ref([]);
+    const timer = ref(10);
+    let timerInterval = null;
+    let isActive = true;
+    let axiosSource = axios.CancelToken.source();
+    const hasAttemptsExhausted = ref(false);
+    const noQuestionsAvailable = ref(false);
 
-// Fetch the next question
-const fetchNextQuestion = async () => {
-    if (!isActive) return;
-
-    try {
-        const response = await axios.get(`/exams/${sessionId.value}/question`);
-        
-        if (response.data) {
-            if (response.data.exam_completed) {
-                // Handle exam completion
-                const score = response.data.score ?? 0;
-                const passingScore = response.data.passing_score || 60;
-                
-                if (score >= passingScore) {
-                    await Swal.fire({
-                        title: 'Congratulations! 🎉',
-                        text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
-                        icon: 'success',
-                        confirmButtonColor: '#3085d6'
-                    });
-                } else {
-                    if (response.data.retry_allowed) {
-                        await Swal.fire({
-                            title: 'Exam Failed',
-                            text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${response.data.attempts_left || 0} attempts left.`,
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6'
-                        });
-                    } else {
-                        await Swal.fire({
-                            title: 'Exam Failed',
-                            text: `Your score is ${score}%, while ${passingScore}% was required. You cannot retry.`,
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6'
-                        });
-                    }
-                }
-                router.push("/dashboard/exams");
-            } else if (response.data.question) {
-                // Handle new question
-                currentQuestion.value = response.data.question;
-                startTimer();
+    // 🛠️ Interceptor pour centraliser la gestion des erreurs API
+    axios.interceptors.response.use(
+        response => response,
+        error => {
+            if (axios.isCancel(error)) {
+                console.warn("Request canceled", error.message);
             } else {
-                // No question data in response
-                await Swal.fire({
-                    title: 'No Question Available',
-                    text: 'Unable to load the next question. Please try again.',
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6'
+                Swal.fire({
+                    title: "Erreur",
+                    text: error.response?.data?.error || "Une erreur est survenue.",
+                    icon: "error",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "D'accord",
                 });
-                router.push("/dashboard/exams");
             }
-        } else {
-            // No response data at all
-            await Swal.fire({
-                title: 'Error',
-                text: 'Failed to get question data from server',
-                icon: 'error',
-                confirmButtonColor: '#3085d6'
-            });
-            router.push("/dashboard/exams");
+            return Promise.reject(error);
         }
-    } catch (error) {
-        // Handle API error
-        console.error("Error fetching next question:", error);
-        await Swal.fire({
-            title: 'Error',
-            text: 'Failed to load the next question. Please try again.',
-            icon: 'error',
-            confirmButtonColor: '#3085d6'
-        });
-        router.push("/dashboard/exams");
-    }
-};
+    );
 
+    // 🎯 Récupérer la prochaine question
+    const fetchNextQuestion = async () => {
+        if (!isActive) return;
+        try {
+            const response = await axios.get(`/exam/${sessionId.value}/next-question`);
 
-// Start Timer
-const startTimer = () => {
-    clearInterval(timerInterval); // Clear any existing interval
-    timer.value = 10;
-    timerInterval = setInterval(() => {
-        if (!isActive) {
-            clearInterval(timerInterval);
-            return;
+            if (response.data.exam_completed) {
+                handleExamCompletion(response.data);
+                return;
+            }
+
+            currentQuestion.value = response.data.question;
+            startTimer();
+        } catch (error) {
+            console.error("Erreur lors de la récupération de la question :", error);
         }
-        if (timer.value > 0) {
-            timer.value--;
-        }
-        if (timer.value === 0) {
-            clearInterval(timerInterval);
-            submitAnswer();
-        }
-    }, 1000);
-};
+    };
 
-// Submit Answer
-const submitAnswer = async () => {
-    if (!isActive) return;
-    
-    // Clear the timer immediately to prevent negative counts
-    clearInterval(timerInterval);
-    timer.value = 10;
+    // ⏳ Démarrer le timer
+    const startTimer = () => {
+        clearInterval(timerInterval);
+        timer.value = 10;
+        timerInterval = setInterval(() => {
+            if (!isActive) {
+                clearInterval(timerInterval);
+                return;
+            }
+            if (timer.value > 0) {
+                timer.value--;
+            }
+            if (timer.value === 0) {
+                clearInterval(timerInterval);
+                submitAnswer();
+            }
+        }, 1000);
+    };
 
-    const selectedChoice = userAnswers.value[currentQuestionIndex.value] ?? null;
-    try {
-        // Submit the answer
-        await axios.post(
-            `/exams/${sessionId.value}/answer`,
-            {
+    // ✅ Soumettre une réponse
+    const submitAnswer = async () => {
+        if (!isActive) return;
+
+        clearInterval(timerInterval);
+        timer.value = 10;
+
+        const selectedChoice = userAnswers.value[currentQuestion.value.id] ?? null;
+        try {
+            await axios.post(`/exam/${sessionId.value}/submit-answer`, {
                 question_id: currentQuestion.value.id,
                 choice_id: selectedChoice,
-            },
-            { cancelToken: axiosSource.token }
-        );
+            });
 
-        // Get next question
-        const nextQuestionResponse = await axios.get(`/exams/${sessionId.value}/question`);
-
-        if (nextQuestionResponse.data.exam_completed) {
-            const resultsResponse = await axios.get(`/exams/${sessionId.value}/results`);
-            
-            const score = resultsResponse.data.score;
-            const passingScore = resultsResponse.data.passing_score || 60;
-            const attemptsLeft = resultsResponse.data.attempts_left || 0;
-
-            if (score >= passingScore) {
-                await Swal.fire({
-                    title: 'Congratulations! 🎉',
-                    text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
-                    icon: 'success',
-                    confirmButtonColor: '#3085d6'
-                });
-            } else {
-                if (resultsResponse.data.retry_allowed) {
-                    await Swal.fire({
-                        title: 'Exam Failed',
-                        text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${attemptsLeft} attempts left.`,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6'
-                    });
-                } else {
-                    await Swal.fire({
-                        title: 'Exam Failed',
-                        text: `Your score is ${score}%, while ${passingScore}% was required. You cannot retry.`,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6'
-                    });
-                }
-            }
-            router.push("/dashboard/exams");
-            return;
-        } else {
-            // Update the current question and restart timer
-            currentQuestionIndex.value++;
-            currentQuestion.value = nextQuestionResponse.data.question;
+            fetchNextQuestion();
+        } catch (error) {
+            console.error("Erreur lors de l'envoi de la réponse :", error);
             startTimer();
         }
-    } catch (error) {
-        clearInterval(timerInterval); // Make sure timer is cleared on error
-        if (axios.isCancel(error)) {
+    };
+
+    // 🎯 Gestion de la fin d'examen
+    const handleExamCompletion = async (examData) => {
+        const { score, passing_score, retry_allowed, attempts_left } = examData;
+
+        if (score >= passing_score) {
             await Swal.fire({
-                title: 'Request Cancelled',
-                text: error.message,
-                icon: 'warning',
-                confirmButtonColor: '#3085d6'
+                title: "Félicitations ! 🎉",
+                text: `Vous avez réussi l'examen avec un score de ${score}% (Minimum requis : ${passing_score}%)`,
+                icon: "success",
+                confirmButtonColor: "#3085d6",
             });
         } else {
             await Swal.fire({
-                title: 'Error',
-                text: 'An error occurred while submitting your answer. Please try again.',
-                icon: 'error',
-                confirmButtonColor: '#3085d6'
-            });
-            console.error("Error submitting answer:", error);
-        }
-        startTimer(); // Restart timer after error
-    }
-};
-
-// "Next" Button Action
-const nextQuestion = () => {
-    submitAnswer();
-};
-
-// Calculate Score
-const calculateScore = async () => {
-    try {
-        const response = await axios.get(`/exams/${sessionId.value}/results`, {
-            cancelToken: axiosSource.token,
-        });
-        const { score, status, passing_score } = response.data;
-
-        if (status === "passed") {
-            await Swal.fire({
-                title: 'Congratulations! 🎉',
-                text: `Vous avez réussi l'examen avec un score de ${score}% (Minimum requis: ${passing_score}%)`,
-                icon: 'success',
-                confirmButtonColor: '#3085d6'
-            });
-        } else {
-            await Swal.fire({
-                title: 'Exam Failed ❌',
-                text: `Votre score est de ${score}%, alors que le minimum requis est ${passing_score}%. Réessayez plus tard.`,
-                icon: 'error',
-                confirmButtonColor: '#3085d6'
+                title: "Examen échoué ❌",
+                text: retry_allowed
+                    ? `Votre score est de ${score}%. Vous avez encore ${attempts_left} tentatives.`
+                    : `Votre score est de ${score}%, alors que ${passing_score}% était requis. Vous ne pouvez plus réessayer.`,
+                icon: "error",
+                confirmButtonColor: "#3085d6",
             });
         }
 
-        router.push("/dashboard/exams"); // Redirect after exam
-    } catch (error) {
-        if (axios.isCancel(error)) {
-    Swal.fire({
-        title: 'Requête Annulée',
-        text: error.message,
-        icon: 'warning',
-        customClass: {
-            confirmButton: 'default-btn'
-        },
-        confirmButtonText: 'D\'accord'
-    });
-    
-} else {
-    Swal.fire({
-        title: 'Erreur',
-        text: 'Une erreur est survenue lors de la récupération des résultats de l\'examen. Veuillez réessayer.',
-        icon: 'error',
-        customClass: {
-            confirmButton: 'default-btn'
-        },
-        confirmButtonText: 'D\'accord'
-    });
-    console.error("Erreur lors de la récupération des résultats de l'examen:", error);
-}
-    }
-};//
-
-const handleTabChange = async () => {
-  if (document.hidden) {
-    // L'utilisateur quitte l'onglet => Marquer l'examen comme terminé
-    if (sessionId.value) {
-      try {
-        await axios.post(`/exams/${sessionId.value}/complete`);
-        await Swal.fire({
-            title: 'Session Closed',
-            text: 'Your exam session has been closed.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-        });
-        router.push("/dashboard/exams"); // Redirection
-      } catch (error) {
-        console.error("Error marking exam as completed:", error);
-      }
-    }
-  }
-};
-
-let inactivityTimer;
-
-const resetInactivityTimer = () => {
-  clearTimeout(inactivityTimer);
-  inactivityTimer = setTimeout(async () => {
-    if (sessionId.value) {
-      try {
-        await axios.post(`/exams/${sessionId.value}/complete`);
-        await Swal.fire({
-            title: 'Session Closed',
-            text: 'Exam session closed due to inactivity.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-        });
         router.push("/dashboard/exams");
-      } catch (error) {
-        console.error("Error marking exam as completed:", error);
-      }
-    }
-  }, 300000); // 5 minutes d'inactivité
-};
+    };
 
-// Add this function to capitalize first letter
-const capitalizeFirstLetter = (string) => {
-    if (!string) return '';
-    return string.charAt(0).toUpperCase() + string.slice(1);
-};
+    // 🏁 Démarrer une session d'examen
+    onMounted(async () => {
+        try {
+            axiosSource = axios.CancelToken.source();
+            const response = await axios.post(`/exam/start/${route.params.id}`, null, {
+                cancelToken: axiosSource.token,
+            });
 
-// Instead, add this to handle refresh cleanup
-window.addEventListener('unload', async () => {
-    if (sessionId.value) {
-        // Using navigator.sendBeacon for more reliable cleanup during page unload
-        navigator.sendBeacon(`/exams/${sessionId.value}/complete`);
-    }
-});
-window.addEventListener("popstate", async () => {
-  if (sessionId.value) {
-    try {
-      await axios.post(`/exams/${sessionId.value}/complete`);
-      await Swal.fire({
-          title: 'Session Closed',
-          text: 'Exam session closed due to navigation attempt.',
-          icon: 'warning',
-          confirmButtonColor: '#3085d6'
-      });
-      router.push("/dashboard"); // Redirection forcée
-    } catch (error) {
-      console.error("Error marking exam as completed:", error);
-    }
-  }
-});
-
-window.addEventListener("blur", async () => {
-  if (sessionId.value) {
-    try {
-      await axios.post(`/exams/${sessionId.value}/complete`);
-      await Swal.fire({
-          title: 'Session Closed',
-          text: 'Exam session closed due to application switch.',
-          icon: 'warning',
-          confirmButtonColor: '#3085d6'
-      });
-      router.push("/dashboard/exams");
-    } catch (error) {
-      console.error("Error marking exam as completed:", error);
-    }
-  }
-});
-
-window.addEventListener("offline", async () => {
-  if (sessionId.value) {
-    try {
-      await axios.post(`/exams/${sessionId.value}/complete`);
-      await Swal.fire({
-          title: 'Session Closed',
-          text: 'Exam session closed due to internet disconnection.',
-          icon: 'warning',
-          confirmButtonColor: '#3085d6'
-      });
-      router.push("/dashboard/exams");
-    } catch (error) {
-      console.error("Error marking exam as completed:", error);
-    }
-  }
-});
-// Détecter les mouvements et clics
-window.addEventListener("mousemove", resetInactivityTimer);
-window.addEventListener("keydown", resetInactivityTimer);
-window.addEventListener("click", resetInactivityTimer);
-resetInactivityTimer();
-
-
-// Start Exam Session
-onMounted(async () => {
-    try {
-        axiosSource = axios.CancelToken.source();
-        const response = await axios.post(`/exams/start/${route.params.id}`, null, {
-            cancelToken: axiosSource.token,
-        });
-
-        sessionId.value = response.data.session_id;
-
-        fetchNextQuestion();
-    } catch (error) {
-        if (axios.isCancel(error)) {
-
-        } else {
+            sessionId.value = response.data.session_id;
+            fetchNextQuestion();
+        } catch (error) {
             if (error.response && error.response.status === 404) {
                 noQuestionsAvailable.value = true;
             } else if (error.response && error.response.status === 403) {
                 hasAttemptsExhausted.value = true;
             } else {
-                console.error("Error starting exam:", error);
-                await Swal.fire({
-                    title: 'Error',
-                    text: 'An error occurred while starting the exam. Please try again later.',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
-                });
+                console.error("Erreur lors du démarrage de l'examen :", error);
                 router.push("/dashboard/exams");
             }
         }
-    }
-    document.addEventListener("visibilitychange", handleTabChange);
-
-    // Handle refresh attempts (Ctrl+R or F5)
-    window.addEventListener('keydown', async (e) => {
-        if ((e.ctrlKey && e.key === 'r') || e.key === 'F5') {
-            if (sessionId.value) {
-                await axios.post(`/exams/${sessionId.value}/complete`);
-            }
-            // Let the refresh happen naturally
-            return true;
-        }
     });
-});
 
-// Clean up when leaving the page
-onUnmounted(() => {
-    isActive = false; // Prevent any further actions
-    clearInterval(timerInterval); // Stop timer
-    axiosSource.cancel("Component unmounted, canceling requests"); // Cancel all pending API calls
-    sessionId.value = null;
-    currentQuestionIndex.value = 0;
-    currentQuestion.value = null;
-    userAnswers.value = [];
-    document.removeEventListener("visibilitychange", handleTabChange);
-
-});
-
-
-
-
+    // 🛑 Nettoyage à la fermeture de la page
+    onUnmounted(() => {
+        isActive = false;
+        clearInterval(timerInterval);
+        axiosSource.cancel("Composant démonté, annulation des requêtes en cours");
+    });
 </script>
+
 
 <style scoped>
 * {
