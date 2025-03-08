@@ -2,7 +2,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Video;
+use App\Models\Course;
+use App\Models\Section;
 use App\Models\ExamUser;
+use App\Models\VideoProgress;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
 
@@ -38,7 +42,7 @@ class DashboardController extends Controller
                     ->latest()
                     ->first();
 
-                if (!$order) {
+                if (! $order) {
                     return [
                         'id'           => $course->id,
                         'name'         => $course->name,
@@ -50,15 +54,14 @@ class DashboardController extends Controller
                         'exam_id'      => null,
                     ];
                 }
-            $examcheck = ExamUser::query()
-                ->where('user_id', $user->id)
-                ->where('order_id', $order->id) // ✅ Vérifie uniquement les examens de CE paiement
-                ->whereHas('exam', fn($query) => $query->where('course_id', $course->id))
-                ->whereColumn('score', '>=', 'exams.passing_score') // ✅ Vérifie si la tentative est réussie
-                ->join('exams', 'exam_users.exam_id', '=', 'exams.id')
-                ->latest('exam_users.id') // ✅ Prend la dernière tentative réussie
-                ->value('exam_users.id'); // ✅ Récupère l'ID de la meilleure tentative
-
+                $examcheck = ExamUser::query()
+                    ->where('user_id', $user->id)
+                    ->where('order_id', $order->id) // ✅ Vérifie uniquement les examens de CE paiement
+                    ->whereHas('exam', fn($query) => $query->where('course_id', $course->id))
+                    ->whereColumn('score', '>=', 'exams.passing_score') // ✅ Vérifie si la tentative est réussie
+                    ->join('exams', 'exam_users.exam_id', '=', 'exams.id')
+                    ->latest('exam_users.id') // ✅ Prend la dernière tentative réussie
+                    ->value('exam_users.id'); // ✅ Récupère l'ID de la meilleure tentative
 
                 return [
                     'id'           => $course->id,
@@ -75,10 +78,71 @@ class DashboardController extends Controller
             return response()->json($courses, 200);
 
         } catch (\Exception $e) {
-            return response()->json(['error' =>  $e->getmessage()], 500);
+            return response()->json(['error' => $e->getmessage()], 500);
         }
     }
 
+    public function getCourseSections($course_id)
+    {
+        $course = Course::with('sections.videos')->findOrFail($course_id);
+
+        return response()->json([
+            'sections' => $course->sections->map(function ($section) {
+                return [
+                    'id'     => $section->id,
+                    'title'  => $section->title,
+                    'videos' => $section->videos->map(function ($video) use ($section) {
+                        return [
+                            'id'           => $video->id,
+                            'title'        => $video->title,
+                            'duration'     => $video->duration,
+                            'video_url'    => url("/sections/{$section->id}/video"), // 🔹 Nouvelle URL de streaming
+                            'is_completed' => VideoProgress::where('user_id', auth()->id())
+                                ->where('video_id', $video->id)
+                                ->where('is_completed', true)
+                                ->exists(),
+                        ];
+                    }),
+                    'slides' => $section->slides->map(function ($slide) {
+                        return [
+                            'id'      => $slide->id,
+                            'title'   => $slide->title,
+                            'content' => $slide->content,
+                        ];
+                    }),
+                ];
+            }),
+        ]);
+
+    }
+
+    public function getVideoUrl($video_id)
+    {
+        $user = auth()->user();
+
+        // 📌 Vérifier si la vidéo existe et récupérer sa section et son cours
+        $video   = Video::with('section.course')->where('id', $video_id)->firstOrFail();
+        $section = $video->section;
+        $course  = $section->course;
+
+        // 📌 Vérifier si l'utilisateur a bien accès au cours de cette vidéo
+        if (! $user->courses->contains($course->id)) {
+            return response()->json(['error' => 'Unauthorized access to this course.'], 403);
+        }
+
+        // 📌 Vérifier si le fichier vidéo existe
+        if (! Storage::disk('private')->exists($video->video_path)) {
+            return response()->json(['error' => 'Video file not found.'], 404);
+        }
+
+        // 📌 Générer une URL temporaire pour cette vidéo
+        $signedUrl = URL::temporarySignedRoute(
+            'section.video.stream',
+            now()->addMinutes(60),
+            ['video_id' => $video_id]// 📌 L'ID de la vidéo est maintenant utilisé
+        );
+        return response()->json(['video_url' => $signedUrl,'section_id'=>$section->id]);
+    }
 
     public function getCourse($id)
     {
@@ -120,41 +184,44 @@ class DashboardController extends Controller
         }
     }
 
-    public function streamVideo($id)
+    public function streamVideo($video_id)
     {
         $user = auth()->user();
 
-        $course = $user->courses()->where('course_id', $id)->first();
+        // 📌 Vérifier si la vidéo existe et appartient à une section d'un cours
+        $video = Video::with('section.course')->where('id', $video_id)->firstOrFail();
+        $section = $video->section;
+        $course = $section->course;
 
-        // Vérifier si l'utilisateur a acheté le cours
-        if (! $user->courses->contains($course->id)) {
-
+        // 📌 Vérifier si l'utilisateur a accès au cours
+        if (!$user->courses->contains($course->id)) {
             abort(403, 'Unauthorized access to this course.');
         }
 
-        // Vérifier si le fichier existe
-        if (! Storage::disk('private')->exists($course->video)) {
-            abort(404, 'Video not found.');
+        // 📌 Vérifier si le fichier vidéo existe
+        if (!Storage::disk('private')->exists($video->video_path)) {
+            abort(404, 'Video file not found.');
         }
-
-        // Streaming sécurisé
-        return response()->stream(function () use ($course) {
-            $stream = Storage::disk('private')->readStream($course->video);
-
-            if (! $stream) {
+//w9eft zok om hné el video famech fil player w fil tab jdid tet7al!!!!!
+        // 📌 Streaming sécurisé
+        return response()->stream(function () use ($video) {
+            $stream = Storage::disk('private')->readStream($video->video_path);
+            if (!$stream) {
                 abort(500, 'Error opening video file.');
             }
-
             fpassthru($stream);
             fclose($stream);
         }, 200, [
-            'Content-Type'           => 'video/mp4',
-            'Content-Disposition'    => 'inline', // Empêche le téléchargement avec "Save As"
+            'Content-Type'        => 'video/mp4',
+            'Content-Disposition' => 'inline', // ⚠️ Assure la lecture en streaming
+            'Accept-Ranges'       => 'bytes', // 📌 Permet la lecture progressive
+            'Cache-Control'       => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma'              => 'no-cache',
             'X-Content-Type-Options' => 'nosniff',
-            'Cache-Control'          => 'no-store, no-cache, must-revalidate, max-age=0',
-            'Pragma'                 => 'no-cache',
         ]);
     }
+
+
     private function getcoverurl($filename)
     {
         return URL::temporarySignedRoute('cover.access', now()->addMinutes(30), ['filename' => $filename]);

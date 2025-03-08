@@ -21,151 +21,98 @@
                 <div class="col-lg-3 col-md-4">
                     <div class="course-sidebar">
                         <h4 class="sidebar-title">Course Content</h4>
-                        
+
                         <!-- Course Sections -->
                         <div class="course-sections">
-                            <!-- Section 1 -->
-                            <div class="section">
-                                <div class="section-header" @click="toggleSection(1)">
+                            <div v-for="section in sections" :key="section.id" class="section">
+                                <!-- Section Header -->
+                                <div class="section-header" @click="toggleSection(section.id)">
                                     <h5>
-                                        <i class="fas" :class="{'fa-chevron-down': !openSections[1], 'fa-chevron-up': openSections[1]}"></i>
-                                        Section 1
-                                        <span class="section-status" :class="{ 'completed': sectionProgress[1] }">
-                                            <i class="fas" :class="sectionProgress[1] ? 'fa-check-circle' : 'fa-lock'"></i>
+                                        <i class="fas"
+                                            :class="{ 'fa-chevron-down': !openSections[section.id], 'fa-chevron-up': openSections[section.id] }"></i>
+                                        {{ section.title }}
+                                        <span class="section-status"
+                                            :class="{ 'completed': sectionProgress[section.id] }">
+                                            <i class="fas"
+                                                :class="sectionProgress[section.id] ? 'fa-check-circle' : 'fa-lock'"></i>
                                         </span>
                                     </h5>
                                 </div>
-                                <div class="section-content" :class="{ 'show': openSections[1] }">
-                                    <div class="section-item" @click="selectContent('doc1')">
-                                        <i class="fas fa-file-alt"></i>
-                                        Documentation
+                                <!-- Contenu de la Section -->
+                                <div class="section-content" :class="{ 'show': openSections[section.id] }">
+                                    <!-- 🔹 Affichage des slides (contenu écrit du cours) -->
+                                    <div v-if="section.slides.length > 0">
+                                        <div v-for="slide in section.slides" :key="slide.id" class="section-item"
+                                            @click="selectContent({ type: 'text', title: slide.title, content: slide.content })">
+                                            <i class="fas fa-file-alt"></i>
+                                            {{ slide.title }}
+                                        </div>
                                     </div>
-                                    <div class="section-item" @click="selectContent('video1')">
-                                        <i class="fas fa-play-circle"></i>
-                                        Video
+                                    <!-- 🔹 Affichage des vidéos -->
+                                    <div v-if="section.videos.length > 0">
+                                        <div v-for="video in section.videos" :key="video.id" class="section-item"
+                                            @click="fetchVideo(video.id)">
+
+                                            <i class="fas fa-play-circle"></i>
+                                            {{ video.title }}
+                                            <span v-if="video.is_completed" class="completed-badge">✔</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Section 2 -->
-                            <div class="section" :class="{ 'locked': !sectionProgress[1] }">
-                                <div class="section-header" @click="attemptToggleSection(2)">
-                                    <h5>
-                                        <i class="fas" :class="{'fa-chevron-down': !openSections[2], 'fa-chevron-up': openSections[2]}"></i>
-                                        Section 2
-                                        <span class="section-status" :class="{ 'completed': sectionProgress[2] }">
-                                            <i class="fas" :class="sectionProgress[2] ? 'fa-check-circle' : 'fa-lock'"></i>
-                                        </span>
-                                    </h5>
-                                </div>
-                                <div class="section-content" :class="{ 'show': openSections[2] }">
-                                    <div class="section-item" @click="attemptSelectContent('doc2')">
-                                        <i class="fas fa-file-alt"></i>
-                                        Documentation
-                                    </div>
-                                    <div class="section-item" @click="attemptSelectContent('video2')">
-                                        <i class="fas fa-play-circle"></i>
-                                        Video
-                                    </div>
-                                </div>
-                            </div>
-
-                          
                         </div>
                     </div>
                 </div>
-
                 <!-- Main Content Column -->
                 <div class="col-lg-9 col-md-8">
                     <div class="card">
                         <!-- Video Content -->
+                        <!-- 🎥 Section Player -->
                         <div v-if="currentContent.type === 'video'" class="video-content">
                             <div class="video-container">
-                                <!-- First Watermark (Top-Left) -->
-                                <div v-if="!showPreview" :class="['watermark', 'watermark-top-left', { 'watermark-fullscreen': isFullScreen }]">
-                                    {{ watermarkText }}
-                                </div>
 
-                                <!-- Bottom-Right Watermark -->
-                                <div v-if="!showPreview" :class="['watermark', 'watermark-bottom-right', { 'watermark-fullscreen': isFullScreen }]">
-                                    {{ watermarkText }}
-                                </div>
-
-                                <!-- Preview Image & Play Button -->
                                 <div v-if="showPreview" class="video-overlay" @click="playVideo">
                                     <img v-if="previewImage" :src="previewImage" alt="Preview" class="preview-image" />
                                     <button class="play-button">▶</button>
                                 </div>
 
-                                <!-- Video Player -->
-                                <video 
-                                    ref="videoPlayer" 
-                                    class="w-100" 
-                                    controls 
-                                    v-show="!showPreview" 
-                                    @play="hidePreview"
-                                    @timeupdate="updateProgress"
-                                    @ended="markAsCompleted"
-                                >
+                                <video ref="videoPlayer" class="w-100" controls v-show="!showPreview"
+                                    @play="hidePreview" @timeupdate="updateProgress(currentContent.section_id,currentContent.video_id, $event)"
+                                    @ended="markAsCompleted(currentContent.section_id,currentContent.video_id)">
                                     <source :src="videoUrl" type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
                             </div>
 
-                            <!-- Move messages outside video-container but inside video-content -->
                             <div class="video-messages">
                                 <div v-if="isCompleted" class="video-status-message success">
                                     <i class="fas fa-check-circle"></i>
-                                    <span>You have completed the course video! You can now take the exam.</span>
+                                    <span>Vous avez terminé cette vidéo ! Vous pouvez maintenant passer l'examen.</span>
                                 </div>
                                 <div v-else class="video-status-message warning">
                                     <i class="fas fa-clock"></i>
-                                    <span>You need to watch the entire video before taking the exam.</span>
+                                    <span>Vous devez regarder toute la vidéo avant de passer l'examen.</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Documentation Content -->
-                        <div v-if="currentContent.type === 'doc'" class="documentation-container p-4">
+                        <div v-if="currentContent.type === 'text'" class="documentation-container p-4">
                             <div class="doc-container">
-                                <div class="doc-breadcrumb">Documentation</div>
-                                
+                                <div class="doc-breadcrumb">{{ currentContent.title }}</div>
+
                                 <div class="doc-content">
-                                    <h1>Documentation</h1>
-                                    <h2>Safety Training Module</h2>
-                                    
-                                    <p class="doc-intro">Thank you for enrolling in our safety training course.</p>
-                                    
-                                    <div class="doc-info">
-                                        <div class="info-row">Version: 1.0</div>
-                                        <div class="info-row">Created: 15 March, 2024</div>
-                                        <div class="info-row">Author: Safety FirstHUB</div>
-                                        <div class="info-row">Last Update: 20 March, 2024</div>
-                                    </div>
-
-                                    <div class="notice-box">
-                                        <div class="notice-icon">ⓘ</div>
-                                        <p>If you have any questions that are beyond the scope of this documentation, please feel free to email our support team.</p>
-                                    </div>
-
-                                    <section class="doc-section">
-                                        <h2>Installation</h2>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet convallis quam, fermentum molestie lectus laoreet id.</p>
-                                    </section>
-
-                                    <section class="doc-section">
-                                        <h2>Getting Started</h2>
-                                        <p>Nulla facilisi. Aenean ipsum sem, tincidunt ut ex sed, pretium vestibulum sem.</p>
-                                    </section>
+                                    <h3>{{ currentContent.content }}</h3>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card body only shows for video content -->
-                        <div v-if="currentContent.type === 'video'" class="card-body p-3">
-                            <h2 class="card-title mb-2">{{ course?.name || course?.title }}</h2> <!-- Reduced margin -->
-                            <p class="card-text small mb-2">{{ course?.description }}</p> <!-- Smaller text and reduced margin -->
-                            <div class="course-meta d-flex align-items-center gap-2 mb-2"> <!-- Flex layout for meta -->
+                        <!-- <div v-if="currentContent.type === 'video'" class="card-body p-3">
+                            <h2 class="card-title mb-2">{{ course?.name || course?.title }}</h2>
+                            <p class="card-text small mb-2">{{ course?.description }}</p>
+
+                            <div class="course-meta d-flex align-items-center gap-2 mb-2">
                                 <span class="badge bg-primary">
                                     {{ course?.duration || '2h 30min' }}
                                 </span>
@@ -173,7 +120,8 @@
                                     <i class="fas fa-users"></i> {{ course?.students || 0 }} students
                                 </span>
                             </div>
-                            <div class="course-instructor small text-muted mb-2"> <!-- Smaller text and reduced margin -->
+                            <div class="course-instructor small text-muted mb-2">
+
                                 Instructor: {{ course?.instructor || 'Instructor' }}
                             </div>
                             <div class="course-price">
@@ -182,398 +130,264 @@
                                 </span>
                             </div>
                         </div>
+                        -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
-
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
-const videoUrl = ref("");
 const route = useRoute();
-const router = useRouter(); // Vue Router instance
-const showPreview = ref(true);
-const videoPlayer = ref(null);
-const previewImage = ref("");
+const router = useRouter();
 const course = ref(null);
-const watermarkText = ref("safetyfirsthub.com");
-const isFullScreen = ref(false);
+const sections = ref([]); // Récupérer dynamiquement les sections
+const videoPlayer = ref(null);
+const showPreview = ref(true);
 const isCompleted = ref(false);
-const watchedSegments = ref(new Set());
-let totalDuration = 0;
+const currentContent = ref({ type: 'text', title: '', content: '' });
+const openSections = ref({}); // Gère l'ouverture des sections
+const sectionProgress = ref({}); // Gère la progression par section.
+const videoUrl = ref("");
 
-// Add new refs for sidebar functionality
-const openSections = ref({
-    1: true,  // Section 1 open by default
-    2: false,
-    3: false
-});
 
-// Add new refs for section progress
-const sectionProgress = ref({
-    1: false,
-    2: false,
-    3: false
-});
+// 🛠 Désactiver clic droit
+const disableRightClick = (event) => event.preventDefault();
 
-// Simplify the currentContent ref
-const currentContent = ref({
-    type: 'video',
-    title: ''
-});
-
-// Disable right-click
-const disableRightClick = (event) => {
-    event.preventDefault();
-};
-
-// Handle visibility change
-const handleVisibilityChange = async () => {
-    if (document.hidden) {
-        // Do nothing when tab is hidden
-    } else {
-        await Swal.fire({
-            title: 'Session Ended',
-            text: 'Your video session has ended due to switching tabs.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6',
-        });
-        router.push("/dashboard/courses");
-    }
-};
-
-// Play video and hide preview
-const playVideo = () => {
-    showPreview.value = false;
-    videoPlayer.value.play();
-};
-
-// Hide preview when video starts
-const hidePreview = () => {
-    showPreview.value = false;
-};
-
-// Handle full-screen toggle
-const onFullScreenChange = () => {
-    isFullScreen.value = !!(
-        document.fullscreenElement || 
-        document.webkitFullscreenElement || 
-        document.mozFullScreenElement || 
-        document.msFullscreenElement
-    );
-};
-
-// Update window event listeners
-window.addEventListener("popstate", async () => {
-    if (route.path !== '/dashboard/courses') {
-        await Swal.fire({
-            title: 'Navigation Detected',
-            text: 'Your video session has ended due to navigation.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6',
-        });
-        router.push("/dashboard/courses");
-    }
-});
-
-// Move the blur event listener to onMounted
-onMounted(() => {
-    // Add blur event listener
-    const handleBlur = async () => {
-        if (route.path.includes('/video')) {  // Only show alert if we're on the video page
-            await Swal.fire({
-                title: 'Window Unfocused',
-                text: 'Your video session has ended due to switching applications.',
-                icon: 'warning',
-                confirmButtonColor: '#3085d6',
-            });
-            router.push("/dashboard/courses");
-        }
-    };
-    window.addEventListener("blur", handleBlur);
-
-    // Add other existing event listeners
-    document.addEventListener("fullscreenchange", onFullScreenChange);
-    document.addEventListener("webkitfullscreenchange", onFullScreenChange);
-    document.addEventListener("mozfullscreenchange", onFullScreenChange);
-    document.addEventListener("msfullscreenchange", onFullScreenChange);
-    document.addEventListener("contextmenu", disableRightClick);
-    document.addEventListener("keydown", blockDevTools);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    // Handle refresh attempts (Ctrl+R or F5)
-    window.addEventListener('keydown', async (e) => {
-        if ((e.ctrlKey && e.key === 'r') || e.key === 'F5') {
-            e.preventDefault();
-            const result = await Swal.fire({
-                title: 'Refresh Attempted',
-                text: 'Refreshing will end your video session. Do you want to continue?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, refresh',
-                cancelButtonText: 'Cancel'
-            });
-
-            if (result.isConfirmed) {
-                // Use navigator.sendBeacon for cleanup before refresh
-                if (route.params.id) {
-                    navigator.sendBeacon(`/api/course/${route.params.id}/end-session`);
-                }
-                window.location.reload();
-            }
-        }
-    });
-
-    // Add a simple unload handler without preventing default behavior
-    window.addEventListener('unload', () => {
-        if (route.params.id) {
-            navigator.sendBeacon(`/api/course/${route.params.id}/end-session`);
-        }
-    });
-
-    fetchCourse();
-    fetchVideo();
-
-    // Store handleBlur function for cleanup
-    window._handleBlur = handleBlur;
-
-    // Add progress check
-    
-    // Automatically select doc1 and open section 1
-    selectContent('doc1');
-    openSections.value[1] = true;
-});
-
-onBeforeUnmount(async () => {
-    try {
-        // Only mark as incomplete if we haven't completed the video
-        if (!isCompleted.value && videoPlayer.value) {
-            await markAsIncomplete();
-        }
-    } catch (error) {
-        console.error('Error during cleanup:', error);
-    } finally {
-        // Remove event listeners
-        if (window._handleBlur) {
-            window.removeEventListener("blur", window._handleBlur);
-        }
-        
-        document.removeEventListener("fullscreenchange", onFullScreenChange);
-        document.removeEventListener("webkitfullscreenchange", onFullScreenChange);
-        document.removeEventListener("mozfullscreenchange", onFullScreenChange);
-        document.removeEventListener("msfullscreenchange", onFullScreenChange);
-        document.removeEventListener("visibilitychange", handleVisibilityChange);
-        document.removeEventListener("contextmenu", disableRightClick);
-        document.removeEventListener("keydown", blockDevTools);
-
-        // Redirect to Courses page when leaving this page
-        router.push("/dashboard/courses");
-    }
-});
-
-const fetchVideo = async () => {
-    try {
-        const courseId = route.params.id;
-        // Fixed URL template string
-        videoUrl.value = `/api/courses/${courseId}`;
-    } catch (error) {
-        await Swal.fire({
-            title: 'Error',
-            text: 'Failed to load video. Please try again.',
-            icon: 'error',
-            confirmButtonColor: '#3085d6',
-        });
-        router.push("/dashboard/courses");
-    }
-};
-
+// 🔄 Récupérer les détails du cours
 const fetchCourse = async () => {
     try {
         const response = await axios.get(`/api/course/${route.params.id}`);
-        const fetchedCourse = response.data.data || response.data;
-
-        course.value = {
-            id: fetchedCourse.id,
-            name: fetchedCourse.name || fetchedCourse.title,
-            description: fetchedCourse.description || "No description available",
-            cover: fetchedCourse.cover,
-            total_videos: fetchedCourse.total_videos || 0,
-            students: fetchedCourse.students || 0,
-            videoUrl: fetchedCourse.videoUrl || fetchedCourse.cover,
-            instructor: fetchedCourse.instructor || "John Doe",
-            price: fetchedCourse.price || "Free",
-            duration: fetchedCourse.duration || "2h 30min",
-            email: fetchedCourse.email || "student@example.com",
-        };
-
-        previewImage.value = course.value.cover;
-        // Correct template string for watermark
-        watermarkText.value = `${course.value.email} | safetyfirsthub.com`;
+        course.value = response.data;
     } catch (error) {
-        await Swal.fire({
-            title: 'Error',
-            text: 'Failed to load course details. Please try again.',
-            icon: 'error',
-            confirmButtonColor: '#3085d6',
-        });
+        Swal.fire({ title: 'Erreur', text: 'Impossible de charger le cours.', icon: 'error' });
         router.push("/dashboard/courses");
     }
 };
+const fetchVideo = async (videoId) => {
+    try {
+        console.log("Fetching video for ID:", videoId); // Debugging
 
-const blockDevTools = (event) => {
-    if (
-        event.key === "F12" || 
-        (event.ctrlKey && event.shiftKey && event.key === "I") || 
-        (event.metaKey && event.altKey && event.key === "I") // For Mac Cmd+Opt+I
-    ) {
-        event.preventDefault();
+        const response = await axios.get(`/api/videos/${videoId}/video-url`);
+        console.log("Video URL Response:", response.data.section_id); // Debugging
+
+        if (response.data.video_url) {
+            videoUrl.value = response.data.video_url;
+
+            isCompleted.value = false;
+            // ✅ Mettre à jour le state pour afficher le lecteur vidéo
+            currentContent.value = {
+                type: 'video',
+                title: 'Lecture de la vidéo',
+                videoUrl: response.data.video_url,
+                video_id: videoId,
+                section_id: response.data.section_id
+            };
+            console.log("currentContent", currentContent.value.id);
+            showPreview.value = false; // 🔥 Masquer la prévisualisation pour afficher le player
+
+            console.log("Player should now be visible");
+        } else {
+            console.error("No valid video URL received");
+        }
+    } catch (error) {
+        console.error("Erreur lors de la récupération de la vidéo :", error);
+        await Swal.fire({
+            title: 'Erreur',
+            text: 'Impossible de charger la vidéo.',
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+        });
     }
 };
 
-// Watch for changes in route parameters and refetch data
+// 📌 Récupérer les sections dynamiquement
+const fetchSections = async () => {
+
+
+    try {
+        const response = await axios.get(`/courses/${route.params.id}/sections`);
+        console.log('------------------------------------');
+
+        sections.value = response.data.sections;
+
+        // Initialiser l'ouverture des sections et la progression
+        sections.value.forEach((section, index) => {
+            openSections.value[section.id] = index === 0; // Ouvrir uniquement la première section
+            sectionProgress.value[section.id] = section.videos.every(video => video.is_completed);
+        });
+
+        if (sections.value.length > 0) {
+            const firstSection = sections.value[0];
+            if (firstSection.slides && firstSection.slides.length > 0) {
+                const firstSlide = firstSection.slides[0];
+                selectContent({
+                    type: 'text',
+                    title: firstSlide.title,
+                    content: firstSlide.content
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Erreur lors du chargement des sections :", error);
+    }
+};
+
+// 📌 Suivi de la progression
+const updateProgress = async (sectionId, videoId, event) => {
+    if (!videoId) {
+        console.error("Erreur : videoId ou sectionId est manquant !");
+        return;
+    }
+
+    const currentTime = Math.floor(event.target.currentTime);
+    const totalDuration = Math.floor(event.target.duration);
+
+    console.log(`✅ Progression mise à jour : Video ${videoId} | ${currentTime}/${totalDuration} sec`);
+
+    try {
+        const response = await axios.post(`/video/progress/update`, {
+            video_id: videoId,
+            section_id: sectionId,
+            current_time: currentTime,
+            total_duration: totalDuration,
+            is_completed: false
+        });
+        console.log("📌:", currentTime);
+        // 📌 Vérifier si la vidéo est déjà terminée
+        if (response.data.is_completed) {
+            console.log("📌 La vidéo est déjà complétée, pas de mise à jour nécessaire.");
+            return;
+        }
+
+    } catch (error) {
+        console.error("🚨 Erreur lors de la mise à jour de la progression :", error);
+    }
+};
+
+
+
+// ✅ Marquer une vidéo comme complétée
+const markAsCompleted = async (section_id,video_id) => {
+    try {
+        console.log("Marquer la vidéo comme complétée :", video_id);
+        await axios.post(`/video/progress/complete`, {
+            video_id: video_id,
+            section_id: section_id
+        });
+
+        isCompleted.value = true;
+
+        // Mettre à jour la progression de la section
+        const section = sections.value.find(sec => sec.videos.some(video => video.id === video_id));
+       const currentSection = sections.value.find(sec => sec.id === section_id);
+        if (currentSection) {
+            // Update the videos completion status
+            const videoIndex = currentSection.videos.findIndex(v => v.id === video_id);
+            if (videoIndex !== -1) {
+                currentSection.videos[videoIndex].is_completed = true;
+            }
+
+            // Check if all videos in the section are completed
+            const allVideosCompleted = currentSection.videos.every(video => video.is_completed);
+            if (allVideosCompleted) {
+                sectionProgress.value[section_id] = true;
+
+                // Find the next section and make it accessible
+                const nextSectionIndex = sections.value.findIndex(sec => sec.id === section_id) + 1;
+                if (nextSectionIndex < sections.value.length) {
+                    const nextSection = sections.value[nextSectionIndex];
+                    sectionProgress.value[nextSection.id] = false; // Reset but make it accessible
+
+                    // Optionally show a notification that next section is unlocked
+                    Swal.fire({
+                        title: 'Section Déverrouillée',
+                        text: 'La section suivante est maintenant accessible !',
+                        icon: 'success',
+                        timer: 2000
+                    });
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Erreur lors de la complétion de la vidéo :", error);
+    }
+};
+
+// 🔄 Gérer l'ouverture des sections
+const toggleSection = (sectionId) => {
+    console.log("Toggle Section:", sectionId, sectionProgress.value);
+
+    // Always allow first section
+    if (sectionId === sections.value[0].id) {
+        openSections.value[sectionId] = !openSections.value[sectionId];
+        return;
+    }
+
+    // Find the previous section
+    const sectionIndex = sections.value.findIndex(sec => sec.id === sectionId);
+    if (sectionIndex > 0) {
+        const previousSection = sections.value[sectionIndex - 1];
+
+        // Check if previous section is completed
+        if (sectionProgress.value[previousSection.id]) {
+            openSections.value[sectionId] = !openSections.value[sectionId];
+        } else {
+            Swal.fire({
+                title: 'Section Verrouillée',
+                text: 'Complétez la section précédente.',
+                icon: 'warning'
+            });
+        }
+    }
+};
+
+// 🔄 Sélectionner un contenu
+const selectContent = (content) => {
+    currentContent.value = content;
+    showPreview.value = false;
+
+};
+
+// 📌 Détection des changements de route
 watch(() => route.params.id, async (newId, oldId) => {
     if (newId !== oldId) {
         await fetchCourse();
-        await fetchVideo();
+        await fetchSections();
+
     }
 });
 
-const updateProgress = async () => {
-    if (!videoPlayer.value) return;
+// 🎯 Montage du composant
+onMounted(() => {
+    fetchCourse();
+    fetchSections();
 
-    const currentTime = Math.floor(videoPlayer.value.currentTime);
-    totalDuration = Math.floor(videoPlayer.value.duration);
+    document.addEventListener("contextmenu", disableRightClick);
+});
 
-    watchedSegments.value.add(currentTime);
-
-    // Send progress every 10 seconds
-    if (currentTime % 10 === 0) {
-        try {
-            await axios.post(`/video/progress/update`, {
-                current_time: currentTime,
-                total_duration: totalDuration,
-                course_id: route.params.id,
-                is_completed: false // Always false unless explicitly completed
-            });
-        } catch (error) {
-            console.error("Error updating progress:", error);
-        }
-    }
-};
-
-const markAsCompleted = async () => {
-    if (!videoPlayer.value) return;
-    
-    const currentTime = Math.floor(videoPlayer.value.currentTime);
-    const duration = Math.floor(videoPlayer.value.duration);
-    
-    // Only mark as completed if we're at the end of the video
-    if (currentTime >= duration - 1) { // -1 to account for small timing differences
-        try {
-            await axios.post(`/video/progress/complete`, {
-                current_time: duration,
-                total_duration: duration,
-                course_id: route.params.id,
-            });
-            isCompleted.value = true;
-        } catch (error) {
-            console.error("Error marking video as completed:", error);
-        }
-    }
-    
-    // Update section progress based on current content
-    const currentSection = parseInt(currentContent.value.title?.match(/\d+/)?.[0] || 1);
-    sectionProgress.value[currentSection] = true;
-};
-
-const markAsIncomplete = async () => {
-    if (!route.params.id) return; // Guard against missing course_id
-    
-    try {
-        const response = await axios.post(`/video/progress/reset`, {
-            course_id: route.params.id
-        });
-       
-    } catch (error) {
-        console.error("Error marking video as incomplete:", error);
-    }
-};
-
-// Toggle section visibility
-const toggleSection = (sectionId) => {
-    openSections.value[sectionId] = !openSections.value[sectionId];
-};
-
-// Modified toggle section function
-const attemptToggleSection = (sectionId) => {
-    if (sectionId === 1) {
-        toggleSection(1);
-        return;
-    }
-
-    // Check if previous section is completed
-    if (!sectionProgress.value[sectionId - 1]) {
-        Swal.fire({
-            title: 'Section Locked',
-            text: 'Please complete the previous section first.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6',
-        });
-        return;
-    }
-
-    toggleSection(sectionId);
-};
-
-// Simplify the selectContent function
-const selectContent = (contentId) => {
-    if (contentId.startsWith('doc')) {
-        currentContent.value = {
-            type: 'doc',
-            title: 'Documentation'
-        };
-    } else if (contentId.startsWith('video')) {
-        currentContent.value = {
-            type: 'video',
-            title: course.value?.name || course.value?.title
-        };
-    }
-};
-
-// Modified content selection function
-const attemptSelectContent = (contentId) => {
-    const sectionNumber = parseInt(contentId.replace(/[^\d]/g, ''));
-    
-    if (!sectionProgress.value[sectionNumber - 1]) {
-        Swal.fire({
-            title: 'Content Locked',
-            text: 'Please complete the previous section first.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6',
-        });
-        return;
-    }
-
-    selectContent(contentId);
-};
+// 🛑 Nettoyage
+onBeforeUnmount(() => {
+    document.removeEventListener("contextmenu", disableRightClick);
+});
 </script>
+
 
 
 <style scoped>
 .watermark {
-    position: absolute; /* Position it over the video */
+    position: absolute;
+    /* Position it over the video */
     color: rgba(255, 255, 255, 0.7);
     font-size: 20px;
     font-weight: bold;
-    z-index: 9999;  /* Ensure it's on top of everything */
+    z-index: 9999;
+    /* Ensure it's on top of everything */
     pointer-events: none;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     background: transparent;
@@ -596,27 +410,33 @@ const attemptSelectContent = (contentId) => {
 
 /* Full-screen watermark styling */
 .watermark-fullscreen {
-    font-size: 24px;  /* Increase size for visibility */
-    opacity: 0.8;     /* Increase opacity */
-    z-index: 10000;   /* Ensure it's on top of everything */
-    position: fixed;  /* Stay in a fixed position on the screen */
+    font-size: 24px;
+    /* Increase size for visibility */
+    opacity: 0.8;
+    /* Increase opacity */
+    z-index: 10000;
+    /* Ensure it's on top of everything */
+    position: fixed;
+    /* Stay in a fixed position on the screen */
 }
 
 /* Full-screen specific positioning */
 .watermark-fullscreen.watermark-top-left {
-    top: 5%;  /* Slightly closer to the top-left corner */
+    top: 5%;
+    /* Slightly closer to the top-left corner */
     left: 5%;
 }
 
 .watermark-fullscreen.watermark-bottom-right {
-    bottom: 5%;  /* Slightly closer to the bottom-right corner */
+    bottom: 5%;
+    /* Slightly closer to the bottom-right corner */
     right: 5%;
 }
 
 .course-video-container {
     background-color: #f8f9fa;
     min-height: 100vh;
-    
+
 }
 
 .video-content {
@@ -625,7 +445,8 @@ const attemptSelectContent = (contentId) => {
 
 .video-container {
     position: relative;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
     width: 100%;
 }
 
@@ -663,7 +484,8 @@ const attemptSelectContent = (contentId) => {
 }
 
 .play-button {
-    width: 70px; /* Smaller play button */
+    width: 70px;
+    /* Smaller play button */
     height: 70px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
@@ -680,7 +502,8 @@ const attemptSelectContent = (contentId) => {
 
 .play-button::before {
     content: '▶';
-    font-size: 28px; /* Smaller play icon */
+    font-size: 28px;
+    /* Smaller play icon */
     color: black;
     font-weight: bold;
     margin-left: 3px;
@@ -691,16 +514,18 @@ const attemptSelectContent = (contentId) => {
 }
 
 .course-meta {
-    margin-top: 0.5rem; /* Reduced margin */
+    margin-top: 0.5rem;
+    /* Reduced margin */
 }
 
 .card {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .course-instructor,
 .course-price {
-    margin-top: 0.5rem; /* Reduced margin */
+    margin-top: 0.5rem;
+    /* Reduced margin */
 }
 
 .video-messages {
@@ -754,7 +579,7 @@ const attemptSelectContent = (contentId) => {
 .course-sidebar {
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-bottom: 20px;
 }
@@ -967,9 +792,17 @@ const attemptSelectContent = (contentId) => {
 
 /* Animation for completion */
 @keyframes completedPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .section-status.completed i {

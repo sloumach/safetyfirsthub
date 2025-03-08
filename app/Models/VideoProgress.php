@@ -10,7 +10,7 @@ class VideoProgress extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'video_id', 'watched_segments', 'total_duration', 'is_completed'];
+    protected $fillable = ['user_id', 'video_id','section_id', 'watched_segments', 'total_duration', 'is_completed'];
 
     protected $casts = [
         'watched_segments' => 'array',

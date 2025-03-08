@@ -10,8 +10,8 @@
       <div class="exam-card" v-for="course in paginatedCourses" :key="course.id">
         <div class="exam-card-inner">
           <div class="exam-image">
-            <img 
-              :src="course.cover || 'https://placehold.co/600x400/003366/ffffff?text=Course'" 
+            <img
+              :src="course.cover || 'https://placehold.co/600x400/003366/ffffff?text=Course'"
               :alt="course.name"
               @error="handleImageError"
             />
@@ -36,8 +36,8 @@
               </div>
             </div>
 
-            <button 
-              @click="handleButtonClick(course)" 
+            <button
+              @click="handleButtonClick(course)"
               :class="['exam-button', { 'certificate-button': course.examcheck }]"
             >
               <i class='bx bx-trophy'></i>
@@ -50,8 +50,8 @@
 
     <!-- Modern Pagination -->
     <div class="modern-pagination" v-if="totalPages > 1">
-      <button 
-        class="nav-btn prev" 
+      <button
+        class="nav-btn prev"
         @click="changePage(currentPage - 1)"
         :disabled="currentPage === 1"
       >
@@ -59,8 +59,8 @@
       </button>
 
       <div class="page-numbers">
-        <button 
-          v-for="page in displayedPages" 
+        <button
+          v-for="page in displayedPages"
           :key="page"
           @click="changePage(page)"
           :class="['page-btn', { active: currentPage === page }]"
@@ -69,8 +69,8 @@
         </button>
       </div>
 
-      <button 
-        class="nav-btn next" 
+      <button
+        class="nav-btn next"
         @click="changePage(currentPage + 1)"
         :disabled="currentPage === totalPages"
       >
@@ -90,11 +90,10 @@ export default {
   name: 'Exams',
   setup() {
     const router = useRouter()
-    const isCompleted = ref(false)
     const courses = ref([])
     const route = useRoute()
     const currentPage = ref(1)
-    const itemsPerPage = ref(4)  // Change from 6 to 2
+    const itemsPerPage = ref(4)
 
     const handleImageError = (e) => {
       e.target.src = 'https://placehold.co/600x400/003366/ffffff?text=Course'
@@ -103,50 +102,46 @@ export default {
     const fetchCourses = async () => {
       try {
         const response = await axios.get('/api/courses')
-        console.log('API Response:', response.data)
         courses.value = [...response.data]
-        console.log('Courses after update:', courses.value.length)
       } catch (error) {
         console.error('Error fetching courses:', error)
       }
     }
 
-    const checkProgress = async (courseId) => {
+    const checkCourseCompletion = async (courseId) => {
       try {
-        const response = await axios.get(`/video/progress/check/${courseId}`);
-        return response.data.watched; // Assuming this is what the API returns
+        const response = await axios.get(`/video/progress/course/${courseId}`)
+        return response.data.completed
       } catch (error) {
-        console.error("Error checking progress:", error);
-        return false;
+        console.error("Error checking course completion:", error)
+        return false
       }
     }
 
     const handleButtonClick = async (course) => {
       if (course.examcheck) {
-        window.location.href = '/dashboard/certificate';
+        window.location.href = '/dashboard/certificate'
       } else {
-        const isCompleted = await checkProgress(course.id); // Use checkProgress here
-        
+        const isCompleted = await checkCourseCompletion(course.id)
+
         if (isCompleted) {
-          router.push(`/dashboard/exams/${course.id}`);
+          router.push(`/dashboard/exams/${course.id}`)
         } else {
           await Swal.fire({
             title: 'Access Denied',
-            text: 'You need to complete the required content before accessing this exam.',
+            text: 'You need to complete all sections of this course before taking the exam.',
             icon: 'warning',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK'
-          });
+          })
         }
       }
     }
 
-    // Computed Property for Button Text
     const getButtonText = (course) => {
-      return course.examcheck ? 'Get Your Certificate' : 'Take Exam';
+      return course.examcheck ? 'Get Your Certificate' : 'Take Exam'
     }
 
-    // Debugging: Watch if courses update properly
     watch(courses, (newValue) => {
       console.log('Courses changed:', {
         length: newValue.length,
@@ -156,11 +151,6 @@ export default {
     })
 
     const totalPages = computed(() => {
-      console.log('Computing total pages:', {
-        coursesLength: courses.value.length,
-        itemsPerPage: itemsPerPage.value,
-        result: Math.ceil(courses.value.length / itemsPerPage.value)
-      })
       return Math.ceil(courses.value.length / itemsPerPage.value)
     })
 
@@ -197,7 +187,6 @@ export default {
     }
 
     onMounted(() => {
-      console.log('Component mounted')
       fetchCourses()
     })
 
@@ -217,6 +206,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 .exams-dashboard {

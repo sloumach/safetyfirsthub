@@ -14,6 +14,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminExamsController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ExamController;
+use App\Http\Controllers\ExamAttemptController;
+use App\Http\Controllers\VideoProgressController;
 
 
 
@@ -80,31 +83,42 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
         Route::prefix('api')->group(function () {
             Route::get('/courses', 'getCourses')->name('api.courses');
             Route::get('/course/{id}', 'getCourse')->whereNumber('id')->name('api.course');
-            Route::get('/courses/{id}', 'streamVideo')->whereNumber('id')->name('api.course.show');
+            // 📌 Route pour récupérer l'URL temporaire de la vidéo
+            Route::get('/videos/{video_id}/video-url',  'getVideoUrl')->name('api.section.video.url');
+
+            // 📌 Route pour streamer la vidéo sécurisée avec une URL signée
+            Route::get('/videos/{video_id}/video-stream',  'streamVideo')->middleware('signed')->name('section.video.stream');
+
         });
         // Secure storage access route
         Route::get('/storage/private-cover/{filename}', 'serveCover')->name('cover.access');
 
     });
-    Route::controller(UserExamsController::class)->group(function () {
-        Route::prefix('exams')->group(function () {
-            Route::post('/start/{exam_id}', 'startExam')->whereNumber('exam_id')->name('exam.start');
-            Route::get('/{exam_id}', 'showExam')->whereNumber('exam_id')->name('user.exams.show');
-            Route::post('/{exam_id}/submit', 'submitExam')->whereNumber('exam_id')->name('user.exams.submit');
-            Route::get('/{exam_id}/results', 'examResults')->whereNumber('exam_id')->name('user.exams.results');
-            Route::get('/history', 'userExamHistory')->name('user.exams.history');
-            Route::get('/{session_id}/question', 'getNextQuestion')->whereNumber('session_id')->name('exam.question');
-            Route::post('/{session_id}/answer', 'submitAnswer')->whereNumber('session_id')->name('exam.answer');
-            Route::post('/{session_id}/complete', 'markExamAsCompleted')->whereNumber('session_id')->name('exam.complete');
-        });
-        // Routes liées à la progression vidéo
-        Route::prefix('video/progress')->group(function () {
-            Route::post('/update', 'updateProgress')->name('video.progress.update');
-            Route::get('/check/{course_id}', 'checkProgress')->whereNumber('course_id')->name('video.progress.check');
-            Route::post('/complete', 'markAsCompleted')->name('video.progress.complete');
-            Route::post('/reset', 'resetProgress')->name('video.progress.reset');
-        });
+    Route::prefix('exam')->group(function () {
+        Route::post('/start/{course_id}', [ExamController::class, 'startExam'])->whereNumber('course_id');
+        Route::get('/{session_id}/result', [ExamController::class, 'examResults'])->whereNumber('session_id');
+        Route::post('/{session_id}/complete', [ExamController::class, 'markExamAsCompleted'])->whereNumber('session_id');
+        Route::get('/history', [ExamController::class, 'userExamHistory']);
     });
+
+    // 📌 Routes pour la gestion des réponses et des questions
+    Route::prefix('exam/{session_id}')->group(function () {
+        Route::get('/next-question', [ExamAttemptController::class, 'getNextQuestion'])->whereNumber('session_id');
+        Route::post('/submit-answer', [ExamAttemptController::class, 'submitAnswer'])->whereNumber('session_id');
+    });
+
+    // 📌 Routes pour la gestion de la progression vidéo
+    Route::prefix('video/progress')->group(function () {
+        Route::post('/update', [VideoProgressController::class, 'updateProgress']);
+        Route::get('/check/{course_id}', [VideoProgressController::class, 'checkProgress'])->whereNumber('course_id');
+        Route::post('/complete', [VideoProgressController::class, 'markAsCompleted']);
+        Route::post('/reset', [VideoProgressController::class, 'resetProgress']);
+        Route::get('/course/{course_id}', [VideoProgressController::class, 'checkCourseCompletion'])
+    ->whereNumber('course_id');
+
+    });
+    Route::get('/courses/{course_id}/sections', [DashboardController::class, 'getCourseSections'])
+    ->whereNumber('course_id');
 });
 
 Route::controller(AdminController::class)->group(function () {
