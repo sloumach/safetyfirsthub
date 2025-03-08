@@ -65,7 +65,6 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
         /* Route::post('/pay', 'pay')->name('pay'); */
         Route::post('/charge', 'charge')->name('charge');
         Route::get('/sync-payment',  'syncPayment')->name('syncPayment');
-        //Route::get('/success', 'success')->name('success');
     });
     Route::controller(ProductController::class)->group(function () {
         Route::get('/singleproduct/{id}', 'singleproduct')->name('singleproduct');
@@ -125,7 +124,8 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('adminindex', 'index')->name('adminindex');
     Route::get('adminfinanceindex', 'finance')->name('adminfinanceindex');
     Route::get('usersmanagement', 'usersManagement')->name('usersManagement');
-    Route::get('admincourses', 'courses')->name('admincourses');
+    Route::get('admincourses', 'addcourses')->name('admincourses');
+    Route::get('removecourses', 'removecourses')->name('removecourses');
     Route::post('addcourse', 'addcourse')->name('addcourse');
     // Route pour mettre à jour un cours
     Route::post('/admin/course/update/{id}', 'updateCourse')->name('update.course');

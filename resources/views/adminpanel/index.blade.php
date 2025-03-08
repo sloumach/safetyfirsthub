@@ -416,8 +416,11 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="adminassets/vendor/jquery/jquery.min.js"></script>
+   
+
+</body>
+ <!-- Bootstrap core JavaScript-->
+ <script src="adminassets/vendor/jquery/jquery.min.js"></script>
     <script src="adminassets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
@@ -432,7 +435,4 @@
     <!-- Page level custom scripts -->
     <script src="adminassets/js/demo/chart-area-demo.js"></script>
     <script src="adminassets/js/demo/chart-pie-demo.js"></script>
-
-</body>
-
 </html>

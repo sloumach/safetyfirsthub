@@ -1,7 +1,7 @@
 <template>
     <div class="courses-dashboard exams-section">
         <div class="text-2xl font-bold mb-4 text-center">
-            <h2>My Learning Dashboard</h2>
+            <h1>My Learning Dashboard</h1>
             <p class="subtitle">Your Purchased Certifications</p>
             <p class="description" style="color: #666; font-size: 14px; margin-top: 5px;">
                 <span style="display: block; margin-top: 10px;">
@@ -12,29 +12,7 @@
         </div>
 
         <div class="dashboard-content">
-            <!-- Course List Sidebar -->
-            <!-- <div class="course-sidebar" :class="{ 'sidebar-active': isSidebarOpen }">
-                <div class="sidebar-header">
-                    <h3>My Courses</h3>
-                    <button class="mobile-close" @click="toggleSidebar">
-                        <i class='bx bx-x'></i>
-                    </button>
-                </div>
-                
-                <div class="course-list">
-                    <div 
-                        v-for="course in courses" 
-                        :key="course.id" 
-                        class="course-item"
-                        :class="{ 'active': selectedCourse === course.id }"
-                        @click="selectCourse(course.id)"
-                    >
-                        <i class='bx bx-book-open'></i>
-                        <span>{{ course.name }}</span>
-                    </div>
-                </div>
-            </div> -->
-
+          
             <!-- Mobile Toggle -->
             <button class="mobile-toggle" @click="toggleSidebar">
                 <i class='bx bx-menu'></i>
@@ -63,10 +41,10 @@
                                 <p>{{ course.description }}</p>
                                 
                                 <div class="course-meta">
-                                    <span>
+                                    <!-- <span>
                                         <i class='bx bx-user'></i>
                                         {{ course.students || 0 }} students
-                                    </span>
+                                    </span> -->
                                     <button @click="navigateToVideo(course.id)" class="btn-continue">
                                         Continue Learning
                                         <i class='bx bx-right-arrow-alt'></i>
@@ -115,6 +93,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
     name: 'Courses',
@@ -133,14 +112,26 @@ export default {
         const fetchCourses = async () => {
             try {
                 const response = await axios.get('/api/courses');
-                courses.value = response.data;
+                
+                if (response.data && response.data.length > 0) {
+                    courses.value = response.data;
+                } else {
+                    courses.value = [];
+                    Swal.fire({
+                        icon: "info",
+                        title: "No Courses Found",
+                        text: "You haven't purchased any courses yet.",
+                        confirmButtonColor: "#FF8A00",
+                    });
+                }
             } catch (error) {
-                // console.error('Error details:', {
-                //     message: error.message,
-                //     response: error.response,
-                //     status: error.response?.status,
-                //     data: error.response?.data
-                // })
+                courses.value = [];
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to load courses. Please try again later.",
+                    confirmButtonColor: "#FF8A00",
+                });
             }
         }
 
@@ -196,6 +187,7 @@ export default {
 
         onMounted(() => {
             fetchCourses()
+
         })
 
         return {
@@ -521,6 +513,7 @@ export default {
 
     .course-card {
         margin-bottom: 1rem !important;
+        width: 100%;
     }
 
     .course-image {

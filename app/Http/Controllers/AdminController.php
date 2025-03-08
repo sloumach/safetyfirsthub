@@ -30,13 +30,26 @@ class AdminController extends Controller
 
     }
 
-    public function courses()
+    public function addcourses()
     {        /* $course = Course::with(['sections.slides', 'sections.videos'])->findOrFail(17);
         return view('adminpanel.courses', compact('course'));
         dd($course); */
         try {
             $courses = $this->courseService->getAllCourses();
             return view('adminpanel.courses', compact('courses'));
+        } catch (\Exception $e) {
+            Log::error("Error in courses: " . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while fetching courses.');
+        }
+    }
+
+    public function removecourses()
+    {        /* $course = Course::with(['sections.slides', 'sections.videos'])->findOrFail(17);
+        return view('adminpanel.courses', compact('course'));
+        dd($course); */
+        try {
+            $courses = $this->courseService->getAllCourses();
+            return view('adminpanel.removecourses', compact('courses'));
         } catch (\Exception $e) {
             Log::error("Error in courses: " . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while fetching courses.');

@@ -163,9 +163,15 @@
         </div>
     </div> --}}
 
-    <!-- Bootstrap core JavaScript-->
+  
+
+
+
+
+</body>
+  <!-- Bootstrap core JavaScript-->
     <!-- jQuery -->
-<script src="{{ asset('adminassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('adminassets/vendor/jquery/jquery.min.js') }}"></script>
 
 <!-- Bootstrap Bundle -->
 <script src="{{ asset('adminassets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -175,10 +181,4 @@
 
 <!-- Custom scripts for all pages -->
 <script src="{{ asset('adminassets/js/sb-admin-2.min.js') }}"></script>
-
-
-
-
-</body>
-
 </html>

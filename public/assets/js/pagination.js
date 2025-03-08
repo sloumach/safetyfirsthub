@@ -1,76 +1,99 @@
 document.addEventListener('DOMContentLoaded', function() {
     const itemsPerPage = 6;
-    const courseItems = document.querySelectorAll('.course-item');
+    const courseItems = Array.from(document.querySelectorAll('.course-item'));
+    
+    if (courseItems.length === 0) return;
+
     const totalPages = Math.ceil(courseItems.length / itemsPerPage);
     let currentPage = 1;
 
-    // Initialize pagination
-    function initPagination() {
+    function createPagination() {
         const pageNumbers = document.getElementById('pageNumbers');
         pageNumbers.innerHTML = '';
 
-        // Create page number buttons
         for (let i = 1; i <= totalPages; i++) {
             const li = document.createElement('li');
             li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-            li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
-            pageNumbers.appendChild(li);
-
-            // Add click event to page numbers
-            li.querySelector('a').addEventListener('click', (e) => {
+            li.innerHTML = `<a class="page-link" href="javascript:void(0)" data-page="${i}">${i}</a>`;
+            
+            // Add click event listener
+            li.querySelector('a').addEventListener('click', function(e) {
                 e.preventDefault();
-                currentPage = i;
-                updateDisplay();
-            });
-        }
+                changePage(i);
+            }, { passive: false });
 
-        updateDisplay();
+            pageNumbers.appendChild(li);
+        }
     }
 
-    // Update the display of courses
-    function updateDisplay() {
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-
-        // Hide all courses
+    function changePage(page) {
+        currentPage = page;
+        
+        // Hide all courses first
         courseItems.forEach(item => {
-            item.style.display = 'none';
+            item.style.cssText = 'display: none !important';
         });
 
         // Show only courses for current page
-        for (let i = start; i < end && i < courseItems.length; i++) {
-            courseItems[i].style.display = 'block';
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = Math.min(start + itemsPerPage, courseItems.length);
+        
+        for (let i = start; i < end; i++) {
+            if (courseItems[i]) {
+                courseItems[i].style.cssText = 'display: block !important';
+            }
         }
 
-        // Update active state of page numbers
-        document.querySelectorAll('.page-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        document.querySelector(`[data-page="${currentPage}"]`).parentElement.classList.add('active');
+        // Update active states
+        updateActiveStates();
 
-        // Update prev/next button states
-        document.getElementById('prevPage').parentElement.classList.toggle('disabled', currentPage === 1);
-        document.getElementById('nextPage').parentElement.classList.toggle('disabled', currentPage === totalPages);
+        // Scroll to top of courses section
+        const coursesSection = document.querySelector('.courses-area');
+        if (coursesSection) {
+            coursesSection.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
-    // Previous page button
-    document.getElementById('prevPage').addEventListener('click', (e) => {
+    function updateActiveStates() {
+        // Update page number active states
+        document.querySelectorAll('#pageNumbers .page-item').forEach(item => {
+            const pageNum = parseInt(item.querySelector('a').getAttribute('data-page'));
+            item.classList.toggle('active', pageNum === currentPage);
+        });
+
+        // Update prev/next buttons
+        const prevButton = document.getElementById('prevPage').parentElement;
+        const nextButton = document.getElementById('nextPage').parentElement;
+        
+        prevButton.classList.toggle('disabled', currentPage === 1);
+        nextButton.classList.toggle('disabled', currentPage === totalPages);
+    }
+
+    // Prev/Next button handlers
+    document.getElementById('prevPage').addEventListener('click', function(e) {
         e.preventDefault();
         if (currentPage > 1) {
-            currentPage--;
-            updateDisplay();
+            changePage(currentPage - 1);
         }
     });
 
-    // Next page button
-    document.getElementById('nextPage').addEventListener('click', (e) => {
+    document.getElementById('nextPage').addEventListener('click', function(e) {
         e.preventDefault();
         if (currentPage < totalPages) {
-            currentPage++;
-            updateDisplay();
+            changePage(currentPage + 1);
         }
     });
 
-    // Initialize the pagination
-    initPagination();
+    // Force re-pagination on window resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            changePage(currentPage);
+        }, 250);
+    });
+
+    // Initialize pagination
+    createPagination();
+    changePage(1);
 }); 

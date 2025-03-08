@@ -169,6 +169,9 @@
         </div>
     </div>
 
+
+
+</body>
 <!-- Bootstrap core JavaScript -->
 <script src="{{ asset('adminassets/vendor/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('adminassets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -185,8 +188,5 @@
 
 <!-- Page level custom scripts -->
 <script src="{{ asset('adminassets/js/demo/datatables-demo.js') }}"></script>
-
-
-</body>
 
 </html>

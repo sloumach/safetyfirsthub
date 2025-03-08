@@ -57,13 +57,21 @@ export default {
           try {
               const examUserId = route.params.id;
 
-
               const response = await axios.post(`/certificates/generate/${examUserId}`);
-
-              qrCodeImage.value = `data:image/svg+xml;base64,${response.data.certificate.qr_code}`;
-              firstname.value = response.data.user_firstname || "Unknown";
-              lastname.value = response.data.user_lastname || "Unknown";
-              courseName.value = response.data.course_name || "Unknown Course";
+              
+              if (response.data) {
+                  qrCodeImage.value = `data:image/svg+xml;base64,${response.data.certificate.qr_code}`;
+                  firstname.value = response.data.user_firstname || "Unknown";
+                  lastname.value = response.data.user_lastname || "Unknown";
+                  courseName.value = response.data.course_name || "Unknown Course";
+              } else {
+                  Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "No certificate data received",
+                      confirmButtonColor: "#FF8A00",
+                  });
+              }
 
           } catch (error) {
               console.error("Error generating certificate:", error);

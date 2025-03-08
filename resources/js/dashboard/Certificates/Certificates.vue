@@ -9,7 +9,7 @@
     </div>
 
     <div class="exams-header">
-      <h2>🎉 Your Achievement Gallery 🎉</h2>
+      <h1>🎉 Your Achievement Gallery 🎉</h1>
       <p class="subtitle">Showcase your completed certifications</p>
     
     </div>
@@ -99,9 +99,17 @@ export default {
       try {
         loading.value = true
         const response = await axios.get('/api/courses')
-        courses.value = [...response.data]
+        
+        if (response.data) {
+          courses.value = [...response.data]
+        } else {
+          console.error('No course data received')
+          courses.value = []
+        }
+
       } catch (error) {
         console.error('Error fetching courses:', error)
+        courses.value = []
       } finally {
         loading.value = false
       }
@@ -113,6 +121,7 @@ export default {
 
     onMounted(() => {
       fetchCourses()
+
     })
 
     return {
@@ -383,7 +392,7 @@ export default {
 /* Responsive Design */
 @media (max-width: 768px) {
     .certificates-dashboard {
-        padding: 1rem !important;
+        padding: 2rem !important;
     }
 
     .certificates-header h2 {

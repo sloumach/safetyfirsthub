@@ -102,26 +102,7 @@
                 </div>
                 <!-- /.container-fluid -->
 
-                <!-- Modal Bootstrap -->
-                <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="messageModalLabel">Détails du Message</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p><strong>Nom:</strong> <span id="modal-name"></span></p>
-                                <p><strong>Email:</strong> <span id="modal-email"></span></p>
-                                <p><strong>Sujet:</strong> <span id="modal-subject"></span></p>
-                                <p><strong>Date:</strong> <span id="modal-date"></span></p>
-                                <hr>
-                                <p><strong>Message:</strong></p>
-                                <p id="modal-message" class="text-muted"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               
             </div>
             <!-- End of Main Content -->
 
@@ -145,84 +126,50 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-<!-- SweetAlert2 via CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Ajoute un écouteur sur tout le document pour gérer les boutons dynamiquement
-            document.body.addEventListener("click", function(event) {
-                // 📌 Vérification si c'est le bouton "Voir le message"
-                if (event.target.classList.contains("view-message")) {
-                    document.getElementById("modal-name").textContent = event.target.getAttribute("data-name");
-                    document.getElementById("modal-email").textContent = event.target.getAttribute("data-email");
-                    document.getElementById("modal-subject").textContent = event.target.getAttribute("data-subject");
-                    document.getElementById("modal-message").textContent = event.target.getAttribute("data-message");
-                    document.getElementById("modal-date").textContent = event.target.getAttribute("data-date");
-
-                    var modal = new bootstrap.Modal(document.getElementById("messageModal"));
-                    modal.show();
-                }
-
-                // 📌 Vérification si c'est le bouton "Supprimer"
-                if (event.target.classList.contains("delete-btn")) {
-                    const messageId = event.target.getAttribute("data-id");
-
-                    Swal.fire({
-                        title: "Êtes-vous sûr ?",
-                        text: "Cette action est irréversible !",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#d33",
-                        cancelButtonColor: "#3085d6",
-                        confirmButtonText: "Oui, supprimer !",
-                        cancelButtonText: "Annuler"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            fetch(`/admin/contacts/${messageId}`, {
-                                method: "DELETE",
-                                headers: {
-                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    Swal.fire("Supprimé !", "Le message a été supprimé.", "success")
-                                        .then(() => location.reload());
-                                } else {
-                                    Swal.fire("Erreur", "Une erreur s'est produite, essayez de nouveau.", "error");
-                                }
-                            })
-                            .catch(error => {
-                                console.error("Erreur lors de la suppression :", error);
-                                Swal.fire("Erreur", "Une erreur s'est produite.", "error");
-                            });
-                        }
-                    });
-                }
-            });
-        });
-    </script>
-
-<!-- Bootstrap core JavaScript -->
-<script src="{{ asset('adminassets/vendor/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('adminassets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-<!-- Core plugin JavaScript -->
-<script src="{{ asset('adminassets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-
-<!-- Custom scripts for all pages -->
-<script src="{{ asset('adminassets/js/sb-admin-2.min.js') }}"></script>
-
-<!-- Page level plugins -->
-<script src="{{ asset('adminassets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('adminassets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-
-<!-- Page level custom scripts -->
-<script src="{{ asset('adminassets/js/demo/datatables-demo.js') }}"></script>
-
+     <!-- Modal Bootstrap -->
+     <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="messageModalLabel">Détails du Message</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Nom:</strong> <span id="modal-name"></span></p>
+                                <p><strong>Email:</strong> <span id="modal-email"></span></p>
+                                <p><strong>Sujet:</strong> <span id="modal-subject"></span></p>
+                                <p><strong>Date:</strong> <span id="modal-date"></span></p>
+                                <hr>
+                                <p><strong>Message:</strong></p>
+                                <p id="modal-message" class="text-muted"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 </body>
+<!-- SweetAlert2 via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="{{ asset('adminassets/js/adminmessage.js') }}"></script>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{{ asset('adminassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('adminassets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Core plugin JavaScript -->
+    <script src="{{ asset('adminassets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+    <!-- Custom scripts for all pages -->
+    <script src="{{ asset('adminassets/js/sb-admin-2.min.js') }}"></script>
+
+    <!-- Page level plugins -->
+    <script src="{{ asset('adminassets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('adminassets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{{ asset('adminassets/js/demo/datatables-demo.js') }}"></script>
+
 
 </html>

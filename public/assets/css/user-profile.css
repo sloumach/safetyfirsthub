@@ -164,16 +164,47 @@
 /* Payment History Table */
 .ud-table-container {
     width: 100% !important;
-    overflow-x: hidden !important;
-    background: rgba(255, 255, 255, 0.9) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05) !important;
-    margin: 20px 0 !important;
+    max-height: 400px !important;
+    overflow-y: auto !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.ud-table-container::-webkit-scrollbar {
+    display: none !important;
 }
 
 .ud-table {
     width: 100% !important;
     border-collapse: collapse !important;
+    table-layout: fixed !important;
+}
+
+.ud-table th,
+.ud-table td {
+    padding: 1rem !important;
+    white-space: nowrap !important;
+}
+
+.ud-table th:nth-child(1),
+.ud-table td:nth-child(1) {
+    width: 35% !important;
+}
+
+.ud-table th:nth-child(2),
+.ud-table td:nth-child(2) {
+    width: 20% !important;
+}
+
+.ud-table th:nth-child(3),
+.ud-table td:nth-child(3) {
+    width: 15% !important;
+}
+
+.ud-table th:nth-child(4),
+.ud-table td:nth-child(4) {
+    width: 25% !important;
 }
 
 .ud-table th {
@@ -275,63 +306,43 @@
         font-size: 0.9rem !important;
     }
 
+    .ud-table-container {
+        max-height: 500px !important;
+    }
+
+    .ud-table th,
+    .ud-table td {
+        padding: 0.75rem 0.5rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .ud-table th:nth-child(1),
+    .ud-table td:nth-child(1) {
+        width: 30% !important;
+    }
+
+    .ud-table th:nth-child(2),
+    .ud-table td:nth-child(2) {
+        width: 20% !important;
+    }
+
+    .ud-table th:nth-child(3),
+    .ud-table td:nth-child(3) {
+        width: 25% !important;
+    }
+
+    .ud-table th:nth-child(4),
+    .ud-table td:nth-child(4) {
+        width: 25% !important;
+    }
+
     /* Mobile table styles */
     .ud-table {
         border: 0 !important;
     }
     
-    .ud-table thead {
-        display: none !important;
-    }
     
-    .ud-table tr {
-        display: block !important;
-        margin-bottom: 20px !important;
-        border: 1px solid #e5e7eb !important;
-        border-radius: 8px !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
-        background: #fff !important;
-    }
-    
-    .ud-table td {
-        display: block !important;
-        text-align: right !important;
-        padding: 12px 15px !important;
-        position: relative !important;
-        border-bottom: 1px solid #e5e7eb !important;
-    }
-    
-    .ud-table td:last-child {
-        border-bottom: 0 !important;
-    }
-    
-    .ud-table td::before {
-        content: attr(data-label) !important;
-        position: absolute !important;
-        left: 15px !important;
-        font-weight: 600 !important;
-        color: #374151 !important;
-    }
-
-    /* Status badge adjustments */
-    .ud-table td:has(.ud-status-badge) {
-        text-align: left !important;
-    }
-
-    .ud-status-badge {
-        margin-left: 120px !important; /* Adjust based on your label width */
-    }
-
-    /* Button group adjustments */
-    .ud-button-group {
-        flex-direction: column !important;
-        gap: 0.75rem !important;
-    }
-
-    .ud-btn {
-        width: 100% !important;
-        padding: 0.75rem 1.5rem !important;
-    }
+   
 }
 
 @media screen and (max-width: 480px) {
@@ -625,4 +636,197 @@
 .theme-dark .ud-btn-secondary:hover {
     background: #333 !important;
     border-color: #444 !important;
+}
+
+/* DataTable Wrapper Improvements */
+.dataTables_wrapper {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Controls Row Styling */
+.dataTables_wrapper .row:first-child {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin: 0 0 15px 0 !important;
+    padding: 0 15px !important;
+    flex-direction: row !important; /* Force row direction */
+}
+
+/* Length (Show X items) Container */
+.dataTables_length {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+}
+
+/* Search Container */
+.dataTables_filter {
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+}
+
+/* Fix column widths */
+.col-sm-12.col-md-6 {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Length Label */
+.dataTables_length label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+}
+
+/* Search Label */
+.dataTables_filter label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+}
+
+/* Search Input */
+.dataTables_filter input {
+    margin: 0 !important;
+    min-width: 200px !important;
+}
+
+/* Pagination Row */
+.dataTables_wrapper .row:last-child {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    margin: 15px 0 0 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+/* Pagination Container */
+.dataTables_paginate {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-left: auto !important;
+    padding-right: 15px !important;
+    justify-content: flex-end !important;
+}
+
+/* Fix column widths for pagination row */
+.dataTables_wrapper .row:last-child .col-sm-12 {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Pagination buttons */
+.paginate_button {
+    padding: 6px 12px !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 6px !important;
+    background: #FFFFFF !important;
+    color: #374151 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.paginate_button:hover {
+    background: #F3F4F6 !important;
+    border-color: #D1D5DB !important;
+}
+
+.paginate_button.current {
+    background: #FF8A00 !important;
+    border-color: #FF8A00 !important;
+    color: white !important;
+}
+
+.paginate_button.disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* Hide "No items available" message */
+.dataTables_info {
+    display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .dataTables_wrapper .row:first-child {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    .dataTables_length,
+    .dataTables_filter {
+        width: 100% !important;
+    }
+
+    .dataTables_filter input {
+        width: 100% !important;
+    }
+
+    .dataTables_paginate {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 15px 0 !important;
+        margin: 0 !important;
+    }
+}
+
+/* Table Cell Content */
+.ud-table td span {
+    display: block !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+/* Desktop view - show full course name */
+@media screen and (min-width: 769px) {
+    .ud-table td span {
+        white-space: normal !important;
+        overflow: visible !important;
+    }
+}
+
+/* Mobile view - truncate long course names */
+@media screen and (max-width: 768px) {
+    .ud-table td[data-label="Course Name"] span {
+        max-width: 120px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: block !important;
+    }
+
+    /* Adjust other columns for better mobile layout */
+    .ud-table th:nth-child(1),
+    .ud-table td:nth-child(1) {
+        width: 30% !important;
+        min-width: 120px !important;
+    }
+}
+
+/* Even smaller screens */
+@media screen and (max-width: 480px) {
+    .ud-table td[data-label="Course Name"] span {
+        max-width: 100px !important;
+    }
 }
