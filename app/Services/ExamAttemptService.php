@@ -1,7 +1,8 @@
 <?php
-
 namespace App\Services;
 
+use App\Models\Exam;
+use App\Models\Choice;
 use App\Models\ExamUser;
 use App\Models\Question;
 use App\Models\UserAnswer;
@@ -11,13 +12,13 @@ class ExamAttemptService
 {
     public function submitAnswer($session_id, $question_id, $choice_id = null)
     {
-        $user = Auth::user();
+        $user     = Auth::user();
         $examUser = ExamUser::where('id', $session_id)
             ->where('user_id', $user->id)
             ->where('status', 'in_progress')
             ->first();
 
-        if (!$examUser) {
+        if (! $examUser) {
             return ['error' => __('exam.no_active_session'), 'status' => 403];
         }
 
@@ -25,39 +26,102 @@ class ExamAttemptService
             ->where('exam_id', $examUser->exam_id)
             ->first();
 
-        if (!$question) {
+        if (! $question) {
             return ['error' => __('exam.invalid_question'), 'status' => 403];
         }
 
-        if ($this->hasAlreadyAnswered($examUser->id, $question_id)) {
+        // 🔹 Vérifier si la question a déjà été répondue et si la réponse est correcte en une seule requête
+        $existingAnswer = UserAnswer::where('exam_user_id', $examUser->id)
+            ->where('question_id', $question_id)
+            ->first();
+
+        if ($existingAnswer) {
             return ['error' => __('exam.already_answered'), 'status' => 403];
         }
 
-        $is_correct = $choice_id ? $this->isCorrectChoice($choice_id) : false;
+        $is_correct = $choice_id ? Choice::where('id', $choice_id)->where('is_correct', true)->exists() : false;
 
         UserAnswer::create([
-            'user_id' => $user->id,
-            'exam_id' => $examUser->exam_id,
+            'user_id'      => $user->id,
+            'exam_id'      => $examUser->exam_id,
             'exam_user_id' => $examUser->id,
-            'question_id' => $question_id,
-            'choice_id' => $choice_id,
-            'is_correct' => $is_correct,
+            'question_id'  => $question_id,
+            'choice_id'    => $choice_id,
+            'is_correct'   => $is_correct,
         ]);
 
-        return ['message' => __('exam.answer_saved')];
+        // 🔹 Vérifier si toutes les questions ont été répondues
+        return $this->getNextQuestion($session_id);
     }
 
-    private function hasAlreadyAnswered($exam_user_id, $question_id)
+    public function getNextQuestion($session_id)
     {
-        return UserAnswer::where('exam_user_id', $exam_user_id)
-            ->where('question_id', $question_id)
-            ->exists();
+        $user = Auth::user();
+
+        // 📌 Vérification de la session active
+        $examUser = ExamUser::where('id', $session_id)
+            ->where('user_id', $user->id)
+            ->where('status', 'in_progress')
+            ->with('exam.questions.choices') // 🔹 Précharge les relations nécessaires
+            ->first();
+
+        if (!$examUser) {
+            return ['error' => __('exam.invalid_session'), 'status' => 403];
+        }
+
+        // 📌 Récupérer l'examen
+        $exam = $examUser->exam;
+
+        // 📌 Récupérer les ID des questions déjà répondues
+        $answeredQuestions = UserAnswer::where('exam_user_id', $examUser->id)
+            ->pluck('question_id');
+
+        // 📌 Trouver la prochaine question non répondue
+        $nextQuestion = $exam->questions()
+            ->whereNotIn('id', $answeredQuestions)
+            ->orderBy('id')
+            ->first();
+
+        // 📌 Si toutes les questions ont été répondues, finaliser l'examen
+        if (!$nextQuestion) {
+            return $this->finalizeExam($examUser);
+        }
+
+        return [
+            'question' => [
+                'id' => $nextQuestion->id,
+                'text' => $nextQuestion->question_text,
+                'choices' => $nextQuestion->choices->map(fn($choice) => [
+                    'id' => $choice->id,
+                    'text' => $choice->choice_text,
+                ]),
+            ],
+            'exam_completed' => false,
+        ];
     }
 
-    private function isCorrectChoice($choice_id)
+
+    private function finalizeExam($examUser)
     {
-        return Choice::where('id', $choice_id)
-            ->where('is_correct', true)
-            ->exists();
+        $totalQuestions = Question::where('exam_id', $examUser->exam_id)->count();
+        $correctAnswers = UserAnswer::where('exam_user_id', $examUser->id)->where('is_correct', true)->count();
+
+        $score  = round(($correctAnswers / $totalQuestions) * 100);
+        $status = $score >= $examUser->exam->passing_score ? 'passed' : 'failed';
+
+        $examUser->update([
+            'status'       => 'completed',
+            'score'        => $score,
+            'completed_at' => now(),
+        ]);
+
+        return [
+            'exam_completed' => true,
+            'score'          => $score,
+            'status'         => $status,
+            'passing_score'  => $examUser->exam->passing_score,
+            'retry_allowed'  => $status === 'failed' && $examUser->attempts < 3,
+            'attempts_left'  => 3 - $examUser->attempts,
+        ];
     }
 }
