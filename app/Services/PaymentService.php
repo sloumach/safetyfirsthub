@@ -5,15 +5,17 @@ namespace App\Services;
 use Stripe\Stripe;
 use App\Models\Order;
 use App\Models\Course;
+use App\Models\User;
 use App\Models\Payment;
 use Stripe\Checkout\Session;
 use App\Events\CoursePurchased;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class PaymentService
 {
-    public function createCheckoutSession($courses, $totalPrice)
+    public function createCheckoutSession($courses, $totalPrice,$encryptedUserId)
     {
         try {
             Stripe::setApiKey(env('stripe_secret_key'));
@@ -35,6 +37,7 @@ class PaymentService
                 'cancel_url' => route('checkout.cancel'),
                 'metadata' => [
                     'course_ids' => implode(',', $courses->pluck('id')->toArray()), // Stocker les IDs des cours
+                    'user_id' => $encryptedUserId,
                 ],
             ]);
 
@@ -59,7 +62,10 @@ class PaymentService
                 throw new \Exception("Failed to retrieve payment session.");
             }
 
-            $user = Auth::user();
+            
+            $encryptedUserId = $session->metadata->user_id;
+            $userId  = Crypt::decryptString($encryptedUserId);
+            $user = User::find($userId);
             $courseIds = explode(',', $session->metadata->course_ids);
             $courses = Course::query()->whereIn('id', $courseIds)->get();
             $totalPrice = $session->amount_total / 100; // Stripe retourne en centimes, donc division par 100
@@ -74,7 +80,7 @@ class PaymentService
 
             // Enregistrement du paiement
             $payment = Payment::create([
-                'user_id' => $user->id,
+                'user_id' => $userId,
                 'payment_id' => $session->id,
                 'total_price' => $totalPrice,
                 'status' => $paymentStatus,
@@ -84,7 +90,7 @@ class PaymentService
                 foreach ($courses as $course) {
                     Order::create([
                         'payment_id' => $payment->id,
-                        'user_id' => $user->id,
+                        'user_id' => $userId,
                         'course_id' => $course->id,
                     ]);
 

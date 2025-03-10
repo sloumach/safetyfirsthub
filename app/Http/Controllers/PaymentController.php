@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Events\CoursePurchased;
 use Flasher\Prime\FlasherInterface;
+use Illuminate\Support\Facades\Crypt;
 
 class PaymentController extends Controller
 {
@@ -85,9 +86,9 @@ class PaymentController extends Controller
                 flash()->error('Payment total mismatch. Please refresh the page.');
                 return redirect()->back();
             }
-
+            $encryptedUserId = Crypt::encryptString($user->id);
             // ✅ Créer la session de paiement
-            $checkoutUrl = $this->paymentService->createCheckoutSession($courses, $totalPrice);
+            $checkoutUrl = $this->paymentService->createCheckoutSession($courses, $totalPrice, $encryptedUserId);
             if (!$checkoutUrl) {
                 flash()->error('Failed to initiate payment.');
                 return redirect()->back();

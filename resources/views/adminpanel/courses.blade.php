@@ -21,6 +21,19 @@
     <link href="adminassets/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="adminassets/css/course-form.css" rel="stylesheet">
 
+    <style>
+        .loading-state {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        #submitBtn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    </style>
+
 </head>
 
 <body id="page-top">
@@ -122,8 +135,12 @@
                         <!-- Submit Button -->
                         <div class="row">
                             <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    ✅ Save Course
+                                <button type="submit" id="submitBtn" class="btn btn-primary btn-lg">
+                                    <span class="normal-state">✅ Save Course</span>
+                                    <span class="loading-state d-none">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        Saving Course...
+                                    </span>
                                 </button>
                             </div>
                         </div>
@@ -421,6 +438,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
     </script>
 
+    <script>
+        document.querySelector('.course-form').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            const normalState = submitBtn.querySelector('.normal-state');
+            const loadingState = submitBtn.querySelector('.loading-state');
+            
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            normalState.classList.add('d-none');
+            loadingState.classList.remove('d-none');
+        });
+    </script>
 
 </body>
 
