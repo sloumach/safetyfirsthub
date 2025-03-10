@@ -98,7 +98,12 @@
                             <a href="#" class="rating-count">(5 reviews)</a>
                         </div> --}}
 
-                        <p style="color: black !important;">{{ $product->description }}</p>
+                        <div class="product-description">
+                            <h4>Description</h4>
+                            <div class="description-content">
+                                {{ $product->description }}
+                            </div>
+                        </div>
 
                         <ul class="product-summery">
                             {{-- <li>SUK <span>:132</span></li> --}}

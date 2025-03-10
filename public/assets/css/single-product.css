@@ -142,12 +142,35 @@
 .product-summery li:nth-child(3) { animation-delay: 0.5s; }
 
 /* Description */
-.product-details-desc p {
+.product-description {
     order: 4;
     margin: 20px 0;
-    line-height: 1.6;
-    color: #666;
     animation: fadeInUp 0.5s ease-out 0.4s both;
+    width: 100%;
+}
+
+.product-description h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.description-content {
+    color: #666;
+    line-height: 1.6;
+    font-size: 15px;
+    white-space: pre-wrap;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    border-left: 3px solid #FF8A00;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    display: block;
+    box-sizing: border-box;
 }
 
 /* Button */
@@ -282,6 +305,11 @@
     .product-details-desc p {
         font-size: 14px;
         line-height: 1.5;
+    }
+
+    .description-content {
+        font-size: 14px;
+        padding: 12px;
     }
 }
 
