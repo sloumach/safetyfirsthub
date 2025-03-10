@@ -102,7 +102,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
 
     // 📌 Routes pour la gestion des réponses et des questions
     Route::prefix('exam/{session_id}')->group(function () {
-        Route::get('/next-question', [ExamAttemptController::class, 'getNextQuestion'])->whereNumber('session_id');
+        Route::get('/next-question', [ExamAttemptController::class, 'getNextQuestion'])->whereNumber('session_id')->name('exam.next_question');
         Route::post('/submit-answer', [ExamAttemptController::class, 'submitAnswer'])->whereNumber('session_id');
     });
 

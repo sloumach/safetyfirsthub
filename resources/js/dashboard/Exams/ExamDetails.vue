@@ -60,155 +60,93 @@
 </template>
 
 <script setup>
-    import { ref, onMounted, onUnmounted } from "vue";
-    import axios from "axios";
-    import { useRoute, useRouter } from "vue-router";
-    import Swal from "sweetalert2";
+import { ref, onMounted, onUnmounted } from "vue";
+import axios from "axios";
+import { useRoute, useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
-    const route = useRoute();
-    const router = useRouter();
+const route = useRoute();
+const router = useRouter();
 
-    const sessionId = ref(null);
-    const currentQuestion = ref(null);
-    const userAnswers = ref([]);
-    const timer = ref(10);
-    let timerInterval = null;
-    let isActive = true;
-    let axiosSource = axios.CancelToken.source();
-    const hasAttemptsExhausted = ref(false);
-    const noQuestionsAvailable = ref(false);
+const sessionId = ref(null);
+const currentQuestion = ref(null);
+const userAnswers = ref([]);
+const isSubmitting = ref(false);
+const hasAttemptsExhausted = ref(false);
+const noQuestionsAvailable = ref(false);
+let isActive = true;
 
-    // 🛠️ Interceptor pour centraliser la gestion des erreurs API
-    axios.interceptors.response.use(
-        response => response,
-        error => {
-            if (axios.isCancel(error)) {
-                console.warn("Request canceled", error.message);
-            } else {
-                Swal.fire({
-                    title: "Erreur",
-                    text: error.response?.data?.error || "Une erreur est survenue.",
-                    icon: "error",
-                    confirmButtonColor: "#3085d6",
-                    confirmButtonText: "D'accord",
-                });
-            }
-            return Promise.reject(error);
-        }
-    );
+// 🎯 Récupérer la prochaine question
+const fetchNextQuestion = async () => {
+    if (!isActive) return;
 
-    // 🎯 Récupérer la prochaine question
-    const fetchNextQuestion = async () => {
-        if (!isActive) return;
-        try {
-            const response = await axios.get(`/exam/${sessionId.value}/next-question`);
+    try {
+        const response = await axios.get(`/exam/${sessionId.value}/next-question`);
 
-            if (response.data.exam_completed) {
-                handleExamCompletion(response.data);
-                return;
-            }
-
-            currentQuestion.value = response.data.question;
-            startTimer();
-        } catch (error) {
-            console.error("Erreur lors de la récupération de la question :", error);
-        }
-    };
-
-    // ⏳ Démarrer le timer
-    const startTimer = () => {
-        clearInterval(timerInterval);
-        timer.value = 10;
-        timerInterval = setInterval(() => {
-            if (!isActive) {
-                clearInterval(timerInterval);
-                return;
-            }
-            if (timer.value > 0) {
-                timer.value--;
-            }
-            if (timer.value === 0) {
-                clearInterval(timerInterval);
-                submitAnswer();
-            }
-        }, 1000);
-    };
-
-    // ✅ Soumettre une réponse
-    const submitAnswer = async () => {
-        if (!isActive) return;
-
-        clearInterval(timerInterval);
-        timer.value = 10;
-
-        const selectedChoice = userAnswers.value[currentQuestion.value.id] ?? null;
-        try {
-            await axios.post(`/exam/${sessionId.value}/submit-answer`, {
-                question_id: currentQuestion.value.id,
-                choice_id: selectedChoice,
-            });
-
-            fetchNextQuestion();
-        } catch (error) {
-            console.error("Erreur lors de l'envoi de la réponse :", error);
-            startTimer();
-        }
-    };
-
-    // 🎯 Gestion de la fin d'examen
-    const handleExamCompletion = async (examData) => {
-        const { score, passing_score, retry_allowed, attempts_left } = examData;
-
-        if (score >= passing_score) {
-            await Swal.fire({
-                title: "Félicitations ! 🎉",
-                text: `Vous avez réussi l'examen avec un score de ${score}% (Minimum requis : ${passing_score}%)`,
-                icon: "success",
-                confirmButtonColor: "#3085d6",
-            });
-        } else {
-            await Swal.fire({
-                title: "Examen échoué ❌",
-                text: retry_allowed
-                    ? `Votre score est de ${score}%. Vous avez encore ${attempts_left} tentatives.`
-                    : `Votre score est de ${score}%, alors que ${passing_score}% était requis. Vous ne pouvez plus réessayer.`,
-                icon: "error",
-                confirmButtonColor: "#3085d6",
-            });
+        if (response.data.exam_completed) {
+            await handleExamCompletion(response.data);
+            return;
         }
 
-        router.push("/dashboard/exams");
-    };
+        currentQuestion.value = response.data.question;
+    } catch (error) {
+        console.error("Erreur lors de la récupération de la question :", error);
+    }
+};
 
-    // 🏁 Démarrer une session d'examen
-    onMounted(async () => {
-        try {
-            axiosSource = axios.CancelToken.source();
-            const response = await axios.post(`/exam/start/${route.params.id}`, null, {
-                cancelToken: axiosSource.token,
-            });
+// ✅ Soumettre une réponse
+const submitAnswer = async () => {
+    if (!isActive || isSubmitting.value) return;
 
-            sessionId.value = response.data.session_id;
-            fetchNextQuestion();
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
-                noQuestionsAvailable.value = true;
-            } else if (error.response && error.response.status === 403) {
-                hasAttemptsExhausted.value = true;
-            } else {
-                console.error("Erreur lors du démarrage de l'examen :", error);
-                router.push("/dashboard/exams");
-            }
-        }
+    isSubmitting.value = true;
+
+    try {
+        await axios.post(`/exam/${sessionId.value}/submit-answer`, {
+            question_id: currentQuestion.value.id,
+            choice_id: userAnswers.value[currentQuestion.value.id] ?? null,
+        });
+
+        fetchNextQuestion();
+    } catch (error) {
+        console.error("Erreur lors de l'envoi de la réponse :", error);
+    } finally {
+        isSubmitting.value = false;
+    }
+};
+
+// 🎯 Gestion de la fin d'examen
+const handleExamCompletion = async (examData) => {
+    const { score, passing_score, retry_allowed, attempts_left } = examData;
+
+    await Swal.fire({
+        title: score >= passing_score ? "Félicitations ! 🎉" : "Examen échoué ❌",
+        text: score >= passing_score
+            ? `Vous avez réussi avec un score de ${score}% (Minimum requis : ${passing_score}%).`
+            : `Votre score est de ${score}%. ${retry_allowed ? `Il vous reste ${attempts_left} tentatives.` : "Vous ne pouvez plus réessayer."}`,
+        icon: score >= passing_score ? "success" : "error",
+        confirmButtonColor: "#3085d6",
     });
 
-    // 🛑 Nettoyage à la fermeture de la page
-    onUnmounted(() => {
-        isActive = false;
-        clearInterval(timerInterval);
-        axiosSource.cancel("Composant démonté, annulation des requêtes en cours");
-    });
+    router.push("/dashboard/exams");
+};
+
+// 🏁 Démarrer une session d'examen
+onMounted(async () => {
+    try {
+        const response = await axios.post(`/exam/start/${route.params.id}`);
+        sessionId.value = response.data.session_id;
+        fetchNextQuestion();
+    } catch (error) {
+        console.error("Erreur lors du démarrage de l'examen :", error);
+    }
+});
+
+// 🛑 Nettoyage à la fermeture de la page
+onUnmounted(() => {
+    isActive = false;
+});
 </script>
+
 
 
 <style scoped>
