@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="description" content="Safety FirstHUB">
 		<meta name="keywords" content="Safety FirstHUB">
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<!-- Bootstrap Min CSS -->
 		<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
 		<!-- Owl Theme Default Min CSS -->
