@@ -75,18 +75,9 @@ const isSubmitting = ref(false);
 const hasAttemptsExhausted = ref(false);
 const noQuestionsAvailable = ref(false);
 let isActive = true;
-const timer = ref(10);
-let timerInterval = null;
-const currentQuestionIndex = ref(0);
-let axiosSource = null;
 
-// Initialize axios cancel token
-const initializeAxiosSource = () => {
-    if (axiosSource) {
-        axiosSource.cancel('Operation canceled due to new request.');
-    }
-    axiosSource = axios.CancelToken.source();
-};
+// Add currentQuestionIndex ref
+const currentQuestionIndex = ref(0);
 
 // Add the capitalizeFirstLetter function
 const capitalizeFirstLetter = (string) => {
@@ -99,7 +90,10 @@ const fetchNextQuestion = async () => {
     if (!isActive) return;
 
     try {
+        console.log('Fetching next question for session:', sessionId.value);
         const response = await axios.get(`/exam/${sessionId.value}/next-question`);
+
+        console.log('Next question response:', response.data);
 
         if (response.data.exam_completed) {
             await handleExamCompletion(response.data);
@@ -107,267 +101,126 @@ const fetchNextQuestion = async () => {
         }
 
         currentQuestion.value = response.data.question;
-        startTimer(); // Start timer when new question is loaded
+        // Increment the index after successfully fetching next question
+        currentQuestionIndex.value++;
     } catch (error) {
         console.error("Error fetching next question:", error);
-    }
-};
 
-// ✅ Soumettre une réponse
-const submitAnswer = async () => {
-    if (!isActive) return;
-    
-    // Clear the timer immediately
-    if (timerInterval) {
-        clearInterval(timerInterval);
-    }
-    
-    const selectedChoice = userAnswers.value[currentQuestionIndex.value] ?? null;
-    try {
-        // Submit the answer
-        await axios.post(
-            `/exams/${sessionId.value}/answer`,
-            {
-                question_id: currentQuestion.value.id,
-                choice_id: selectedChoice,
-                is_timeout: false
-            },
-            { cancelToken: axiosSource.token }
-        );
-
-        // Get next question
-        const nextQuestionResponse = await axios.get(`/exams/${sessionId.value}/question`);
-
-        if (nextQuestionResponse.data.exam_completed) {
-            const resultsResponse = await axios.get(`/exams/${sessionId.value}/results`);
-            
-            const score = resultsResponse.data.score;
-            const passingScore = resultsResponse.data.passing_score || 60;
-            const attemptsLeft = resultsResponse.data.attempts_left || 0;
-            const maxAttempts = resultsResponse.data.max_attempts || 3;
-
-            if (score >= passingScore) {
-                await Swal.fire({
-                    title: 'Congratulations! 🎉',
-                    text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
-                    icon: 'success',
-                    confirmButtonColor: '#3085d6'
-                });
-            } else {
-                if (attemptsLeft > 0 && attemptsLeft < maxAttempts) {
-                    await Swal.fire({
-                        title: 'Exam Failed',
-                        text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${attemptsLeft} attempts left.`,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6'
-                    });
-                } else if (attemptsLeft === 0) {
-                    hasAttemptsExhausted.value = true;
-                    await Swal.fire({
-                        title: 'Maximum Attempts Reached',
-                        text: `Your score is ${score}%. You have used all your attempts for this exam.`,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6'
-                    });
-                }
-            }
-            router.push("/dashboard/exams");
-            return;
-        } else {
-            // Move to next question
-            currentQuestionIndex.value++;
-            currentQuestion.value = nextQuestionResponse.data.question;
-            startTimer(); // Start new timer for next question
-        }
-    } catch (error) {
-        if (timerInterval) {
-            clearInterval(timerInterval);
-        }
-        if (axios.isCancel(error)) {
-            await Swal.fire({
-                title: 'Request Cancelled',
-                text: error.message,
-                icon: 'warning',
-                confirmButtonColor: '#3085d6'
-            });
-        } else {
-            await Swal.fire({
-                title: 'Error',
-                text: 'An error occurred while submitting your answer. Please try again.',
-                icon: 'error',
-                confirmButtonColor: '#3085d6'
-            });
-            console.error("Error submitting answer:", error);
-        }
-        startTimer(); // Restart timer after error
-    }
-};
-
-// Start Timer with automatic submission
-const startTimer = () => {
-    if (timerInterval) {
-        clearInterval(timerInterval);
-    }
-    
-    timer.value = 10;
-    
-    timerInterval = setInterval(() => {
-        if (!isActive) {
-            clearInterval(timerInterval);
-            return;
-        }
+        const errorMessage = error.response?.data?.error || 'There was an error loading the next question.';
         
-        if (timer.value > 0) {
-            timer.value--;
-        }
-        
-        if (timer.value === 0) {
-            clearInterval(timerInterval);
-            handleTimeOut();
-        }
-    }, 1000);
-};
-
-// Handle timeout separately
-const handleTimeOut = async () => {
-    try {
-        initializeAxiosSource(); // Initialize new cancel token for this request sequence
-        
-        // Set answer to null for timeout
-        userAnswers.value[currentQuestionIndex.value] = null;
-        
-        // Submit the answer
-        await axios.post(
-            `/exams/${sessionId.value}/answer`,
-            {
-                question_id: currentQuestion.value.id,
-                choice_id: null,
-                is_timeout: true
-            },
-            { cancelToken: axiosSource.token }
-        );
-
-        // Get next question
-        const nextQuestionResponse = await axios.get(`/exams/${sessionId.value}/question`, {
-            cancelToken: axiosSource.token
+        // Show error to user
+        await Swal.fire({
+            title: 'Error',
+            text: errorMessage,
+            icon: 'error',
+            confirmButtonText: 'OK'
         });
 
-        if (nextQuestionResponse.data.exam_completed) {
-            const resultsResponse = await axios.get(`/exams/${sessionId.value}/results`, {
-                cancelToken: axiosSource.token
-            });
-            
-            const score = resultsResponse.data.score;
-            const passingScore = resultsResponse.data.passing_score || 60;
-            const attemptsLeft = resultsResponse.data.attempts_left || 0;
-            const maxAttempts = resultsResponse.data.max_attempts || 3;
+        // If there's an error with the session, redirect to exams page
+        if (error.response?.status === 403) {
+            router.push('/dashboard/exams');
+        }
+    }
+};
 
-            if (score >= passingScore) {
-                await Swal.fire({
-                    title: 'Congratulations! 🎉',
-                    text: `You passed the exam with a score of ${score}% (Minimum required: ${passingScore}%)`,
-                    icon: 'success',
-                    confirmButtonColor: '#3085d6'
-                });
-            } else {
-                if (attemptsLeft > 0 && attemptsLeft < maxAttempts) {
-                    await Swal.fire({
-                        title: 'Exam Failed',
-                        text: `Your score is ${score}%. You need ${passingScore}% to pass. You have ${attemptsLeft} attempts left.`,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6'
-                    });
-                } else if (attemptsLeft === 0) {
-                    hasAttemptsExhausted.value = true;
-                    await Swal.fire({
-                        title: 'Maximum Attempts Reached',
-                        text: `Your score is ${score}%. You have used all your attempts for this exam.`,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6'
-                    });
-                }
-            }
-            router.push("/dashboard/exams");
-            return;
-        } else {
-            // Move to next question
-            currentQuestionIndex.value++;
-            currentQuestion.value = nextQuestionResponse.data.question;
-            startTimer(); // Start new timer for next question
-        }
+// Add the nextQuestion function
+const nextQuestion = async () => {
+    console.log('Next button clicked:', {
+        currentQuestionIndex: currentQuestionIndex.value,
+        selectedAnswer: userAnswers.value[currentQuestionIndex.value],
+        questionId: currentQuestion.value?.id
+    });
+
+    try {
+        // First submit the current answer
+        await submitAnswer();
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log('Request canceled:', error.message);
-        } else {
-            console.error("Error handling timeout:", error);
-            await Swal.fire({
-                title: 'Error',
-                text: 'An error occurred while processing your timeout. Please try again.',
-                icon: 'error',
-                confirmButtonColor: '#3085d6'
-            });
+        console.error("Error in nextQuestion:", error);
+    }
+};
+
+// Update the submitAnswer function to use the correct endpoint
+const submitAnswer = async () => {
+    if (!isActive || isSubmitting.value) return;
+
+    isSubmitting.value = true;
+    const selectedChoice = userAnswers.value[currentQuestionIndex.value];
+
+    try {
+        const response = await axios.post(`/exam/${sessionId.value}/submit-answer`, {
+            question_id: currentQuestion.value.id,
+            choice_id: selectedChoice,
+        });
+
+        console.log('Answer submission response:', response.data);
+
+        if (response.data.exam_completed) {
+            await handleExamCompletion(response.data);
+            return;
         }
-        startTimer(); // Restart timer on error
+
+        // Only update question and increment index if submission was successful
+        currentQuestion.value = response.data.question;
+        currentQuestionIndex.value++;
+        
+    } catch (error) {
+        console.error("Error submitting answer:", error);
+        
+        // Show specific error message to user
+        const errorMessage = error.response?.data?.error || 'There was an issue submitting your answer. Please try again.';
+        
+        await Swal.fire({
+            title: 'Warning',
+            text: errorMessage,
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+
+        // If the question was already answered or there's another issue,
+        // try to fetch the next question directly
+        if (error.response?.status === 403) {
+            await fetchNextQuestion();
+        }
+    } finally {
+        isSubmitting.value = false;
     }
 };
 
 // 🎯 Gestion de la fin d'examen
 const handleExamCompletion = async (examData) => {
-    const { score, passing_score, retry_allowed, attempts_left } = examData;
+    try {
+        const { score, passing_score, retry_allowed, attempts_left } = examData;
 
-    await Swal.fire({
-        title: score >= passing_score ? "Félicitations ! 🎉" : "Examen échoué ❌",
-        text: score >= passing_score
-            ? `Vous avez réussi avec un score de ${score}% (Minimum requis : ${passing_score}%).`
-            : `Votre score est de ${score}%. ${retry_allowed ? `Il vous reste ${attempts_left} tentatives.` : "Vous ne pouvez plus réessayer."}`,
-        icon: score >= passing_score ? "success" : "error",
-        confirmButtonColor: "#3085d6",
-    });
+        await Swal.fire({
+            title: score >= passing_score ? "Félicitations ! 🎉" : "Examen échoué ❌",
+            text: score >= passing_score
+                ? `Vous avez réussi avec un score de ${score}% (Minimum requis : ${passing_score}%).`
+                : `Votre score est de ${score}%. ${retry_allowed ? `Il vous reste ${attempts_left} tentatives.` : "Vous ne pouvez plus réessayer."}`,
+            icon: score >= passing_score ? "success" : "error",
+            confirmButtonColor: "#3085d6",
+        });
 
-    router.push("/dashboard/exams");
+        router.push("/dashboard/exams");
+    } catch (error) {
+        console.error("Error handling exam completion:", error);
+        router.push("/dashboard/exams");
+    }
 };
 
 // 🏁 Démarrer une session d'examen
 onMounted(async () => {
     try {
-        initializeAxiosSource(); // Initialize the cancel token
-        const response = await axios.post(`/exam/start/${route.params.id}`, null, {
-            cancelToken: axiosSource.token
-        });
+        const response = await axios.post(`/exam/start/${route.params.id}`);
         sessionId.value = response.data.session_id;
         fetchNextQuestion();
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log('Request canceled:', error.message);
-        } else {
-            console.error("Error starting exam:", error);
-            if (error.response && error.response.status === 404) {
-                noQuestionsAvailable.value = true;
-            } else if (error.response && error.response.status === 403) {
-                hasAttemptsExhausted.value = true;
-            } else {
-                await Swal.fire({
-                    title: 'Error',
-                    text: 'An error occurred while starting the exam. Please try again later.',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                });
-                router.push("/dashboard/exams");
-            }
-        }
+        console.error("Erreur lors du démarrage de l'examen :", error);
     }
 });
 
 // 🛑 Nettoyage à la fermeture de la page
 onUnmounted(() => {
     isActive = false;
-    if (timerInterval) {
-        clearInterval(timerInterval);
-    }
-    if (axiosSource) {
-        axiosSource.cancel('Component unmounted');
-        axiosSource = null;
-    }
 });
 </script>
 

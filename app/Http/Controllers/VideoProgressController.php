@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\VideoProgressService;
+use App\Services\HelperService;
 use Illuminate\Http\Request;
 
 class VideoProgressController extends Controller
@@ -53,13 +54,7 @@ class VideoProgressController extends Controller
 
     public function checkCourseCompletion($course_id)
     {
-        $isCompleted = $this->videoProgressService->isCourseCompleted($course_id);
 
-        return response()->json([
-            'completed' => $isCompleted,
-            'message' => $isCompleted
-                ? 'Course fully completed.'
-                : 'Course not fully completed yet.'
-        ]);
+        return HelperService::checkCourseCompletion($course_id);
     }
 }

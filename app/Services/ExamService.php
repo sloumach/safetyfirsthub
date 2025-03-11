@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Exam;
 use App\Models\ExamUser;
 use App\Models\Order;
+use App\Services\HelperService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Enums\ExamStatus;
@@ -19,11 +20,14 @@ class ExamService
             return ['error' => __('exam.access_denied'), 'status' => 403];
         }
 
-        $order = $this->getLastOrderForCourse($user->id, $course_id);
+        /* $order = $this->getLastOrderForCourse($user->id, $course_id);
         if (!$order) {
             return ['error' => __('exam.no_valid_purchase'), 'status' => 403];
-        }
-
+        } */
+        
+        /* if(!HelperService::checkCourseCompletion($course_id)->completed){
+            return ['error' => __('exam.course_not_completeddd'), 'status' => 403];
+        } */
         $exam = Exam::where('course_id', $course_id)
             ->where('is_active', true)
             ->inRandomOrder()
@@ -33,14 +37,14 @@ class ExamService
             return ['error' => __('exam.no_exam_available'), 'status' => 404];
         }
 
-        if ($this->hasExceededAttempts($user->id, $order->id)) {
+        /* if ($this->hasExceededAttempts($user->id, $order->id)) {
             return ['error' => __('exam.max_attempts_reached'), 'status' => 403];
-        }
+        } */
 
         $sessionId = DB::table('exam_users')->insertGetId([
             'user_id' => $user->id,
             'exam_id' => $exam->id,
-            'order_id' => $order->id,
+            /* 'order_id' => $order->id, */
             'status' => ExamStatus::IN_PROGRESS->value,
             'started_at' => now(),
             'created_at' => now(),

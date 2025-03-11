@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Exam;
 use App\Models\Choice;
 use App\Models\ExamUser;
+use App\Models\VideoProgress;
 use App\Models\Question;
 use App\Models\UserAnswer;
 use Illuminate\Support\Facades\Auth;
@@ -84,6 +85,7 @@ class ExamAttemptService
 
         // 📌 Si toutes les questions ont été répondues, finaliser l'examen
         if (!$nextQuestion) {
+            //return ['exam_completed' => true];
             return $this->finalizeExam($examUser);
         }
 
@@ -114,11 +116,20 @@ class ExamAttemptService
             'score'        => $score,
             'completed_at' => now(),
         ]);
+         // 📌 Si l'examen est échoué, réinitialiser la progression des vidéos du cours
+        if ($status === 'failed') {
+            VideoProgress::where('user_id', $examUser->user_id)
+                ->whereHas('video.section', function ($query) use ($examUser) {
+                    $query->where('course_id', $examUser->exam->course_id);
+                })
+                ->update(['is_completed' => 0]);
+        }
 
         return [
             'exam_completed' => true,
             'score'          => $score,
-            'status'         => $status,
+            'status'         => 200,
+            'examresult'         => $status,
             'passing_score'  => $examUser->exam->passing_score,
             'retry_allowed'  => $status === 'failed' && $examUser->attempts < 3,
             'attempts_left'  => 3 - $examUser->attempts,
