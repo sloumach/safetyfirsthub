@@ -79,35 +79,37 @@
                         <!-- 🎥 Section Player -->
                         <div v-if="currentContent.type === 'video'" class="video-content">
                             <div class="video-container">
+                                <!-- Single watermark with random position -->
+                                <div class="watermark" :style="watermarkPosition">
+                                    {{ watermarkText }}
+                                </div>
+
+                                <div v-if="showPreview" class="video-overlay" @click="playVideo">
+                                    <img v-if="previewImage" :src="previewImage" alt="Preview" class="preview-image" />
+                                    <button class="play-button">▶</button>
+                                </div>
+
                                 <video
                                     ref="videoPlayer"
-                                    class="video-js vjs-default-skin"
+                                    class="w-100"
                                     controls
-                                    preload="auto"
-                                    width="100%"
-                                    height="auto"
+                                    v-show="!showPreview"
+                                    @play="hidePreview"
+                                    @timeupdate="updateProgress(currentContent.section_id, currentContent.video_id, $event)"
+                                    @ended="markAsCompleted(currentContent.section_id, currentContent.video_id)"
                                     @seeking="preventSeeking"
+                                    @webkitfullscreenchange="handleFullscreenChange"
+                                    @mozfullscreenchange="handleFullscreenChange"
+                                    @fullscreenchange="handleFullscreenChange"
                                 >
                                     <source :src="videoUrl" type="video/mp4" />
+                                    Your browser does not support the video tag.
                                 </video>
-                                <!-- Updated watermark implementation -->
-                                <div class="watermark-container" :class="{ 'fullscreen': isFullscreen }">
-                                    <div v-for="(_, index) in 2" 
-                                         :key="index" 
-                                         class="video-watermark"
-                                         :style="{
-                                             top: index === 0 ? '42%' : '61%',
-                                             left: '50%',
-                                             animationDelay: `${index * 2}s`
-                                         }">
-                                        {{ course?.email ? `${course.email} | safetyfirsthub.com` : 'safetyfirsthub.com' }}
-                                    </div>
-                                </div>
                             </div>
 
                             <div class="video-messages">
                                 <div v-if="isCompleted" class="video-status-message success">
-                                    <i class="fas fa-check-circle"></i>
+                                   
                                     <span>Vous avez terminé cette vidéo ! Vous pouvez maintenant passer l'examen.</span>
                                 </div>
                                 <div v-else class="video-status-message warning">
@@ -163,20 +165,16 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
-
 
 const route = useRoute();
 const router = useRouter();
 const course = ref(null);
 const sections = ref([]); // Récupérer dynamiquement les sections
 const videoPlayer = ref(null);
-const player = ref(null);
 const showPreview = ref(true);
 const isCompleted = ref(false);
 const currentContent = ref({ type: 'text', title: '', content: '' });
@@ -184,33 +182,88 @@ const openSections = ref({}); // Gère l'ouverture des sections
 const sectionProgress = ref({}); // Gère la progression par section.
 const videoUrl = ref("");
 const lastTime = ref(0);
-const lastKnownTime = ref(0);
+const watermarkText = ref('safetyfirsthub.com');
+const watermarkPosition = ref({});
+const isVideoSessionActive = ref(true);
 const lastValidTime = ref(0);
-const maxAllowedTime = ref(0);
-const isFullscreen = ref(false);
+const isForwardAttempted = ref(false);
+const hasStartedPlaying = ref(false);
 
 // 🛠 Désactiver clic droit
 const disableRightClick = (event) => event.preventDefault();
 
-const preventSeeking = () => {
-  if (videoPlayer.value) {
-    if (videoPlayer.value.currentTime > lastTime.value + 2) {
-      videoPlayer.value.currentTime = lastTime.value; // Bloque l'avance rapide
-    } else {
-      lastTime.value = videoPlayer.value.currentTime; // Autorise le retour arrière
+const preventSeeking = (e) => {
+    if (videoPlayer.value) {
+        const newTime = videoPlayer.value.currentTime;
+        
+        // If video hasn't started playing yet, force it to start from beginning
+        if (!hasStartedPlaying.value && newTime > 0) {
+            videoPlayer.value.pause();
+            videoPlayer.value.currentTime = 0;
+            
+            Swal.fire({
+                title: 'Action Non Autorisée',
+                text: 'Vous devez commencer la vidéo depuis le début.',
+                icon: 'warning',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                videoPlayer.value.play();
+            });
+            
+            return false;
+        }
+        
+        // Normal forward seeking prevention
+        if (newTime > lastValidTime.value + 1) {
+            videoPlayer.value.pause();
+            videoPlayer.value.currentTime = lastValidTime.value;
+            
+            Swal.fire({
+                title: 'Action Non Autorisée',
+                text: 'Vous ne pouvez pas avancer dans la vidéo.',
+                icon: 'warning',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                videoPlayer.value.play();
+            });
+            
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Allow seeking backwards after video has started
+        if (hasStartedPlaying.value && newTime <= lastValidTime.value) {
+            lastValidTime.value = newTime;
+        }
     }
-  }
+};
+
+const getRandomPosition = () => {
+    const positions = [
+        { top: '41%', left: '17%' },
+      
+    ];
+    return positions[Math.floor(Math.random() * positions.length)];
 };
 
 // 🔄 Récupérer les détails du cours
 const fetchCourse = async () => {
     try {
         const response = await axios.get(`/api/course/${route.params.id}`);
-        course.value = {
-            ...response.data,
-            email: response.data.email || response.data.user?.email // Try to get email from course or user object
-        };
+        course.value = response.data;
+        
+        // Set random position for watermark
+        watermarkPosition.value = getRandomPosition();
+        
+        // Update watermark text with email
+        watermarkText.value = `${course.value.email || 'student@example.com'} | safetyfirsthub.com`;
+        
+        console.log('Course data:', course.value);
     } catch (error) {
+        console.error('Error fetching course:', error);
         Swal.fire({ title: 'Erreur', text: 'Impossible de charger le cours.', icon: 'error' });
         router.push("/dashboard/courses");
     }
@@ -290,18 +343,20 @@ const fetchSections = async () => {
 
 // 📌 Suivi de la progression
 const updateProgress = async (sectionId, videoId, event) => {
-    if (!videoId) {
-        console.error("Erreur : videoId ou sectionId est manquant !");
-        return;
-    }
+    if (!videoId) return;
 
     const currentTime = Math.floor(event.target.currentTime);
     const totalDuration = Math.floor(event.target.duration);
 
+    // Update lastValidTime only during normal playback
+    if (currentTime <= lastValidTime.value + 1) {
+        lastValidTime.value = currentTime;
+    }
+
     console.log(`✅ Progression mise à jour : Video ${videoId} | ${currentTime}/${totalDuration} sec`);
 
     try {
-        const response = await axios.post(`/video/progress/update`, {
+        await axios.post(`/video/progress/update`, {
             video_id: videoId,
             section_id: sectionId,
             current_time: currentTime,
@@ -309,11 +364,6 @@ const updateProgress = async (sectionId, videoId, event) => {
             is_completed: false
         });
         console.log("📌:", currentTime);
-        // 📌 Vérifier si la vidéo est déjà terminée
-        if (response.data.is_completed) {
-            console.log("📌 La vidéo est déjà complétée, pas de mise à jour nécessaire.");
-            return;
-        }
 
     } catch (error) {
         console.error("🚨 Erreur lors de la mise à jour de la progression :", error);
@@ -324,6 +374,19 @@ const updateProgress = async (sectionId, videoId, event) => {
 
 // ✅ Marquer une vidéo comme complétée
 const markAsCompleted = async (section_id,video_id) => {
+    if (isForwardAttempted.value) {
+        Swal.fire({
+            title: 'Erreur',
+            text: 'Vous devez regarder la vidéo entièrement sans avancer.',
+            icon: 'error'
+        });
+        return;
+    }
+
+    if (!isVideoSessionActive.value) {
+        return; // Don't mark as completed if session is inactive
+    }
+
     try {
         console.log("Marquer la vidéo comme complétée :", video_id);
         await axios.post(`/video/progress/complete`, {
@@ -393,25 +456,47 @@ watch(() => route.params.id, async (newId, oldId) => {
 
 // Add these security-related functions
 const handleVisibilityChange = async () => {
-    if (document.hidden && route.path.includes('/video')) {
+    if (document.hidden && route.path.includes('/video') && isVideoSessionActive.value) {
+        isVideoSessionActive.value = false;
+        
+        if (videoPlayer.value) {
+            videoPlayer.value.pause();
+            videoPlayer.value.currentTime = 0;
+        }
+
         await Swal.fire({
             title: 'Session Ended',
             text: 'Your video session has ended due to switching tabs.',
             icon: 'warning',
             confirmButtonColor: '#3085d6',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
         });
+        
         router.push("/dashboard/courses");
     }
 };
 
 const handleBlur = async () => {
-    if (route.path.includes('/video')) {
+    if (route.path.includes('/video') && isVideoSessionActive.value) {
+        isVideoSessionActive.value = false;
+        
+        // Stop the video if it's playing
+        if (videoPlayer.value) {
+            videoPlayer.value.pause();
+            videoPlayer.value.currentTime = 0;
+        }
+
         await Swal.fire({
             title: 'Window Unfocused',
             text: 'Your video session has ended due to switching applications.',
             icon: 'warning',
             confirmButtonColor: '#3085d6',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
         });
+        
+        // Force navigation and prevent further video progress
         router.push("/dashboard/courses");
     }
 };
@@ -434,6 +519,7 @@ window.addEventListener('popstate', async (e) => {
 onMounted(() => {
     fetchCourse();
     fetchSections();
+    isVideoSessionActive.value = true;
 
     // Add all security event listeners
     window.addEventListener("blur", handleBlur);
@@ -478,7 +564,24 @@ onMounted(() => {
         }
     });
 
-    initializePlayer();
+    if (videoPlayer.value) {
+        videoPlayer.value.addEventListener('seeking', preventSeeking, true);
+        videoPlayer.value.addEventListener('seeked', preventSeeking, true);
+        videoPlayer.value.addEventListener('play', () => {
+            // If trying to start from middle, reset to beginning
+            if (!hasStartedPlaying.value && videoPlayer.value.currentTime > 0) {
+                videoPlayer.value.currentTime = 0;
+            }
+        });
+        
+        videoPlayer.value.addEventListener('timeupdate', (e) => {
+            if (!hasStartedPlaying.value && videoPlayer.value.currentTime > 0) {
+                preventSeeking(e);
+            } else if (videoPlayer.value.currentTime > lastValidTime.value + 1) {
+                preventSeeking(e);
+            }
+        });
+    }
 });
 
 // 🛑 Nettoyage
@@ -492,17 +595,17 @@ onBeforeUnmount(() => {
         router.push("/dashboard/courses");
     }
 
-    if (player.value) {
-        player.value.dispose();
+    if (videoPlayer.value) {
+        videoPlayer.value.removeEventListener('seeking', preventSeeking, true);
+        videoPlayer.value.removeEventListener('seeked', preventSeeking, true);
     }
 });
 
 // Add a watch for videoUrl changes
 watch(videoUrl, (newUrl) => {
     console.log("Video URL changed to:", newUrl); // Debug log
-    if (player.value) {
-        player.value.src({ src: newUrl, type: 'video/mp4' });
-        player.value.load(); // Force reload the video player
+    if (videoPlayer.value) {
+        videoPlayer.value.load(); // Force reload the video player
     }
 });
 
@@ -553,170 +656,38 @@ const handleSectionClick = (section, sectionIndex) => {
     toggleSection(section.id);
 };
 
-// Initialize video.js player
-const initializePlayer = () => {
-    if (videoPlayer.value) {
-        player.value = videojs(videoPlayer.value, {
-            controls: true,
-            fluid: true,
-            playbackRates: [0.5, 1, 1.5, 2],
-            controlBar: {
-                children: [
-                    'playToggle',
-                    'volumePanel',
-                    'currentTimeDisplay',
-                    'timeDivider',
-                    'durationDisplay',
-                    'progressControl',
-                    'fullscreenToggle'
-                ]
-            },
-            userActions: {
-                hotkeys: false
-            }
-        });
-
-        // Add fullscreen change detection
-        player.value.on('fullscreenchange', () => {
-            isFullscreen.value = player.value.isFullscreen();
-        });
-
-        // Add backward button
-        const controlBar = player.value.controlBar;
-        const backwardButton = controlBar.addChild('button', {}, 1);
-        backwardButton.el().innerHTML = '<i class="fas fa-backward-step"></i> -3s';
-        backwardButton.on('click', () => handleSeek(-3));
-
-        // Add all necessary event listeners
-        player.value.on('play', onPlay);
-        player.value.on('timeupdate', onTimeUpdate);
-        player.value.on('ended', onEnded);
-        player.value.on('seeking', preventForwardSeeking);
-        player.value.on('seeked', onSeeked);
-        player.value.on('loadedmetadata', onLoadedMetadata);
-        player.value.on('pause', onPause);
-
-        // Disable progress bar clicks
-        const progressControl = player.value.controlBar.progressControl.el();
-        progressControl.style.pointerEvents = 'none';
-
-        // Add mousemove listener to prevent dragging
-        player.value.on('mousemove', preventDragging);
-    }
-};
-
-// Handle video metadata loaded
-const onLoadedMetadata = () => {
-    if (player.value) {
-        lastValidTime.value = 0;
-        maxAllowedTime.value = 0;
-    }
-};
-
-// Prevent dragging on progress bar
-const preventDragging = (event) => {
-    if (player.value) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-};
-
-// Handle seeking attempts
-const preventForwardSeeking = () => {
-    if (player.value) {
-        const currentTime = player.value.currentTime();
-        
-        // If trying to seek forward beyond maxAllowedTime
-        if (currentTime > maxAllowedTime.value) {
-            console.log('Preventing forward seek:', currentTime, 'max:', maxAllowedTime.value);
-            player.value.currentTime(lastValidTime.value);
-            player.value.play(); // Force continue playing
-        }
-    }
-};
-
-// Handle successful seek
-const onSeeked = () => {
-    if (player.value) {
-        const currentTime = player.value.currentTime();
-        if (currentTime > maxAllowedTime.value) {
-            player.value.currentTime(lastValidTime.value);
-        }
-    }
-};
-
-// Track playback position
-const onTimeUpdate = () => {
-    if (player.value) {
-        const currentTime = player.value.currentTime();
-        
-        // Only update if time is moving forward naturally
-        if (currentTime - lastValidTime.value <= 0.1) { // Small threshold for normal playback
-            lastValidTime.value = currentTime;
-            maxAllowedTime.value = currentTime;
-            
-            updateProgress(
-                currentContent.value.section_id,
-                currentContent.value.video_id,
-                { target: { currentTime } }
-            );
+// Add fullscreen handler
+const handleFullscreenChange = () => {
+    const watermarks = document.querySelectorAll('.watermark');
+    const isFullscreen = document.fullscreenElement !== null;
+    
+    watermarks.forEach(watermark => {
+        if (isFullscreen) {
+            watermark.classList.add('watermark-fullscreen');
         } else {
-            // Reset to last valid time if jumped forward
-            player.value.currentTime(lastValidTime.value);
+            watermark.classList.remove('watermark-fullscreen');
         }
-    }
+    });
 };
 
-// Handle pause event
-const onPause = () => {
-    if (player.value) {
-        // Ensure we're at a valid position when paused
-        const currentTime = player.value.currentTime();
-        if (currentTime > maxAllowedTime.value) {
-            player.value.currentTime(lastValidTime.value);
-        }
-    }
+// Reset when changing videos
+const handleContentClick = (section, content) => {
+    hasStartedPlaying.value = false;
+    lastValidTime.value = 0;
+    currentContent.value = {
+        type: 'video',
+        video_id: content.id,
+        section_id: section.id
+    };
+    fetchVideo(content.id);
 };
 
-// Backward seeking only
-const handleSeek = (seconds) => {
-    if (player.value && seconds < 0) {
-        const newTime = Math.max(0, lastValidTime.value + seconds);
-        player.value.currentTime(newTime);
-        lastValidTime.value = newTime;
-        maxAllowedTime.value = newTime;
-    }
-};
-
-// Event handlers
-const onPlay = () => {
-    hidePreview();
-};
-
-const onEnded = () => {
-    markAsCompleted(currentContent.value.section_id, currentContent.value.video_id);
-};
-
-const addWatermark = () => {
-    if (player.value) {
-        const videoContainer = player.value.el();
-        
-        // Create watermark container
-        const watermark = document.createElement('div');
-        watermark.className = 'vjs-watermark';
-        watermark.innerHTML = `
-            <span class="watermark-text">${window.Laravel.user.email} || safetyfirsthub.com</span>
-        `;
-        
-        // Add watermark to the video container
-        const videoWrapper = videoContainer.querySelector('.vjs-tech');
-        if (videoWrapper) {
-            videoWrapper.parentNode.insertBefore(watermark, videoWrapper.nextSibling);
-        }
-        
-        setInterval(() => {
-            moveWatermark(watermark);
-        }, 5000);
+// Update play handler to track video start
+const hidePreview = () => {
+    showPreview.value = false;
+    if (videoPlayer.value && videoPlayer.value.currentTime === 0) {
+        hasStartedPlaying.value = true;
+        lastValidTime.value = 0;
     }
 };
 </script>
@@ -724,44 +695,50 @@ const addWatermark = () => {
 
 
 <style scoped>
-.video-container {
-    background-color: #000;
-    position: relative;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
-}
-
-.video-container video {
+.watermark {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  color: #ffffff80;
+  font-size: 28px;
+  font-weight: 600;
+  z-index: 100;
+  pointer-events: none;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.3);
+  background: transparent;
+  padding: 6px 12px;
+  transform: rotate(-15deg);
+  opacity: .4;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  white-space: nowrap;
+  font-family: Arial,sans-serif;
+  letter-spacing: .5px;
 }
 
-.video-watermark {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-30deg);
-    font-size: min(3vw, 32px);
-    color: rgba(255, 255, 255, 0.5); /* Increased opacity */
-    pointer-events: none;
-    user-select: none;
-    white-space: nowrap;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    font-weight: bold;
-    animation: fadeInOut 8s infinite;
-    width: 100%;
-    text-align: center;
-    transition: all 0.3s ease;
+/* Fullscreen watermark styles */
+.video-container:fullscreen .watermark {
+    position: fixed;
+    font-size: 20px;
+    opacity: 0.5;
 }
 
-:deep(.vjs-fullscreen) .video-watermark {
-    font-size: min(5vw, 64px); /* Larger font in fullscreen */
+/* Support for different browser prefixes */
+.video-container:-webkit-full-screen .watermark {
+    position: fixed;
+    font-size: 20px;
+    opacity: 0.5;
 }
 
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.6; }
+.video-container:-moz-full-screen .watermark {
+    position: fixed;
+    font-size: 20px;
+    opacity: 0.5;
+}
+
+.video-container:-ms-fullscreen .watermark {
+    position: fixed;
+    font-size: 20px;
+    opacity: 0.5;
 }
 
 .course-video-container {
@@ -771,7 +748,22 @@ const addWatermark = () => {
 }
 
 .video-content {
-    background-color: transparent;
+    background-color: #000;
+}
+
+.video-container {
+    position: relative;
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
+    width: 100%;
+}
+
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .preview-image {
@@ -1214,231 +1206,5 @@ const addWatermark = () => {
 
 .section-header.locked h5 {
     color: #999;
-}
-
-/* Import Video.js CSS */
-@import 'video.js/dist/video-js.css';
-
-/* Custom styles */
-.video-container {
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-/* Custom button styles */
-.video-js .vjs-control-bar button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
-.video-js .vjs-control-bar button:hover {
-    color: #ff8a00;
-}
-
-/* Message styles */
-.video-messages {
-    margin-top: 1rem;
-    padding: 1rem;
-}
-
-.video-status-message {
-    padding: 1rem;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.success {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.warning {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-/* Custom Video.js theme overrides */
-.video-js .vjs-big-play-button {
-    background-color: rgba(255, 138, 0, 0.8);
-    border-color: #ff8a00;
-}
-
-.video-js .vjs-progress-holder .vjs-play-progress {
-    background-color: #ff8a00;
-}
-
-.video-js .vjs-control-bar {
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
-/* Add this to ensure proper video container sizing */
-.video-js {
-    width: 100%;
-    height: auto;
-    background: transparent; /* Make video.js background transparent */
-}
-
-.video-js .vjs-tech {
-    position: relative;
-    background: transparent; /* Make video element background transparent */
-}
-
-/* Disable progress bar interaction */
-.video-js .vjs-progress-control {
-    pointer-events: none !important;
-}
-
-/* Hide the progress bar hover effect */
-.video-js .vjs-progress-holder:hover .vjs-play-progress:before,
-.video-js .vjs-progress-holder:hover .vjs-time-tooltip {
-    display: none !important;
-}
-
-/* Optional: Make the progress bar look disabled */
-.video-js .vjs-progress-holder {
-    opacity: 0.7;
-}
-
-/* Completely disable progress bar interaction */
-.video-js .vjs-progress-control {
-    pointer-events: none !important;
-    cursor: default !important;
-}
-
-.video-js .vjs-progress-holder {
-    pointer-events: none !important;
-    cursor: default !important;
-}
-
-.video-js .vjs-play-progress {
-    pointer-events: none !important;
-}
-
-.video-js .vjs-time-tooltip {
-    display: none !important;
-}
-
-/* Prevent text selection */
-.video-js {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-/* Hide mouse cursor over progress bar */
-.video-js .vjs-progress-control:hover {
-    cursor: default !important;
-}
-
-/* Update watermark styles */
-.watermark-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-}
-
-.watermark-container.fullscreen {
-    position: fixed;
-    z-index: 999999;
-}
-
-.video-watermark {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-30deg);
-    font-size: min(3vw, 32px);
-    color: rgba(255, 255, 255, 0.5); /* Increased opacity */
-    pointer-events: none;
-    user-select: none;
-    white-space: nowrap;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    font-weight: bold;
-    animation: fadeInOut 8s infinite;
-    width: 100%;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-:deep(.vjs-fullscreen) .watermark-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-}
-
-:deep(.vjs-fullscreen) .video-watermark {
-    font-size: min(5vw, 64px); /* Larger font in fullscreen */
-}
-
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.6; }
-}
-
-/* Updated z-index hierarchy */
-.video-js {
-    position: relative;
-    z-index: 1; /* Base layer */
-}
-
-.video-js .vjs-tech {
-    z-index: 2; /* Video layer */
-}
-
-.vjs-watermark {
-    position: absolute;
-    z-index: 2; /* Lower z-index to stay under alerts */
-    pointer-events: none;
-    transition: all 0.8s ease;
-    padding: 8px 12px;
-    background-color: rgba(0, 0, 0, 0.4);
-    border-radius: 4px;
-    font-family: Arial, sans-serif;
-}
-
-.video-js .vjs-control-bar {
-    z-index: 3;
-}
-
-/* Ensure video player and watermark stay below alerts */
-.video-content {
-    position: relative;
-    z-index: 1; /* Keep video content in a lower layer */
-}
-
-/* Remove any !important from watermark z-index */
-.vjs-watermark {
-    z-index: 2;
-}
-
-.watermark-text {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 16px;
-    font-weight: 500;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    white-space: nowrap;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-/* Let alerts and modals handle their own z-index */
-.swal2-container,
-.modal,
-.alert {
-    /* These will use their default z-index values which are typically very high */
-    position: fixed;
 }
 </style>
