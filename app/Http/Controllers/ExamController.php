@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\ExamService;
 use Illuminate\Http\Request;
+use App\Models\ExamUser;
+use App\Services\HelperService;
 
 class ExamController extends Controller
 {
@@ -31,8 +33,17 @@ class ExamController extends Controller
     // 📌 Marquer un examen comme complété
     public function markExamAsCompleted($session_id)
     {
-        $response = $this->examService->markExamAsCompleted($session_id);
-        return response()->json($response, $response['status'] ?? 200);
+        $examUser = ExamUser::where('id', $session_id)
+            ->where('status', 'in_progress')
+            ->with('exam.questions.choices') // 🔹 Précharge les relations nécessaires
+            ->first();
+        HelperService::markExamAsCompleted($session_id,0,'completed');
+        HelperService::resetAllVideos($examUser) ;
+        
+        return response()->json([
+            'exam_completed' => true,
+            'message' => 'Exam cancelled and it will marked as failed',
+        ], 200);
     }
 
     // 📌 Récupérer l'historique des examens d'un utilisateur

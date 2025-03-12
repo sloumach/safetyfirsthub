@@ -15,12 +15,15 @@ class CertificateController extends Controller
     /**
      * Générer un certificat après la réussite d'un examen
      */
-    public function generateCertificate($exam_user_id)
+    public function generateCertificate($exam_id)
     {
-        $examUser = ExamUser::findOrFail($exam_user_id);
+        // Find the exam_user record for the current user and exam
+        $examUser = ExamUser::where('exam_id', $exam_id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
     
         // Vérifier si l'utilisateur a réussi l'examen
-        if ($examUser->score < $examUser->exam->passing_score) {
+        if ($examUser->score < $examUser->exam->score) {
             return response()->json(['error' => 'You have not passed this exam.'], 403);
         }
     

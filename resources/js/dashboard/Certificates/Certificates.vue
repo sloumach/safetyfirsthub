@@ -1,6 +1,6 @@
 <template>
   <div class="certificates-dashboard certificates-section">
-    <div class="celebration-background" v-if="certificateCourses.length > 0">
+    <div class="celebration-background" v-if="courses.length > 0">
       <div class="firework"></div>
       <div class="firework"></div>
       <div class="firework"></div>
@@ -20,14 +20,14 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="certificateCourses.length === 0" class="empty-state">
+    <div v-else-if="courses.length === 0" class="empty-state">
       <i class='bx bx-award empty-icon'></i>
       <p>Complete courses and exams to earn your certificates</p>
     </div>
 
     <!-- Certificates Grid -->
     <div v-else class="certificates-grid">
-      <div class="certificate-card" v-for="course in certificateCourses" :key="course.id">
+      <div class="certificate-card" v-for="course in courses" :key="course.id">
         <div class="certificate-ribbon"></div>
         <div class="certificate-inner">
           <div class="certificate-header">
@@ -55,16 +55,16 @@
               <div class="achievement-info">
                 <div class="info-item">
                   <i class='bx bx-calendar-check'></i>
-                  <span>Completed</span>
+                  <span>Completed {{ course.completed_at ? new Date(course.completed_at).toLocaleDateString() : 'N/A' }}</span>
                 </div>
                 <div class="info-item">
                   <i class='bx bx-trophy'></i>
-                  <span>Excellence</span>
+                  <span>Score: {{ course.score || 0 }}%</span>
                 </div>
               </div>
             </div>
 
-            <button @click="viewCertificate(course.exam_id)" class="view-btn">
+            <button @click="viewCertificate(course.exam_id)" class="view-btn" :disabled="!course.exam_id">
               <span>View Certificate</span>
               <i class='bx bx-right-arrow-alt'></i>
             </button>
@@ -76,9 +76,10 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
   name: 'Certificates',
@@ -87,10 +88,6 @@ export default {
     const courses = ref([])
     const loading = ref(true)
 
-    const certificateCourses = computed(() => {
-      return courses.value.filter(course => course.examcheck === true)
-    })
-
     const handleImageError = (e) => {
       e.target.src = 'https://placehold.co/600x400/003366/ffffff?text=Course'
     }
@@ -98,15 +95,40 @@ export default {
     const fetchCourses = async () => {
       try {
         loading.value = true
-        const response = await axios.get('/api/courses')
         
-        if (response.data) {
-          courses.value = [...response.data]
-        } else {
-          console.error('No course data received')
-          courses.value = []
-        }
+        // First get exam history
+        const examHistoryResponse = await axios.get('/exam/history')
+        const examHistory = examHistoryResponse.data
 
+        // Then get courses
+        const coursesResponse = await axios.get('/api/courses')
+        const allCourses = coursesResponse.data
+
+        // Filter courses that have passing exam scores (≥70)
+        const passedCourses = allCourses.filter(course => {
+          const courseExams = examHistory.filter(exam => 
+            exam.exam.course_id === course.id
+          )
+          const bestScore = Math.max(...courseExams.map(exam => exam.score), 0)
+          return bestScore >= 70
+        }).map(course => {
+          const courseExams = examHistory.filter(exam => 
+            exam.exam.course_id === course.id
+          )
+          const bestExam = courseExams.reduce((best, current) => 
+            (current.score > (best?.score || 0)) ? current : best
+          , null)
+          
+          return {
+            ...course,
+            exam_id: bestExam?.exam?.id,
+            score: bestExam?.score,
+            completed_at: bestExam?.completed_at
+          }
+        })
+
+        courses.value = passedCourses
+      
       } catch (error) {
         console.error('Error fetching courses:', error)
         courses.value = []
@@ -116,16 +138,23 @@ export default {
     }
 
     const viewCertificate = (exam_id) => {
+      if (!exam_id) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Certificate not available',
+          icon: 'error'
+        })
+        return
+      }
       router.push(`/dashboard/certificate/${exam_id}`)
     }
 
     onMounted(() => {
       fetchCourses()
-
     })
 
     return {
-      certificateCourses,
+      courses,
       loading,
       handleImageError,
       viewCertificate
