@@ -30,11 +30,23 @@ class ExamService
         } */
         $exam = Exam::where('course_id', $course_id)
             ->where('is_active', true)
-            ->inRandomOrder()
             ->first();
 
         if (!$exam) {
             return ['error' => __('exam.no_exam_available'), 'status' => 404];
+        }
+
+        // Check if user has exhausted attempts
+        $attemptsCount = ExamUser::where('user_id', $user->id)
+            ->where('exam_id', $exam->id)
+            ->count();
+
+        if ($attemptsCount >= 3) {
+            return [
+                'error' => __('exam.max_attempts_reached'),
+                'status' => 403,
+                'attempts_exhausted' => true
+            ];
         }
 
         /* if ($this->hasExceededAttempts($user->id, $order->id)) {
@@ -76,4 +88,55 @@ class ExamService
             ->where('order_id', $order_id)
             ->count() >= 3;
     }
+
+    public function userExamHistory()
+    {
+        $user = Auth::user();
+        
+        $examHistory = ExamUser::where('user_id', $user->id)
+            ->with(['exam' => function($query) {
+                $query->with('course:id,name');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function($examUser) {
+                return [
+                    'id' => $examUser->id,
+                    'score' => $examUser->score,
+                    'status' => $examUser->status,
+                    'completed_at' => $examUser->completed_at,
+                    'exam' => [
+                        'id' => $examUser->exam->id,
+                        'course_id' => $examUser->exam->course_id,
+                        'name' => $examUser->exam->course->name
+                    ]
+                ];
+            });
+
+        return $examHistory;
+    }
+
+    public function examResults($session_id)
+    {
+        $user = Auth::user();
+        
+        $examUser = ExamUser::where('exam_id', $session_id)
+            ->where('user_id', $user->id)
+            ->with(['exam.course:id,name'])
+            ->first();
+
+        if (!$examUser) {
+            return null;
+        }
+
+        return [
+            'exam_user_id' => $examUser->id,
+            'score' => $examUser->score,
+            'completed_at' => $examUser->completed_at,
+            'user_firstname' => $user->firstname,
+            'user_lastname' => $user->lastname,
+            'course_name' => $examUser->exam->course->name
+        ];
+    }
+   
 }

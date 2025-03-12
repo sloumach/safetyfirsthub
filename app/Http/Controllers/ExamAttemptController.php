@@ -31,4 +31,6 @@ class ExamAttemptController extends Controller
         );
         return response()->json($response, $response['status'] ?? 200);
     }
+
+    
 }

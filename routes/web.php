@@ -111,7 +111,6 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
         Route::post('/update', [VideoProgressController::class, 'updateProgress']);
         Route::get('/check/{course_id}', [VideoProgressController::class, 'checkProgress'])->whereNumber('course_id');
         Route::post('/complete', [VideoProgressController::class, 'markAsCompleted']);
-        Route::post('/reset', [VideoProgressController::class, 'resetProgress']);
         Route::get('/course/{course_id}', [VideoProgressController::class, 'checkCourseCompletion'])
     ->whereNumber('course_id');
 
@@ -161,7 +160,7 @@ Route::middleware([])->group(function () {
 });
 
 Route::prefix('certificates')->controller(CertificateController::class)->group(function () {
-    Route::post('/generate/{exam_user_id}', 'generateCertificate')->whereNumber('exam_user_id')->name('certificates.generate');
+    Route::get('/generate/{exam_id}', 'generateCertificate')->whereNumber('exam_id')->name('certificates.generate');
     Route::get('/{certificate_url}/scan', 'scanCertificate')->where('certificate_url', '.*')->name('certificates.scan');
     Route::get('/{certificate_url}/view', 'viewCertificate')->where('certificate_url', '.*')->name('certificates.view');
 });

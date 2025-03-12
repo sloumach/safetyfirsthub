@@ -261,7 +261,6 @@ const fetchCourse = async () => {
         // Update watermark text with email
         watermarkText.value = `${course.value.email || 'student@example.com'} | safetyfirsthub.com`;
         
-        console.log('Course data:', course.value);
     } catch (error) {
         console.error('Error fetching course:', error);
         Swal.fire({ title: 'Erreur', text: 'Impossible de charger le cours.', icon: 'error' });
@@ -270,10 +269,10 @@ const fetchCourse = async () => {
 };
 const fetchVideo = async (videoId) => {
     try {
-        console.log("Attempting to fetch video:", videoId); // Debug log
+
 
         const response = await axios.get(`/api/videos/${videoId}/video-url`);
-        console.log("Video response:", response.data); // Debug log
+
         
         if (response.data.video_url) {
             // Force reset the video player state
@@ -298,8 +297,6 @@ const fetchVideo = async (videoId) => {
                 section_id: response.data.section_id
             };
 
-            console.log("Video URL set to:", videoUrl.value); // Debug log
-            console.log("Current content updated:", currentContent.value); // Debug log
         }
     } catch (error) {
         console.error("Error fetching video:", error);
@@ -353,7 +350,7 @@ const updateProgress = async (sectionId, videoId, event) => {
         lastValidTime.value = currentTime;
     }
 
-    console.log(`✅ Progression mise à jour : Video ${videoId} | ${currentTime}/${totalDuration} sec`);
+
 
     try {
         await axios.post(`/video/progress/update`, {
@@ -363,7 +360,7 @@ const updateProgress = async (sectionId, videoId, event) => {
             total_duration: totalDuration,
             is_completed: false
         });
-        console.log("📌:", currentTime);
+
 
     } catch (error) {
         console.error("🚨 Erreur lors de la mise à jour de la progression :", error);
@@ -388,7 +385,7 @@ const markAsCompleted = async (section_id,video_id) => {
     }
 
     try {
-        console.log("Marquer la vidéo comme complétée :", video_id);
+  
         await axios.post(`/video/progress/complete`, {
             video_id: video_id,
             section_id: section_id
@@ -456,7 +453,11 @@ watch(() => route.params.id, async (newId, oldId) => {
 
 // Add these security-related functions
 const handleVisibilityChange = async () => {
-    if (document.hidden && route.path.includes('/video') && isVideoSessionActive.value) {
+    // Only trigger if we're in video mode and actually watching a video
+    if (document.hidden && 
+        route.path.includes('/video') && 
+        isVideoSessionActive.value && 
+        currentContent.value.type === 'video') {
         isVideoSessionActive.value = false;
         
         if (videoPlayer.value) {
@@ -503,11 +504,14 @@ const handleBlur = async () => {
 
 // Block browser navigation
 window.addEventListener('popstate', async (e) => {
-    if (route.path.includes('/video')) {
+    // Only prevent navigation if we're actively watching a video
+    if (route.path.includes('/video') && 
+        currentContent.value.type === 'video' && 
+        !isCompleted.value) {
         e.preventDefault();
         await Swal.fire({
             title: 'Navigation Detected',
-            text: 'Your video session has ended due to navigation.',
+            text: 'Please complete the video before navigating away.',
             icon: 'warning',
             confirmButtonColor: '#3085d6',
         });
@@ -557,10 +561,12 @@ onMounted(() => {
 
     // Handle page unload/close
     window.addEventListener('beforeunload', (e) => {
-        if (route.path.includes('/video')) {
+        // Only prevent unload if we're actively watching a video
+        if (route.path.includes('/video') && 
+            currentContent.value.type === 'video' && 
+            !isCompleted.value) {
             e.preventDefault();
             e.returnValue = '';
-            router.push("/dashboard/courses");
         }
     });
 
@@ -590,8 +596,10 @@ onBeforeUnmount(() => {
     document.removeEventListener("visibilitychange", handleVisibilityChange);
     document.removeEventListener("contextmenu", disableRightClick);
     
-    // If we're leaving the video page, redirect to courses
-    if (route.path.includes('/video')) {
+    // Only redirect if we're in an active video session
+    if (route.path.includes('/video') && 
+        currentContent.value.type === 'video' && 
+        !isCompleted.value) {
         router.push("/dashboard/courses");
     }
 
@@ -603,7 +611,7 @@ onBeforeUnmount(() => {
 
 // Add a watch for videoUrl changes
 watch(videoUrl, (newUrl) => {
-    console.log("Video URL changed to:", newUrl); // Debug log
+
     if (videoPlayer.value) {
         videoPlayer.value.load(); // Force reload the video player
     }

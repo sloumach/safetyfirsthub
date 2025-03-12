@@ -7,8 +7,10 @@ use App\Models\ExamUser;
 use App\Models\VideoProgress;
 use App\Models\Question;
 use App\Models\UserAnswer;
+use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Log;
 class ExamAttemptService
 {
     public function submitAnswer($session_id, $question_id, $choice_id = null)
@@ -85,10 +87,11 @@ class ExamAttemptService
 
         // 📌 Si toutes les questions ont été répondues, finaliser l'examen
         if (!$nextQuestion) {
+            Log::info('nextQuestion');
             //return ['exam_completed' => true];
             return $this->finalizeExam($examUser);
         }
-
+        Log::info('return false');
         return [
             'question' => [
                 'id' => $nextQuestion->id,
@@ -111,28 +114,60 @@ class ExamAttemptService
         $score  = round(($correctAnswers / $totalQuestions) * 100);
         $status = $score >= $examUser->exam->passing_score ? 'passed' : 'failed';
 
-        $examUser->update([
-            'status'       => 'completed',
-            'score'        => $score,
-            'completed_at' => now(),
-        ]);
-         // 📌 Si l'examen est échoué, réinitialiser la progression des vidéos du cours
+        HelperService::markExamAsCompleted($examUser->id, $score, $status);
+        $status === 'failed' ? HelperService::resetAllVideos($examUser) : null;
+
+        // 📌 Vérifier le nombre total de tentatives échouées
         if ($status === 'failed') {
-            VideoProgress::where('user_id', $examUser->user_id)
-                ->whereHas('video.section', function ($query) use ($examUser) {
-                    $query->where('course_id', $examUser->exam->course_id);
-                })
-                ->update(['is_completed' => 0]);
+            $attemptsCount = ExamUser::where('user_id', $examUser->user_id)
+                ->where('exam_id', $examUser->exam_id)
+                ->where('status', 'completed')
+                ->where('score', '<', $examUser->exam->passing_score) // Vérifie si les tentatives étaient des échecs
+                ->count();
+
+            if ($attemptsCount >= 3) {
+                $courseId = $examUser->exam->course_id;
+                $userId = $examUser->user_id;
+                $user = User::find($userId);
+                
+                // 📌 Supprimer l'accès au cours
+                $user->courses()->detach($courseId);
+                $courseCount = User::find($userId)->courses()
+                ->whereNotNull('course_user.created_at') // 🔥 Ajout du préfixe 'course_user.'
+                ->count();
+                Log::info($courseCount);
+                if ($courseCount == 0) {
+                    Log::info("role change");
+                    // 📌 Gérer les rôles de l'utilisateur
+                    $studentRole = Role::where('name', 'student')->first();
+                    $userRole = Role::where('name', 'user')->first();
+                    $user->roles()->detach($studentRole->id); // Retirer "student"
+                    $user->roles()->syncWithoutDetaching([$userRole->id]); // Ajouter "user"
+
+                    return [
+                        'exam_completed' => true,
+                        'score'          => $score,
+                        'status'         => 200,
+                        'examresult'     => $status,
+                        'passing_score'  => $examUser->exam->passing_score,
+                        'retry_allowed'  => $status === 'failed' && $examUser->attempts < 3,
+                        'attempts_left'  => 3 - $examUser->attempts,
+                        'role_changed'  => 1,
+                    ];
+                }
+                   
+            }
         }
 
         return [
             'exam_completed' => true,
             'score'          => $score,
             'status'         => 200,
-            'examresult'         => $status,
+            'examresult'     => $status,
             'passing_score'  => $examUser->exam->passing_score,
             'retry_allowed'  => $status === 'failed' && $examUser->attempts < 3,
             'attempts_left'  => 3 - $examUser->attempts,
+            'role_changed'  => 0,
         ];
     }
 }

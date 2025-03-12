@@ -101,8 +101,31 @@ export default {
 
     const fetchCourses = async () => {
       try {
-        const response = await axios.get('/api/courses')
-        courses.value = [...response.data]
+        // First get exam history
+        let examHistory = [];
+        try {
+          const historyResponse = await axios.get('/exam/history');
+          examHistory = historyResponse.data;
+        } catch (error) {
+          console.error('Error fetching exam history:', error);
+        }
+
+        // Then get courses
+        const response = await axios.get('/api/courses');
+        const coursesWithExamStatus = response.data.map(course => {
+          // Find best score for this course's exam
+          const courseExams = examHistory.filter(result => 
+            result.exam.course_id === course.id
+          );
+          const bestScore = Math.max(...courseExams.map(exam => exam.score), 0);
+          
+          return {
+            ...course,
+            examcheck: bestScore >= 70 // Pass if best score is 70% or higher
+          };
+        });
+        
+        courses.value = coursesWithExamStatus;
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
@@ -120,7 +143,7 @@ export default {
 
     const handleButtonClick = async (course) => {
       if (course.examcheck) {
-        window.location.href = '/dashboard/certificate'
+        router.push('/dashboard/certificates')
       } else {
         const isCompleted = await checkCourseCompletion(course.id)
 
@@ -142,13 +165,6 @@ export default {
       return course.examcheck ? 'Get Your Certificate' : 'Take Exam'
     }
 
-    watch(courses, (newValue) => {
-      console.log('Courses changed:', {
-        length: newValue.length,
-        totalPages: totalPages.value,
-        currentPage: currentPage.value
-      })
-    })
 
     const totalPages = computed(() => {
       return Math.ceil(courses.value.length / itemsPerPage.value)
@@ -185,14 +201,7 @@ export default {
         currentPage.value = page;
       }
     }
-// Debugging: Watch if courses update properly
-  watch(courses, (newValue) => {
-      console.log('Courses changed:', {
-        length: newValue.length,
-        totalPages: totalPages.value,
-        currentPage: currentPage.value
-      })
-    })
+
     onMounted(() => {
       fetchCourses()
 

@@ -1,6 +1,20 @@
 <template>
   <div class="certificate-details-container">
-      <div class="certificate-card">
+      <!-- Loading State -->
+      <div v-if="loading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Generating your certificate...</p>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="error-state">
+          <div class="error-icon">❌</div>
+          <p class="error-message">{{ error }}</p>
+          <p class="redirect-message">Redirecting to certificates page...</p>
+      </div>
+
+      <!-- Certificate Content -->
+      <div v-else class="certificate-card">
           <div class="certificate-content">
               <h1 class="certificate-title">Certificate of Completion</h1>
 
@@ -12,16 +26,9 @@
                   <p class="date">{{ currentDate }}</p>
               </div>
 
-              <!-- Loading State -->
-              <div v-if="loading" class="qr-section">
-                  <div class="spinner-border text-primary" role="status">
-                      <span class="visually-hidden">Loading...</span>
-                  </div>
-              </div>
-
               <!-- QR Code Display -->
-              <div v-else-if="qrCodeImage" class="qr-section">
-                  <img :src="qrCodeImage" alt="QR Code" class="qr-code-image" />
+              <div v-if="qrCodeImage" class="qr-section">
+                  <img :src="`data:image/svg+xml;base64,${qrCodeImage}`" alt="QR Code" class="qr-code-image" />
                   <p class="qr-text">Scan to verify</p>
               </div>
           </div>
@@ -32,18 +39,19 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
-import Swal from "sweetalert2";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 export default {
   name: "CertificateDetails",
   setup() {
       const route = useRoute();
+      const router = useRouter();
       const loading = ref(true);
       const qrCodeImage = ref(null);
       const firstname = ref("");
       const lastname = ref("");
       const courseName = ref("");
+      const error = ref(null);
 
       const currentDate = computed(() => {
           return new Date().toLocaleDateString("en-US", {
@@ -54,39 +62,66 @@ export default {
       });
 
       const generateCertificate = async () => {
+          loading.value = true;
+          error.value = null;
+          
           try {
-              const examUserId = route.params.id;
-
-              const response = await axios.post(`/certificates/generate/${examUserId}`);
+              const examId = route.params.id;
+              const response = await axios.get(`/certificates/generate/${examId}`);
               
-              if (response.data) {
-                  qrCodeImage.value = `data:image/svg+xml;base64,${response.data.certificate.qr_code}`;
-                  firstname.value = response.data.user_firstname || "Unknown";
-                  lastname.value = response.data.user_lastname || "Unknown";
-                  courseName.value = response.data.course_name || "Unknown Course";
-              } else {
-                  Swal.fire({
-                      icon: "error",
-                      title: "Oops...",
-                      text: "No certificate data received",
-                      confirmButtonColor: "#FF8A00",
-                  });
-              }
-
-          } catch (error) {
-              console.error("Error generating certificate:", error);
-              Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: error.response?.data?.message || "Failed to generate certificate",
-                  confirmButtonColor: "#FF8A00",
-              });
-          } finally {
+              // Update the data
+              qrCodeImage.value = response.data.certificate.qr_code;
+              firstname.value = response.data.user_firstname;
+              lastname.value = response.data.user_lastname;
+              courseName.value = response.data.course_name;
+              
               loading.value = false;
+          } catch (e) {
+              console.error('Certificate generation error:', e.response?.data);
+              loading.value = false;
+              
+              if (e.response?.status === 404) {
+                  error.value = "Exam record not found. Please ensure you have completed this exam.";
+              } else if (e.response?.status === 403) {
+                  // Check if we have passed courses data
+                  const passedCourses = e.response?.data?.['Passed courses'] || [];
+                  const examId = route.params.id;
+                  const currentExam = passedCourses.find(course => course.exam_id === parseInt(examId));
+                  
+                  if (currentExam && currentExam.score >= 70) {
+                      // If we found the course and score is passing, retry generation
+                      try {
+                          const retryResponse = await axios.post(`/certificates/generate/${examId}`, {
+                              score: currentExam.score,
+                              course_id: currentExam.id,
+                              completed_at: currentExam.completed_at
+                          });
+                          
+                          // Update the data
+                          qrCodeImage.value = retryResponse.data.certificate.qr_code;
+                          firstname.value = retryResponse.data.user_firstname;
+                          lastname.value = retryResponse.data.user_lastname;
+                          courseName.value = retryResponse.data.course_name;
+                          
+                          loading.value = false;
+                          return;
+                      } catch (retryError) {
+                          console.error('Retry error:', retryError);
+                          error.value = "Failed to generate certificate. Please try again or contact support.";
+                      }
+                  } else {
+                      error.value = e.response.data.error || "You are not authorized to view this certificate.";
+                  }
+              } else {
+                  error.value = "Failed to generate certificate. Please try again later.";
+              }
+              
+              setTimeout(() => {
+                  router.push('/dashboard/certificates');
+              }, 3000);
           }
       };
 
-      // Automatically generate certificate when component mounts
       onMounted(() => {
           generateCertificate();
       });
@@ -97,7 +132,8 @@ export default {
           currentDate,
           firstname,
           lastname,
-          courseName
+          courseName,
+          error
       };
   },
 };
@@ -105,68 +141,203 @@ export default {
 
 <style scoped>
 .certificate-details-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #f5f5f5;
 }
 
 .certificate-card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  width: 500px;
+    background: #fff;
+    width: 800px;
+    min-height: 600px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin: 20px auto;
+}
+
+.certificate-content {
+    border: 2px solid #FF8A00;
+    padding: 40px;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(255, 138, 0, 0.05), transparent);
 }
 
 .certificate-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 15px;
+    font-size: 36px;
+    color: #FF8A00;
+    text-align: center;
+    margin-bottom: 40px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .certificate-body {
-  margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 40px;
+    flex-grow: 1;
+}
+
+.recipient {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 15px;
 }
 
 .student-name {
-  font-size: 22px;
-  font-weight: bold;
-  color: #2c3e50;
+    font-size: 32px;
+    color: #333;
+    margin: 20px 0;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.achievement {
+    font-size: 18px;
+    color: #666;
+    margin: 15px 0;
 }
 
 .course-name {
-  font-size: 20px;
-  font-weight: bold;
-  color: #34495e;
+    font-size: 24px;
+    color: #FF8A00;
+    margin: 20px 0;
+    font-weight: bold;
+}
+
+.date {
+    font-size: 18px;
+    color: #666;
+    margin-top: 30px;
 }
 
 .qr-section {
-  margin-top: 15px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 .qr-code-image {
-  width: 150px;
-  height: 150px;
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    padding: 10px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
 }
 
 .qr-text {
-  font-size: 14px;
-  color: #666;
+    font-size: 14px;
+    color: #666;
 }
 
-.custom-btn {
-  background-color: #FF8A00;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: 0.3s;
+/* Loading State */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
 }
 
-.custom-btn:hover {
-  background-color: #1a73e8;
+.spinner {
+    border: 4px solid rgba(255, 138, 0, 0.1);
+    border-top: 4px solid #FF8A00;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error-state {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.error-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.redirect-message {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .certificate-card {
+        width: 100%;
+        padding: 20px;
+        margin-top: 78px;
+    }
+
+    .certificate-content {
+        padding: 20px;
+    }
+
+    .certificate-title {
+        font-size: 28px;
+    }
+
+    .student-name {
+        font-size: 26px;
+    }
+
+    .course-name {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .certificate-details-container {
+        padding: 10px;
+    }
+
+    .certificate-title {
+        font-size: 24px;
+    }
+
+    .student-name {
+        font-size: 22px;
+    }
+
+    .recipient,
+    .achievement,
+    .date {
+        font-size: 16px;
+    }
+
+    .course-name {
+        font-size: 18px;
+    }
 }
 </style>

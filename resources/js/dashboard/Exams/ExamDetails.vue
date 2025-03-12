@@ -60,10 +60,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, onBeforeUnmount } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import Swal from "sweetalert2";
+import ExamSecurity from '@/dashboard/Security/security.js'; // Import du module
 
 const route = useRoute();
 const router = useRouter();
@@ -85,15 +86,53 @@ const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+// Add timer ref
+const timer = ref(10);
+let timerInterval = null;
+
+// Add these security-related refs
+const isExamSessionActive = ref(true);
+
+// Modify handleTimeUp function to automatically submit and move to next question
+const handleTimeUp = async () => {
+    if (isSubmitting.value) return; // Prevent multiple submissions
+    
+    try {
+        // If user selected an answer, use it. Otherwise, use null
+        const selectedAnswer = userAnswers.value[currentQuestionIndex.value] || null;
+        userAnswers.value[currentQuestionIndex.value] = selectedAnswer;
+        
+        // Submit answer and move to next question
+        await submitAnswer();
+    } catch (error) {
+        console.error("Error in handleTimeUp:", error);
+    }
+};
+
+// Modify startTimer to ensure timer is working properly
+const startTimer = () => {
+    timer.value = 10;
+    clearInterval(timerInterval);
+    
+    timerInterval = setInterval(() => {
+        if (timer.value > 0) {
+            timer.value--;
+        } else {
+            clearInterval(timerInterval);
+            handleTimeUp(); // This will now automatically submit and move to next question
+        }
+    }, 1000);
+};
+
 // 🎯 Récupérer la prochaine question
 const fetchNextQuestion = async () => {
     if (!isActive) return;
 
     try {
-        console.log('Fetching next question for session:', sessionId.value);
+     
         const response = await axios.get(`/exam/${sessionId.value}/next-question`);
 
-        console.log('Next question response:', response.data);
+      
 
         if (response.data.exam_completed) {
             await handleExamCompletion(response.data);
@@ -101,8 +140,8 @@ const fetchNextQuestion = async () => {
         }
 
         currentQuestion.value = response.data.question;
-        // Increment the index after successfully fetching next question
         currentQuestionIndex.value++;
+        startTimer(); // Start timer for new question
     } catch (error) {
         console.error("Error fetching next question:", error);
 
@@ -125,11 +164,7 @@ const fetchNextQuestion = async () => {
 
 // Add the nextQuestion function
 const nextQuestion = async () => {
-    console.log('Next button clicked:', {
-        currentQuestionIndex: currentQuestionIndex.value,
-        selectedAnswer: userAnswers.value[currentQuestionIndex.value],
-        questionId: currentQuestion.value?.id
-    });
+ 
 
     try {
         // First submit the current answer
@@ -139,11 +174,12 @@ const nextQuestion = async () => {
     }
 };
 
-// Update the submitAnswer function to use the correct endpoint
+// Modify submitAnswer function to handle timer properly
 const submitAnswer = async () => {
     if (!isActive || isSubmitting.value) return;
 
     isSubmitting.value = true;
+    clearInterval(timerInterval); // Clear the current timer
     const selectedChoice = userAnswers.value[currentQuestionIndex.value];
 
     try {
@@ -152,16 +188,21 @@ const submitAnswer = async () => {
             choice_id: selectedChoice,
         });
 
-        console.log('Answer submission response:', response.data);
+   
 
         if (response.data.exam_completed) {
-            await handleExamCompletion(response.data);
+            if (response.data.role_changed) {
+                window.location.href = '/courses';
+            } else {
+                await handleExamCompletion(response.data);
+            }
             return;
         }
 
         // Only update question and increment index if submission was successful
         currentQuestion.value = response.data.question;
         currentQuestionIndex.value++;
+        startTimer(); // Start timer for the new question
         
     } catch (error) {
         console.error("Error submitting answer:", error);
@@ -186,41 +227,97 @@ const submitAnswer = async () => {
     }
 };
 
-// 🎯 Gestion de la fin d'examen
+// Modify handleExamCompletion to ensure redirect after exam is done
 const handleExamCompletion = async (examData) => {
+    clearInterval(timerInterval); // Clear timer when exam is complete
     try {
-        const { score, passing_score, retry_allowed, attempts_left } = examData;
-
-        await Swal.fire({
-            title: score >= passing_score ? "Félicitations ! 🎉" : "Examen échoué ❌",
-            text: score >= passing_score
+        const { score, passing_score, retry_allowed, attempts_left, role_changed } = examData;
+    
+        const hasPassed = score >= 70; // Consider pass if score is 70% or higher
+        const result = await Swal.fire({
+            title: hasPassed ? "Félicitations ! 🎉" : "Examen échoué ❌",
+            text: hasPassed
                 ? `Vous avez réussi avec un score de ${score}% (Minimum requis : ${passing_score}%).`
                 : `Votre score est de ${score}%. ${retry_allowed ? `Il vous reste ${attempts_left} tentatives.` : "Vous ne pouvez plus réessayer."}`,
-            icon: score >= passing_score ? "success" : "error",
+            icon: hasPassed ? "success" : "error",
             confirmButtonColor: "#3085d6",
+            confirmButtonText: hasPassed ? "Obtenir le certificat" : "OK",
+            showCancelButton: hasPassed,
+            cancelButtonText: hasPassed ? "Retour aux examens" : undefined,
         });
 
-        router.push("/dashboard/exams");
+        if (hasPassed && result.isConfirmed) {
+            // Redirect to certificate page            
+            router.push("/dashboard/certificates");
+            
+        } else {
+            // Return to exams list
+            
+                router.push("/dashboard/exams");
+            
+            
+        }
     } catch (error) {
         console.error("Error handling exam completion:", error);
-        router.push("/dashboard/exams");
+        router.push("/dashboard/exams"); // Ensure redirect even on error
     }
+};
+
+const reportSecurityBreach = async (reason) => {
+   
+   
+                const response = await axios.post(`/exam/${sessionId.value}/complete`, { 
+                    message: reason, 
+                    timestamp: new Date().toISOString() 
+                });
+             
+           
+                await Swal.fire({
+                    title: response.data.message,
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                });
+            
 };
 
 // 🏁 Démarrer une session d'examen
 onMounted(async () => {
+    ExamSecurity.setSecurityCallback(reportSecurityBreach);
+    ExamSecurity.init(router);
     try {
         const response = await axios.post(`/exam/start/${route.params.id}`);
         sessionId.value = response.data.session_id;
         fetchNextQuestion();
-    } catch (error) {
-        console.error("Erreur lors du démarrage de l'examen :", error);
+    } catch (error) { 
+      
+        // Handle max attempts reached error
+        if (error.response?.status === 403 && error.response?.data?.error === 'exam.max_attempts_reached') {
+            hasAttemptsExhausted.value = true;
+            
+            // Show alert before resetting progress
+            await Swal.fire({
+                title: 'Maximum Attempts Reached',
+                text: 'You have reached the maximum number of attempts. Your progress will be reset.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+     
+        }
     }
+    
 });
 
 // 🛑 Nettoyage à la fermeture de la page
 onUnmounted(() => {
     isActive = false;
+    clearInterval(timerInterval);
+});
+
+// Clean up event listeners
+onBeforeUnmount(() => {
+    ExamSecurity.cleanup();
+
+    
 });
 </script>
 
