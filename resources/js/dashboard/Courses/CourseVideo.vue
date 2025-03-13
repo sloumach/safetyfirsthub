@@ -26,9 +26,8 @@
                         <div class="course-sections">
                             <div v-for="(section, sectionIndex) in sections" :key="section.id" class="section">
                                 <!-- Section Header -->
-                                <div class="section-header" 
-                                     @click="handleSectionClick(section, sectionIndex)"
-                                     :class="{ 'locked': !canAccessSection(sectionIndex) }">
+                                <div class="section-header" @click="handleSectionClick(section, sectionIndex)"
+                                    :class="{ 'locked': !canAccessSection(sectionIndex) }">
                                     <h5>
                                         <i class="fas"
                                             :class="{ 'fa-chevron-down': !openSections[section.id], 'fa-chevron-up': openSections[section.id] }"></i>
@@ -51,13 +50,11 @@
                                     </div>
                                     <!-- 🔹 Affichage des vidéos -->
                                     <div v-if="section.videos.length > 0">
-                                        <div v-for="(video, index) in section.videos" 
-                                             :key="video.id" 
-                                             class="section-item"
-                                             :class="{ 'locked': !canAccessVideo(section, index) }"
-                                             @click="handleVideoClick(section, video, index)"
-                                             style="cursor: pointer;">
-                                            <i class="fas" :class="video.is_completed ? 'fa-check-circle' : 'fa-play-circle'"></i>
+                                        <div v-for="(video, index) in section.videos" :key="video.id"
+                                            class="section-item" :class="{ 'locked': !canAccessVideo(section, index) }"
+                                            @click="handleVideoClick(section, video, index)" style="cursor: pointer;">
+                                            <i class="fas"
+                                                :class="video.is_completed ? 'fa-check-circle' : 'fa-play-circle'"></i>
                                             {{ video.title }}
                                             <span v-if="!canAccessVideo(section, index)" class="section-status">
                                                 <i class="fas fa-lock"></i>
@@ -89,19 +86,13 @@
                                     <button class="play-button">▶</button>
                                 </div>
 
-                                <video
-                                    ref="videoPlayer"
-                                    class="w-100"
-                                    controls
-                                    v-show="!showPreview"
+                                <video ref="videoPlayer" class="w-100" controls v-show="!showPreview"
                                     @play="hidePreview"
                                     @timeupdate="updateProgress(currentContent.section_id, currentContent.video_id, $event)"
                                     @ended="markAsCompleted(currentContent.section_id, currentContent.video_id)"
-                                    @seeking="preventSeeking"
-                                    @webkitfullscreenchange="handleFullscreenChange"
+                                    @seeking="preventSeeking" @webkitfullscreenchange="handleFullscreenChange"
                                     @mozfullscreenchange="handleFullscreenChange"
-                                    @fullscreenchange="handleFullscreenChange"
-                                >
+                                    @fullscreenchange="handleFullscreenChange">
                                     <source :src="videoUrl" type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
@@ -109,7 +100,7 @@
 
                             <div class="video-messages">
                                 <div v-if="isCompleted" class="video-status-message success">
-                                   
+
                                     <span>Vous avez terminé cette vidéo ! Vous pouvez maintenant passer l'examen.</span>
                                 </div>
                                 <div v-else class="video-status-message warning">
@@ -169,6 +160,7 @@ import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
+import PreventSecurity from '@/dashboard/Security/security.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -189,18 +181,15 @@ const lastValidTime = ref(0);
 const isForwardAttempted = ref(false);
 const hasStartedPlaying = ref(false);
 
-// 🛠 Désactiver clic droit
-const disableRightClick = (event) => event.preventDefault();
-
 const preventSeeking = (e) => {
     if (videoPlayer.value) {
         const newTime = videoPlayer.value.currentTime;
-        
+
         // If video hasn't started playing yet, force it to start from beginning
         if (!hasStartedPlaying.value && newTime > 0) {
             videoPlayer.value.pause();
             videoPlayer.value.currentTime = 0;
-            
+
             Swal.fire({
                 title: 'Action Non Autorisée',
                 text: 'Vous devez commencer la vidéo depuis le début.',
@@ -210,15 +199,15 @@ const preventSeeking = (e) => {
             }).then(() => {
                 videoPlayer.value.play();
             });
-            
+
             return false;
         }
-        
+
         // Normal forward seeking prevention
         if (newTime > lastValidTime.value + 1) {
             videoPlayer.value.pause();
             videoPlayer.value.currentTime = lastValidTime.value;
-            
+
             Swal.fire({
                 title: 'Action Non Autorisée',
                 text: 'Vous ne pouvez pas avancer dans la vidéo.',
@@ -228,12 +217,12 @@ const preventSeeking = (e) => {
             }).then(() => {
                 videoPlayer.value.play();
             });
-            
+
             e.preventDefault();
             e.stopPropagation();
             return false;
         }
-        
+
         // Allow seeking backwards after video has started
         if (hasStartedPlaying.value && newTime <= lastValidTime.value) {
             lastValidTime.value = newTime;
@@ -244,7 +233,7 @@ const preventSeeking = (e) => {
 const getRandomPosition = () => {
     const positions = [
         { top: '41%', left: '17%' },
-      
+
     ];
     return positions[Math.floor(Math.random() * positions.length)];
 };
@@ -254,13 +243,13 @@ const fetchCourse = async () => {
     try {
         const response = await axios.get(`/api/course/${route.params.id}`);
         course.value = response.data;
-        
+
         // Set random position for watermark
         watermarkPosition.value = getRandomPosition();
-        
+
         // Update watermark text with email
         watermarkText.value = `${course.value.email || 'student@example.com'} | safetyfirsthub.com`;
-        
+
     } catch (error) {
         console.error('Error fetching course:', error);
         Swal.fire({ title: 'Erreur', text: 'Impossible de charger le cours.', icon: 'error' });
@@ -273,21 +262,21 @@ const fetchVideo = async (videoId) => {
 
         const response = await axios.get(`/api/videos/${videoId}/video-url`);
 
-        
+
         if (response.data.video_url) {
             // Force reset the video player state
             if (videoPlayer.value) {
                 videoPlayer.value.pause();
                 videoPlayer.value.currentTime = 0;
             }
-            
+
             // Reset all states
             showPreview.value = false;
             videoUrl.value = '';  // Clear first
             await new Promise(resolve => setTimeout(resolve, 50)); // Small delay
             videoUrl.value = response.data.video_url;  // Then set new URL
             isCompleted.value = false;
-            
+
             // Update current content
             currentContent.value = {
                 type: 'video',
@@ -367,10 +356,8 @@ const updateProgress = async (sectionId, videoId, event) => {
     }
 };
 
-
-
 // ✅ Marquer une vidéo comme complétée
-const markAsCompleted = async (section_id,video_id) => {
+const markAsCompleted = async (section_id, video_id) => {
     if (isForwardAttempted.value) {
         Swal.fire({
             title: 'Erreur',
@@ -385,7 +372,7 @@ const markAsCompleted = async (section_id,video_id) => {
     }
 
     try {
-  
+
         await axios.post(`/video/progress/complete`, {
             video_id: video_id,
             section_id: section_id
@@ -395,7 +382,7 @@ const markAsCompleted = async (section_id,video_id) => {
 
         // Mettre à jour la progression de la section
         const section = sections.value.find(sec => sec.videos.some(video => video.id === video_id));
-       const currentSection = sections.value.find(sec => sec.id === section_id);
+        const currentSection = sections.value.find(sec => sec.id === section_id);
         if (currentSection) {
             // Update the videos completion status
             const videoIndex = currentSection.videos.findIndex(v => v.id === video_id);
@@ -442,186 +429,11 @@ const selectContent = (content) => {
 
 };
 
-// 📌 Détection des changements de route
-watch(() => route.params.id, async (newId, oldId) => {
-    if (newId !== oldId) {
-        await fetchCourse();
-        await fetchSections();
-
-    }
-});
-
-// Add these security-related functions
-const handleVisibilityChange = async () => {
-    // Only trigger if we're in video mode and actually watching a video
-    if (document.hidden && 
-        route.path.includes('/video') && 
-        isVideoSessionActive.value && 
-        currentContent.value.type === 'video') {
-        isVideoSessionActive.value = false;
-        
-        if (videoPlayer.value) {
-            videoPlayer.value.pause();
-            videoPlayer.value.currentTime = 0;
-        }
-
-        await Swal.fire({
-            title: 'Session Ended',
-            text: 'Your video session has ended due to switching tabs.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-        });
-        
-        router.push("/dashboard/courses");
-    }
-};
-
-const handleBlur = async () => {
-    if (route.path.includes('/video') && isVideoSessionActive.value) {
-        isVideoSessionActive.value = false;
-        
-        // Stop the video if it's playing
-        if (videoPlayer.value) {
-            videoPlayer.value.pause();
-            videoPlayer.value.currentTime = 0;
-        }
-
-        await Swal.fire({
-            title: 'Window Unfocused',
-            text: 'Your video session has ended due to switching applications.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-        });
-        
-        // Force navigation and prevent further video progress
-        router.push("/dashboard/courses");
-    }
-};
-
-// Block browser navigation
-window.addEventListener('popstate', async (e) => {
-    // Only prevent navigation if we're actively watching a video
-    if (route.path.includes('/video') && 
-        currentContent.value.type === 'video' && 
-        !isCompleted.value) {
-        e.preventDefault();
-        await Swal.fire({
-            title: 'Navigation Detected',
-            text: 'Please complete the video before navigating away.',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6',
-        });
-        router.push("/dashboard/courses");
-    }
-});
-
-// 🎯 Montage du composant
-onMounted(() => {
-    fetchCourse();
-    fetchSections();
-    isVideoSessionActive.value = true;
-
-    // Add all security event listeners
-    window.addEventListener("blur", handleBlur);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    document.addEventListener("contextmenu", disableRightClick);
-
-    // Block refresh attempts (F5/Ctrl+R)
-    window.addEventListener('keydown', async (e) => {
-        if (route.path.includes('/video') && ((e.ctrlKey && e.key === 'r') || e.key === 'F5')) {
-            e.preventDefault();
-            await Swal.fire({
-                title: 'Refresh Attempted',
-                text: 'Refreshing will end your video session.',
-                icon: 'warning',
-                confirmButtonColor: '#3085d6',
-            });
-            router.push("/dashboard/courses");
-        }
-    });
-
-    // Block browser back/forward buttons
-    window.history.pushState(null, '', window.location.href);
-    window.addEventListener('popstate', async () => {
-        if (route.path.includes('/video')) {
-            window.history.pushState(null, '', window.location.href);
-            await Swal.fire({
-                title: 'Navigation Detected',
-                text: 'Please use the application navigation.',
-                icon: 'warning',
-                confirmButtonColor: '#3085d6',
-            });
-            router.push("/dashboard/courses");
-        }
-    });
-
-    // Handle page unload/close
-    window.addEventListener('beforeunload', (e) => {
-        // Only prevent unload if we're actively watching a video
-        if (route.path.includes('/video') && 
-            currentContent.value.type === 'video' && 
-            !isCompleted.value) {
-            e.preventDefault();
-            e.returnValue = '';
-        }
-    });
-
-    if (videoPlayer.value) {
-        videoPlayer.value.addEventListener('seeking', preventSeeking, true);
-        videoPlayer.value.addEventListener('seeked', preventSeeking, true);
-        videoPlayer.value.addEventListener('play', () => {
-            // If trying to start from middle, reset to beginning
-            if (!hasStartedPlaying.value && videoPlayer.value.currentTime > 0) {
-                videoPlayer.value.currentTime = 0;
-            }
-        });
-        
-        videoPlayer.value.addEventListener('timeupdate', (e) => {
-            if (!hasStartedPlaying.value && videoPlayer.value.currentTime > 0) {
-                preventSeeking(e);
-            } else if (videoPlayer.value.currentTime > lastValidTime.value + 1) {
-                preventSeeking(e);
-            }
-        });
-    }
-});
-
-// 🛑 Nettoyage
-onBeforeUnmount(() => {
-    window.removeEventListener("blur", handleBlur);
-    document.removeEventListener("visibilitychange", handleVisibilityChange);
-    document.removeEventListener("contextmenu", disableRightClick);
-    
-    // Only redirect if we're in an active video session
-    if (route.path.includes('/video') && 
-        currentContent.value.type === 'video' && 
-        !isCompleted.value) {
-        router.push("/dashboard/courses");
-    }
-
-    if (videoPlayer.value) {
-        videoPlayer.value.removeEventListener('seeking', preventSeeking, true);
-        videoPlayer.value.removeEventListener('seeked', preventSeeking, true);
-    }
-});
-
-// Add a watch for videoUrl changes
-watch(videoUrl, (newUrl) => {
-
-    if (videoPlayer.value) {
-        videoPlayer.value.load(); // Force reload the video player
-    }
-});
-
 // Add these new functions
 const canAccessVideo = (section, videoIndex) => {
     // First video is always accessible
     if (videoIndex === 0) return true;
-    
+
     // Check if previous video is completed
     return section.videos[videoIndex - 1]?.is_completed;
 };
@@ -636,7 +448,7 @@ const handleVideoClick = (section, video, index) => {
         });
         return;
     }
-    
+
     fetchVideo(video.id);
 };
 
@@ -644,7 +456,7 @@ const handleVideoClick = (section, video, index) => {
 const canAccessSection = (sectionIndex) => {
     // First section is always accessible
     if (sectionIndex === 0) return true;
-    
+
     // Check if previous section is completed
     const previousSection = sections.value[sectionIndex - 1];
     return sectionProgress.value[previousSection.id] === true;
@@ -660,7 +472,7 @@ const handleSectionClick = (section, sectionIndex) => {
         });
         return;
     }
-    
+
     toggleSection(section.id);
 };
 
@@ -668,7 +480,7 @@ const handleSectionClick = (section, sectionIndex) => {
 const handleFullscreenChange = () => {
     const watermarks = document.querySelectorAll('.watermark');
     const isFullscreen = document.fullscreenElement !== null;
-    
+
     watermarks.forEach(watermark => {
         if (isFullscreen) {
             watermark.classList.add('watermark-fullscreen');
@@ -698,6 +510,70 @@ const hidePreview = () => {
         lastValidTime.value = 0;
     }
 };
+
+const reportSecurityBreach = async (reason) => {
+    console.log('Security breach reported:', reason);
+    
+    // First redirect
+    await router.push("/dashboard/courses");
+    
+    // Then show alert
+    await Swal.fire({
+        title: 'Security Alert',
+        text: 'Your video session has ended due to security violation.',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+    });
+};
+
+// 🎯 Montage du composant
+onMounted(() => {
+    fetchCourse();
+    fetchSections();
+    
+    console.log('Setting up security...'); // This should show in console
+    
+    // Set the security callback first
+    PreventSecurity.setSecurityCallback(reportSecurityBreach);
+    
+    // Then initialize video security
+    PreventSecurity.initVideo(
+        router,
+        videoPlayer.value,
+        currentContent,
+        isCompleted
+    );
+});
+
+
+// 📌 Détection des changements de route
+watch(() => route.params.id, async (newId, oldId) => {
+    if (newId !== oldId) {
+        await fetchCourse();
+        await fetchSections();
+
+    }
+});
+
+// Add a watch for videoUrl changes
+watch(videoUrl, (newUrl) => {
+
+    if (videoPlayer.value) {
+        videoPlayer.value.load(); // Force reload the video player
+    }
+});
+
+// 🛑 Nettoyage
+onBeforeUnmount(() => {
+    PreventSecurity.cleanupVideo();
+
+    if (videoPlayer.value) {
+        videoPlayer.value.removeEventListener('seeking', preventSeeking, true);
+        videoPlayer.value.removeEventListener('seeked', preventSeeking, true);
+    }
+});
 </script>
 
 
@@ -705,22 +581,22 @@ const hidePreview = () => {
 <style scoped>
 .watermark {
     position: absolute;
-  color: #ffffff80;
-  font-size: 28px;
-  font-weight: 600;
-  z-index: 100;
-  pointer-events: none;
-  text-shadow: 1px 1px 2px rgba(0,0,0,.3);
-  background: transparent;
-  padding: 6px 12px;
-  transform: rotate(-15deg);
-  opacity: .4;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  white-space: nowrap;
-  font-family: Arial,sans-serif;
-  letter-spacing: .5px;
+    color: #ffffff80;
+    font-size: 28px;
+    font-weight: 600;
+    z-index: 100;
+    pointer-events: none;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
+    background: transparent;
+    padding: 6px 12px;
+    transform: rotate(-15deg);
+    opacity: .4;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    font-family: Arial, sans-serif;
+    letter-spacing: .5px;
 }
 
 /* Fullscreen watermark styles */
@@ -1026,7 +902,8 @@ const hidePreview = () => {
     color: #4b5563;
 }
 
-.doc-content ul, .doc-content ol {
+.doc-content ul,
+.doc-content ol {
     margin: 1rem 0;
     padding-left: 1.5rem;
 }

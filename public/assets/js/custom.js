@@ -585,3 +585,12 @@ function toggleTheme() {
 	document.getElementById('slider').checked = true;
 	}
 })();
+
+function moveHelper(e, element) {
+	const helper = element.querySelector('.course-helper');
+	const rect = element.getBoundingClientRect();
+	
+	// Position the helper near the mouse cursor
+	helper.style.left = (e.clientX - rect.left + 15) + 'px';
+	helper.style.top = (e.clientY - rect.top - 25) + 'px';
+}

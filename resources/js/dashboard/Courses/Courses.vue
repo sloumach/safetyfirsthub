@@ -1,7 +1,22 @@
 <template>
     <div class="courses-dashboard exams-section">
         <div class="text-2xl font-bold mb-4 text-center">
-            <h1>My Learning Dashboard</h1>
+            <div class="dashboard-title">
+                <h1>My Learning Dashboard</h1>
+                <div class="info-tooltip">
+                    <i class='bx bx-info-circle'></i>
+                    <div class="tooltip-content">
+                        <h3>How to Start Learning</h3>
+                        <p>1. Select your purchased course from the list below</p>
+                        <p>2. Click "Continue Learning" to start your course</p>
+                        <p>3. Complete all videos to unlock your exam</p>
+                        <div class="tooltip-note">
+                            <i class='bx bx-bulb'></i>
+                            <span>Tip: Track your progress and earn certificates upon completion!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <p class="subtitle">Your Purchased Certifications</p>
             <p class="description" style="color: #666; font-size: 14px; margin-top: 5px;">
                 <span style="display: block; margin-top: 10px;">
@@ -304,20 +319,37 @@ export default {
 }
 
 .dashboard-header {
-    margin-bottom: 2.5rem !important;
-    text-align: left !important;
+    text-align: center;
+    padding: 20px 15px;
+    margin-bottom: 30px;
 }
 
-.dashboard-header h2 {
-    font-size: 1.75rem !important;
-    font-weight: 600 !important;
-    color: #1a1f36 !important;
-    margin-bottom: 0.5rem !important;
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-.subtitle {
-    color: #4f566b !important;
-    font-size: 1rem !important;
+.dashboard-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.purchase-link {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.purchase-link a {
+    color: #2d6cdf;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.purchase-link a:hover {
+    color: #FF8A00;
 }
 
 .course-card {
@@ -499,16 +531,24 @@ export default {
     }
 
     .dashboard-header {
-        text-align: center !important;
-        margin-bottom: 1.5rem !important;
+        padding: 15px 10px;
     }
 
-    .dashboard-header h2 {
-        font-size: 1.35rem !important;
+    .dashboard-title {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+        padding-left: 17px;
     }
 
-    .subtitle {
-        font-size: 0.9rem !important;
+    .dashboard-subtitle {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .purchase-link {
+        font-size: 0.85rem;
+        padding: 0 20px;
+        line-height: 1.4;
     }
 
     .course-card {
@@ -851,6 +891,146 @@ export default {
         height: 36px;
         padding: 6px 12px;
         font-size: 14px;
+    }
+}
+
+.dashboard-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.info-tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+.info-tooltip i {
+    font-size: 20px;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.info-tooltip:hover i {
+    color: #FF8A00;
+}
+
+.tooltip-content {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.tooltip-content::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid white;
+}
+
+.info-tooltip:hover .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    top: calc(100% + 5px);
+}
+
+.tooltip-content h3 {
+    color: #FF8A00;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.tooltip-content p {
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #555;
+}
+
+.tooltip-note {
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #666;
+}
+
+.tooltip-note i {
+    color: #FF8A00;
+    font-size: 16px;
+}
+
+/* Add these responsive styles */
+h1 {
+    font-size: 2rem !important; /* 32px default */
+}
+
+.subtitle {
+    font-size: 1.25rem !important; /* 20px default */
+}
+
+.description {
+    font-size: 0.875rem !important; /* 14px default */
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5rem !important; /* 24px for mobile */
+    }
+
+    .subtitle {
+        font-size: 1rem !important; /* 16px for mobile */
+    }
+
+    .description {
+        font-size: 0.75rem !important; /* 12px for mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.25rem !important; /* 20px for smaller mobile */
+    }
+
+    .subtitle {
+        font-size: 0.875rem !important; /* 14px for smaller mobile */
+    }
+
+    .description {
+        font-size: 0.75rem !important; /* 12px for smaller mobile */
+    }
+}
+
+/* Add responsive styles for tooltip */
+@media (max-width: 768px) {
+    .tooltip-content {
+        width: 271px !important;
+        left: -246.8px !important;
+        transform: none !important; /* Remove the transform since we're using fixed left */
+    }
+
+    /* Adjust the arrow position for mobile */
+    .tooltip-content::before {
+        left: 125px !important; /* Adjust arrow position to match new alignment */
+        transform: none !important;
     }
 }
 </style>
