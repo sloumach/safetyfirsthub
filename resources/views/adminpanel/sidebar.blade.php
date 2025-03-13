@@ -50,6 +50,13 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>finances</span></a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.coupons.index') }}">
+            <i class="fas fa-tags"></i> <!-- Icône des coupons -->
+            <span>Coupons Management</span>
+        </a>
+    </li>
+
     <li class="nav-item active">
         <a class="nav-link" href="{{ route('usersManagement') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -66,7 +73,7 @@
             <span>Messages</span></a>
     </li>
 
-   
+
 
  {{--    <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
