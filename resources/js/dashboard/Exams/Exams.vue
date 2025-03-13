@@ -2,7 +2,24 @@
   <div class="exams-dashboard exams-section">
 
     <div class="exams-header">
-      <h1>Available Exams</h1>
+      <div class="header-title">
+        <h1>Available Exams</h1>
+        <div class="info-tooltip">
+          <i class='bx bx-info-circle'></i>
+          <div class="tooltip-content">
+            <h3>How Exams Work</h3>
+            <p>1. Complete all course videos before taking the exam</p>
+            <p>2. You need 70% or higher to pass the exam</p>
+            <p>3. You have 3 attempts to pass the exam</p>
+            <p>4. Each exam has a 10seconds time limit</p>
+            <p>5. Earn your certificate upon passing</p>
+            <div class="tooltip-note">
+              <i class='bx bx-bulb'></i>
+              <span>Tip: Make sure you're well prepared before starting the exam!</span>
+            </div>
+          </div>
+        </div>
+      </div>
       <p class="subtitle">Test your knowledge and earn certificates</p>
     </div>
 
@@ -231,8 +248,10 @@ export default {
 
 <style scoped>
 .exams-dashboard {
-    padding: 2rem !important;
-    min-height: 100vh !important;
+    min-height: 100vh; /* This ensures minimum height of viewport */
+    padding-bottom: 100px; /* Add padding to prevent footer overlap */
+    position: relative;
+    z-index: 1;
 }
 
 .exams-header {
@@ -304,6 +323,7 @@ export default {
 .exams-section {
     padding-top: 100px !important;
     padding-bottom: 100px !important;
+    margin-bottom: 60px; /* Add margin bottom to create space */
 }
 .exam-badge {
     position: absolute !important;
@@ -407,7 +427,9 @@ export default {
 
 @media (max-width: 768px) {
     .exams-dashboard {
-        padding: 3rem !important;
+        padding: 1rem  !important;
+        position: relative;
+        top: 72px;
     }
 
     .exams-header h2 {
@@ -512,5 +534,103 @@ export default {
     padding: 6px 12px;
     font-size: 14px;
   }
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.info-tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+.info-tooltip i {
+    font-size: 20px;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.info-tooltip:hover i {
+    color: #FF8A00;
+}
+
+.tooltip-content {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.tooltip-content::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid white;
+}
+
+.info-tooltip:hover .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    top: calc(100% + 5px);
+}
+
+.tooltip-content h3 {
+    color: #FF8A00;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.tooltip-content p {
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #555;
+}
+
+.tooltip-note {
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #666;
+}
+
+.tooltip-note i {
+    color: #FF8A00;
+    font-size: 16px;
+}
+
+/* Add responsive styles for tooltip */
+@media (max-width: 768px) {
+    .tooltip-content {
+        width: 271px !important;
+        left: -246.8px !important;
+        transform: none !important; /* Remove the transform since we're using fixed left */
+    }
+
+    /* Adjust the arrow position for mobile */
+    .tooltip-content::before {
+        left: 125px !important; /* Adjust arrow position to match new alignment */
+        transform: none !important;
+    }
 }
 </style>

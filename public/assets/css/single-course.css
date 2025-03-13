@@ -294,17 +294,20 @@
 
     .course-rating {
         position: absolute;
-        top: 23px !important;
-        right: -200px !important;
+        top: 11px !important;
+        right: -92px !important;
         background: rgba(255, 138, 0, 0.08);
-        padding: 0px 0px !important;
+        padding: 8px 188px !important;
         border-radius: 20px;
-        display: inline-flex
-    ;
+        display: flex !important; /* Changed to flex */
         align-items: center;
         gap: 8px;
         white-space: nowrap;
+        width: 100% !important; /* Added full width */
     }
+    .account-wrap {
+        padding: 0px !important;
+      }
 
     .course-content-wrapper {
         gap: 10px;

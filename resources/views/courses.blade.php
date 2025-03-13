@@ -130,12 +130,14 @@
 					<div class="row courses-grid" id="coursesGrid">
 						@foreach ($courses as $course)
 							<div class="course-item col-lg-4 col-md-6 col-sm-12">
-								<div class="single-course">
+								<div class="single-course" onmousemove="moveHelper(event, this)">
+									<div class="course-helper">Click to start learning</div>
+									
 									<a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="course-img-wrapper">
 										<img src="{{ asset('storage/' . $course->cover) }}" alt="Cover for {{ $course->category }}">
 									</a>
 
-									<div class="course-content">
+									<div class="course-content" href="{{ route('singlecourse', ['id' => $course->id]) }}">
 										<span class="price">${{ $course->price }}</span>
 										<span class="tag">{{ $course->category }}</span>
 
@@ -144,10 +146,6 @@
 										</a>
 
 										<p>{{ $course->short_description }}</p>
-
-										<!-- <ul class="lessons">
-											<li class="float"> <i class="bx bx-user ms-2"></i>{{ $course->students }} Students</li>
-										</ul> -->
 									</div>
 								</div>
 							</div>
