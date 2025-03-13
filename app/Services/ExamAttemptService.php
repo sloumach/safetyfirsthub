@@ -151,7 +151,7 @@ class ExamAttemptService
                         'examresult'     => $status,
                         'passing_score'  => $examUser->exam->passing_score,
                         'retry_allowed'  => $status === 'failed' && $examUser->attempts < 3,
-                        'attempts_left'  => 3 - $examUser->attempts,
+                        'attempts_left'  => max(0, 3 - $attemptsCount),
                         'role_changed'  => 1,
                     ];
                 }
@@ -166,7 +166,7 @@ class ExamAttemptService
             'examresult'     => $status,
             'passing_score'  => $examUser->exam->passing_score,
             'retry_allowed'  => $status === 'failed' && $examUser->attempts < 3,
-            'attempts_left'  => 3 - $examUser->attempts,
+            'attempts_left'  => max(0, 3 - $attemptsCount),
             'role_changed'  => 0,
         ];
     }

@@ -176,4 +176,5 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="{{ asset('assets/js/cart.js') }}"></script>
 </html>

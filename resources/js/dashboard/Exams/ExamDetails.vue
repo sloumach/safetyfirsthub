@@ -64,11 +64,10 @@ import { ref, onMounted, onUnmounted, onBeforeUnmount } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import Swal from "sweetalert2";
-import ExamSecurity from '@/dashboard/Security/security.js'; // Import du module
+import PreventSecurity from '@/dashboard/Security/security.js'; // Import du module
 
 const route = useRoute();
 const router = useRouter();
-
 const sessionId = ref(null);
 const currentQuestion = ref(null);
 const userAnswers = ref([]);
@@ -131,14 +130,11 @@ const fetchNextQuestion = async () => {
     try {
      
         const response = await axios.get(`/exam/${sessionId.value}/next-question`);
-
-      
-
+        console.log("fetchNextQuestion", response.data)
         if (response.data.exam_completed) {
             await handleExamCompletion(response.data);
             return;
         }
-
         currentQuestion.value = response.data.question;
         currentQuestionIndex.value++;
         startTimer(); // Start timer for new question
@@ -164,8 +160,6 @@ const fetchNextQuestion = async () => {
 
 // Add the nextQuestion function
 const nextQuestion = async () => {
- 
-
     try {
         // First submit the current answer
         await submitAnswer();
@@ -216,7 +210,6 @@ const submitAnswer = async () => {
             icon: 'warning',
             confirmButtonText: 'OK'
         });
-
         // If the question was already answered or there's another issue,
         // try to fetch the next question directly
         if (error.response?.status === 403) {
@@ -232,7 +225,7 @@ const handleExamCompletion = async (examData) => {
     clearInterval(timerInterval); // Clear timer when exam is complete
     try {
         const { score, passing_score, retry_allowed, attempts_left, role_changed } = examData;
-    
+        console.log("attempts_left", attempts_left)
         const hasPassed = score >= 70; // Consider pass if score is 70% or higher
         const result = await Swal.fire({
             title: hasPassed ? "Félicitations ! 🎉" : "Examen échoué ❌",
@@ -250,12 +243,8 @@ const handleExamCompletion = async (examData) => {
             // Redirect to certificate page            
             router.push("/dashboard/certificates");
             
-        } else {
-            // Return to exams list
-            
-                router.push("/dashboard/exams");
-            
-            
+        } else {       
+                router.push("/dashboard/exams"); 
         }
     } catch (error) {
         console.error("Error handling exam completion:", error);
@@ -264,14 +253,11 @@ const handleExamCompletion = async (examData) => {
 };
 
 const reportSecurityBreach = async (reason) => {
-   
-   
                 const response = await axios.post(`/exam/${sessionId.value}/complete`, { 
                     message: reason, 
                     timestamp: new Date().toISOString() 
                 });
              
-           
                 await Swal.fire({
                     title: response.data.message,
                     icon: 'warning',
@@ -282,8 +268,8 @@ const reportSecurityBreach = async (reason) => {
 
 // 🏁 Démarrer une session d'examen
 onMounted(async () => {
-    ExamSecurity.setSecurityCallback(reportSecurityBreach);
-    ExamSecurity.init(router);
+    PreventSecurity.setSecurityCallback(reportSecurityBreach);
+    PreventSecurity.init(router);
     try {
         const response = await axios.post(`/exam/start/${route.params.id}`);
         sessionId.value = response.data.session_id;
@@ -315,7 +301,7 @@ onUnmounted(() => {
 
 // Clean up event listeners
 onBeforeUnmount(() => {
-    ExamSecurity.cleanup();
+    PreventSecurity.cleanup();
 
     
 });

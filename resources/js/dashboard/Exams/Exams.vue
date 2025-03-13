@@ -155,7 +155,11 @@ export default {
             text: 'You need to complete all sections of this course before taking the exam.',
             icon: 'warning',
             confirmButtonColor: '#3085d6',
-            confirmButtonText: 'OK'
+            confirmButtonText: 'Go to Course'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              router.push(`/dashboard/courses/${course.id}/video`)
+            }
           })
         }
       }

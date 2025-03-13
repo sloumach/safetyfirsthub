@@ -181,6 +181,7 @@ export default {
     font-size: 2.5rem !important;
     font-weight: 800 !important;
     background: linear-gradient(45deg, #1a1f36, #FF8A00) !important;
+    background-clip: text !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
     margin-bottom: 0.5rem !important;
