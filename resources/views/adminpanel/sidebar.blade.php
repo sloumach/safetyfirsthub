@@ -57,6 +57,23 @@
         </a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.quizzes.index') }}">
+            <i class="fas fa-question-circle"></i> <!-- Icône de quiz -->
+            <span>Quiz Management</span>
+        </a>
+    </li>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="quizDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-list-ul"></i> <!-- Icône des questions -->
+            <span>Quiz Questions</span>
+        </a>
+
+    </li>
+
+
+
     <li class="nav-item active">
         <a class="nav-link" href="{{ route('usersManagement') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
