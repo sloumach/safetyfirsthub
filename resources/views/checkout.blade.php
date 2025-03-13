@@ -43,7 +43,7 @@
     </head>
     <body>
 		<!-- Start Preloader Area -->
-		
+
 		<!-- End Preloader Area -->
 
 		<!-- Start Navbar Area -->
@@ -139,13 +139,21 @@
 
                         <div class="col-lg-4 col-md-12">
                             <div class="order-details">
+                                <!-- Checkout summary -->
                                 <div class="cart-totals">
                                     <h3>Checkout summary</h3>
                                     <ul>
-                                        <li>Total <span>${{ $subtotal }}</span></li>
-                                        <li><b>Payable Total</b> <span><b>${{ $subtotal }}</b></span></li>
+                                        <li>Total: <span>${{ $subtotal }}</span></li>
+                                        <li>Discount Applied: <span>${{ session('discount', 0) }}</span></li>
+                                        <li><b>Payable Total</b>: <span><b>${{ session('payable_total', $subtotal) }}</b></span></li>
                                     </ul>
                                 </div>
+
+
+                                <!-- Champs cachés pour transmettre le discount -->
+                                <input type="hidden" name="discount" value="{{ session('discount', 0) }}">
+                                <input type="hidden" name="coupon_code" value="{{ session('coupon_code', '') }}">
+
 
                                 <!-- Champ caché pour envoyer le subtotal -->
                                 <input type="hidden" name="subtotal" value="{{ $subtotal }}">

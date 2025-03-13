@@ -50,4 +50,10 @@ class Coupon extends Model
 
         return $subtotal;
     }
+
+        public function users()
+    {
+        return $this->belongsToMany(User::class, 'coupon_user')->withPivot('times_used')->withTimestamps();
+    }
+
 }

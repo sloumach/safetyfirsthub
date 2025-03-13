@@ -118,8 +118,14 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
     });
     Route::get('/courses/{course_id}/sections', [DashboardController::class, 'getCourseSections'])
     ->whereNumber('course_id');
-});
 
+    Route::prefix('certificates')->controller(CertificateController::class)->group(function () {
+        Route::get('/generate/{exam_id}', 'generateCertificate')->whereNumber('exam_id')->name('certificates.generate');
+        Route::get('/{certificate_url}/scan', 'scanCertificate')->where('certificate_url', '.*')->name('certificates.scan');
+        Route::get('/{certificate_url}/view', 'viewCertificate')->where('certificate_url', '.*')->name('certificates.view');
+    });
+});
+    // ------------------ Routes pour l'administration ------------------
 Route::controller(AdminController::class)->group(function () {
     Route::get('adminindex', 'index')->name('adminindex');
     Route::get('adminfinanceindex', 'finance')->name('adminfinanceindex');
@@ -135,7 +141,6 @@ Route::controller(AdminController::class)->group(function () {
 });
 
 Route::middleware([])->group(function () {
-
     Route::prefix('admin/exams')->controller(AdminExamsController::class)->group(function () {
         // Gestion des examens
         Route::get('/', 'listExams')->name('admin.exams');
@@ -158,17 +163,15 @@ Route::middleware([])->group(function () {
         Route::get('/{id}/edit', 'editQuestion')->whereNumber('id')->name('admin.questions.edit');
         Route::put('/{id}/update', 'updateQuestion')->whereNumber('id')->name('admin.questions.update');
     });
-
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('coupons', CouponController::class)->except(['show']);
+        Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
+        Route::get('/coupons/{coupon}', [CouponController::class, 'show'])->name('coupons.show');
+
     });
 });
 
-Route::prefix('certificates')->controller(CertificateController::class)->group(function () {
-    Route::get('/generate/{exam_id}', 'generateCertificate')->whereNumber('exam_id')->name('certificates.generate');
-    Route::get('/{certificate_url}/scan', 'scanCertificate')->where('certificate_url', '.*')->name('certificates.scan');
-    Route::get('/{certificate_url}/view', 'viewCertificate')->where('certificate_url', '.*')->name('certificates.view');
-});
+
 
 
 
