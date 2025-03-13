@@ -125,17 +125,28 @@
 							</ul>
 
 							<!-- Coupon Section -->
-							<div class="coupon-wrapper">
-								<div class="coupon-container">
-									<button type="button" class="coupon-trigger">
-										Have a coupon?
-									</button>
-									<div class="coupon-input-group">
-										<input type="text" class="form-control" placeholder="Coupon code" name="couponcode">
-										<button type="button" class="coupon-apply-btn">Apply</button>
-									</div>
-								</div>
-							</div>
+                            <div class="coupon-wrapper">
+                                <div class="coupon-container">
+                                    <button type="button" class="coupon-trigger">
+                                        Have a coupon?
+                                    </button>
+                                    <div class="coupon-input-group">
+                                        <input type="text" class="form-control" placeholder="Coupon code" id="coupon_code">
+                                        <button type="button" class="coupon-apply-btn">Apply</button>
+                                    </div>
+                                    <div id="coupon-message" class="mt-2"></div>
+                                </div>
+                            </div>
+
+                            <!-- Affichage du total mis à jour -->
+                            <div class="cart-totals">
+                                <ul>
+                                    <li>Subtotal: <span id="subtotal">${{ $subtotal }}</span></li>
+                                    <li>Discount: <span id="discount">$0</span></li>
+                                    <li><b>Payable Total</b>: <span id="payable_total"><b>${{ $subtotal }}</b></span></li>
+                                </ul>
+                            </div>
+
 
 							<a href="{{ route('checkout') }}" class="default-btn two">
 								Buy Now
@@ -159,6 +170,31 @@
 
     </body>
     @include('layouts.scripts')
+    <script>
+        document.querySelector('.coupon-apply-btn').addEventListener('click', function() {
+            let couponCode = document.querySelector('#coupon_code').value;
+            fetch("{{ route('admin.apply.coupon') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                },
+                body: JSON.stringify({ coupon_code: couponCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let messageBox = document.querySelector('#coupon-message');
+                if (data.success) {
+                    messageBox.innerHTML = `<span class="text-success">${data.message}</span>`;
+                    document.querySelector('#discount').innerText = `$${data.discount}`;
+                    document.querySelector('#payable_total').innerHTML = `<b>$${data.new_total}</b>`;
+                } else {
+                    messageBox.innerHTML = `<span class="text-danger">${data.message}</span>`;
+                }
+            });
+        });
+        </script>
+
     <!-- Page Specific Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>

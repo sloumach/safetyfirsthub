@@ -79,12 +79,17 @@
                                         <button type="submit" class="btn btn-danger btn-sm"
                                             onclick="return confirm('Supprimer ce coupon ?')">Supprimer</button>
                                     </form>
+                                    <a href="{{ route('admin.coupons.show', $coupon) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
+
             <!-- End of Main Content -->
 
             <!-- Footer -->

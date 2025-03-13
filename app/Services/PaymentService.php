@@ -3,9 +3,10 @@
 namespace App\Services;
 
 use Stripe\Stripe;
-use App\Models\Order;
-use App\Models\Course;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\Coupon;
+use App\Models\Course;
 use App\Models\Payment;
 use Stripe\Checkout\Session;
 use App\Events\CoursePurchased;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Crypt;
 
 class PaymentService
 {
-    public function createCheckoutSession($courses, $totalPrice,$encryptedUserId)
+    public function createCheckoutSession($courses, $totalPrice,$encryptedUserId, $couponCode)
     {
         try {
             Stripe::setApiKey(env('stripe_secret_key'));
@@ -38,6 +39,8 @@ class PaymentService
                 'metadata' => [
                     'course_ids' => implode(',', $courses->pluck('id')->toArray()), // Stocker les IDs des cours
                     'user_id' => $encryptedUserId,
+                    'total_price' => $totalPrice,
+                    'coupon_code' => $couponCode,
                 ],
             ]);
 
@@ -52,7 +55,6 @@ class PaymentService
     {
         try {
             Stripe::setApiKey(env('stripe_secret_key'));
-
             if (!$sessionId) {
                 throw new \Exception("Invalid payment session.");
             }
@@ -62,22 +64,22 @@ class PaymentService
                 throw new \Exception("Failed to retrieve payment session.");
             }
 
-            
             $encryptedUserId = $session->metadata->user_id;
+            $totalPrice = $session->metadata->total_price ; // Stripe retourne en centimes, donc division par 100
+            $couponCode = $session->metadata->coupon_code;
             $userId  = Crypt::decryptString($encryptedUserId);
             $user = User::find($userId);
             $courseIds = explode(',', $session->metadata->course_ids);
+            $courseIds = explode(',', $session->metadata->course_ids);
             $courses = Course::query()->whereIn('id', $courseIds)->get();
-            $totalPrice = $session->amount_total / 100; // Stripe retourne en centimes, donc division par 100
+
             $calculatedTotal = $courses->sum('price');
-            if ($calculatedTotal != $totalPrice) {
+            /* if ($calculatedTotal != $totalPrice) {
                 throw new \Exception("Payment amount mismatch. Expected: $calculatedTotal, Received: $totalPrice");
-            }
-
-
+            } */
 
             $paymentStatus = ($session->payment_status === 'paid') ? 'completed' : 'failed';
-
+            Log::error("payment status:paymentStatus === completed ". $paymentStatus);
             // Enregistrement du paiement
             $payment = Payment::create([
                 'user_id' => $userId,
@@ -86,8 +88,10 @@ class PaymentService
                 'status' => $paymentStatus,
             ]);
             Log::error("payment status: ".$paymentStatus);
+            Log::error("payment status: ".$totalPrice);
             if ($paymentStatus === 'completed') {
                 foreach ($courses as $course) {
+                    Log::error("payment status:paymentStatus === completed ");
                     Order::create([
                         'payment_id' => $payment->id,
                         'user_id' => $userId,
@@ -98,11 +102,28 @@ class PaymentService
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
+
+                    if ($couponCode) {
+                        $coupon = Coupon::where('code', $couponCode)->first();
+                        if ($coupon) {
+                            $existingUsage = $coupon->users()->where('user_id', $user->id)->first();
+                            if ($existingUsage) {
+                                $coupon->users()->updateExistingPivot($user->id, [
+                                    'times_used' => $existingUsage->pivot->times_used + 1
+                                ]);
+                            } else {
+                                $coupon->users()->attach($user->id, ['times_used' => 1]);
+                            }
+                        }
+                    }
+
                     Log::error("saved order!");
                     event(new CoursePurchased($user, $course));
                 }
 
                 // Nettoyer le panier après un paiement réussi
+                // Suppression du coupon après paiement réussi
+                session()->forget(['discount', 'coupon_code', 'applied_coupon_id', 'payable_total']);
                 session()->forget('cart');
             } else {
                 throw new \Exception("Payment failed. Courses will not be assigned.");

@@ -76,10 +76,16 @@ class PaymentController extends Controller
                 'zipcode' => $validatedData['zip'],
             ]);
 
+                    // Vérifier si un coupon est appliqué
+
+            $discount = session('discount', 0);
+            $couponCode = session('coupon_code', null);
             // ✅ Récupérer les cours du panier
             $cartCount = session('cart', []);
             $courses = Course::whereIn('id', $cartCount)->get();
             $totalPrice = $courses->sum('price');
+            $finalPrice = max(0, $totalPrice - $discount);
+
 
             // ✅ Vérifier que le total payé correspond bien au total des cours sélectionnés
             if ($validatedData['subtotal'] != $totalPrice) {
@@ -88,7 +94,7 @@ class PaymentController extends Controller
             }
             $encryptedUserId = Crypt::encryptString($user->id);
             // ✅ Créer la session de paiement
-            $checkoutUrl = $this->paymentService->createCheckoutSession($courses, $totalPrice, $encryptedUserId);
+            $checkoutUrl = $this->paymentService->createCheckoutSession($courses, $finalPrice, $encryptedUserId, $couponCode);
             if (!$checkoutUrl) {
                 flash()->error('Failed to initiate payment.');
                 return redirect()->back();

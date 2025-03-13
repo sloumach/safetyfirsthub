@@ -2,15 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Coupon;
+use App\Models\Course;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 
 class CouponController extends Controller
 {
     /**
      * Afficher la liste des coupons
      */
+    public function show(Coupon $coupon)
+    {
+        // Charger les utilisateurs qui ont utilisé ce coupon
+        $coupon->load('users');
+
+        return view('adminpanel.coupons.show', compact('coupon'));
+    }
+
+
     public function index()
     {
         $coupons = Coupon::orderBy('created_at', 'desc')->get();
@@ -79,5 +90,44 @@ class CouponController extends Controller
         $coupon->delete();
         return redirect()->route('admin.coupons.index')->with('success', 'Coupon supprimé avec succès !');
     }
+
+    public function applyCoupon(Request $request)
+    {
+        $couponCode = $request->coupon_code;
+        $coupon = Coupon::where('code', $couponCode)->first();
+        $user = auth()->user();
+
+        if (!$coupon || !$coupon->isValid()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired coupon.'
+            ]);
+        }
+
+        // Récupération du total actuel
+        $cartCount = session('cart', []);
+        $subtotal = Course::whereIn('id', $cartCount)->sum('price');
+
+        // Calcul du discount
+        $discount = $coupon->discount_type === 'fixed' ? $coupon->discount_value : ($subtotal * ($coupon->discount_value / 100));
+        $newTotal = max(0, $subtotal - $discount);
+
+        // Stocker en session (AU LIEU DE PASSER EN INPUT CACHÉ)
+        session([
+            'discount' => $discount,
+            'coupon_code' => $coupon->code,
+            'applied_coupon_id' => $coupon->id,
+            'payable_total' => $newTotal,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Coupon applied! Discount: $" . number_format($discount, 2),
+            'discount' => number_format($discount, 2),
+            'new_total' => number_format($newTotal, 2),
+        ]);
+    }
+
+
 }
 
