@@ -109,19 +109,6 @@
 									</table>
 								</div>
 
-								<div class="coupon-cart">
-									<div class="row">
-										
-                                        @if(!$courses->isEmpty())
-                                            <!-- <div class="col-lg-4 col-sm-5 text-right">
-                                                <a href="#" class="default-btn update">
-                                                    Update cart
-                                                </a>
-                                            </div> -->
-                                        @endif
-
-									</div>
-								</div>
 							</div>
 						</form>
 					</div>
@@ -136,7 +123,7 @@
 								<li>Total <span>${{ $subtotal = $courses->sum('price'); }}</span></li>
 								<li>Payable Total <span>${{ $subtotal = $courses->sum('price'); }}</span></li>
 							</ul>
-							
+
 							<!-- Coupon Section -->
 							<div class="coupon-wrapper">
 								<div class="coupon-container">
@@ -144,12 +131,12 @@
 										Have a coupon?
 									</button>
 									<div class="coupon-input-group">
-										<input type="text" class="form-control" placeholder="Coupon code">
+										<input type="text" class="form-control" placeholder="Coupon code" name="couponcode">
 										<button type="button" class="coupon-apply-btn">Apply</button>
 									</div>
 								</div>
 							</div>
-							
+
 							<a href="{{ route('checkout') }}" class="default-btn two">
 								Buy Now
 							</a>
@@ -169,7 +156,7 @@
 			<i class='bx bx-chevrons-up'></i>
 			<i class='bx bx-chevrons-up'></i>
 		</div>
- 
+
     </body>
     @include('layouts.scripts')
     <!-- Page Specific Scripts -->
