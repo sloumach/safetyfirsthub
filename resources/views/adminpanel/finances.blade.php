@@ -123,12 +123,12 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-   
+
     <script>
         window.salesByCourse = @json($salesByCourse);
         window.revenueByCourse = @json($revenueByCourse);
     </script>
- 
+
 </body>
 
  <!-- Bootstrap core JavaScript-->

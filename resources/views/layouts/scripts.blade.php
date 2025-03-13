@@ -41,4 +41,5 @@
 <script src="{{ asset('assets/js/navbar.js') }}"></script>
 
 <!-- Footer JS -->
-<script src="{{ asset('assets/js/footer.js') }}"></script> 
+<script src="{{ asset('assets/js/footer.js') }}"></script>
+<script src="{{ asset('assets/js/cart.js') }}"></script>
