@@ -181,6 +181,8 @@
 .single-course {
     transform-style: preserve-3d;
     transition: 0.5s;
+    position: relative;
+    overflow: visible;
 }
 
 .course-item:hover .single-course {
@@ -689,4 +691,23 @@ html {
         padding-left: 15px !important;
         padding-right: 15px !important;
     }
+}
+
+/* Simple Mouse Hover Helper */
+.course-helper {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+    white-space: nowrap;
+}
+
+.single-course:hover .course-helper {
+    opacity: 1;
 } 
