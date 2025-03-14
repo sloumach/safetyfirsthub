@@ -46,10 +46,11 @@ class AdminQuizQuestionController extends Controller
 
             // 🔹 Ajouter les choix
             foreach ($request->choices as $index => $choiceText) {
+
                 SectionQuizChoice::create([
                     'question_id' => $question->id,
                     'choice_text' => $choiceText,
-                    'is_correct' => ($index + 1 == $request->correct_choice), // Vérifie si c'est la bonne réponse
+                    'is_correct' => ($index == $request->correct_choice), // Vérifie si c'est la bonne réponse
                 ]);
             }
 
