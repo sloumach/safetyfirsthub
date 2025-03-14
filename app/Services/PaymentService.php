@@ -103,22 +103,21 @@ class PaymentService
                         'updated_at' => now(),
                     ]);
 
-                    if ($couponCode) {
-                        $coupon = Coupon::where('code', $couponCode)->first();
-                        if ($coupon) {
-                            $existingUsage = $coupon->users()->where('user_id', $user->id)->first();
-                            if ($existingUsage) {
-                                $coupon->users()->updateExistingPivot($user->id, [
-                                    'times_used' => $existingUsage->pivot->times_used + 1
-                                ]);
-                            } else {
-                                $coupon->users()->attach($user->id, ['times_used' => 1]);
-                            }
-                        }
-                    }
-
                     Log::error("saved order!");
                     event(new CoursePurchased($user, $course));
+                }
+                if ($couponCode) {
+                    $coupon = Coupon::where('code', $couponCode)->first();
+                    if ($coupon) {
+                        $existingUsage = $coupon->users()->where('user_id', $user->id)->first();
+                        if ($existingUsage) {
+                            $coupon->users()->updateExistingPivot($user->id, [
+                                'times_used' => $existingUsage->pivot->times_used + 1
+                            ]);
+                        } else {
+                            $coupon->users()->attach($user->id, ['times_used' => 1]);
+                        }
+                    }
                 }
 
                 // Nettoyer le panier après un paiement réussi

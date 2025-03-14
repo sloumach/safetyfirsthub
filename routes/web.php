@@ -1,23 +1,25 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserExamsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserExamsController;
 use App\Http\Controllers\AdminExamsController;
 use App\Http\Controllers\CertificateController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ExamAttemptController;
 use App\Http\Controllers\VideoProgressController;
-use App\Http\Controllers\CouponController;
+use App\Http\Controllers\AdminQuizController;
+use App\Http\Controllers\AdminQuizQuestionController;
 
 
 
@@ -154,7 +156,7 @@ Route::middleware([])->group(function () {
         Route::prefix('{exam_id}/questions')->whereNumber('exam_id')->group(function () {
             Route::get('/', 'listQuestions')->name('admin.exams.questions');
             Route::post('/store', 'storeQuestion')->name('admin.exams.questions.store');
-            Route::get('/create', 'createQuestion')->name('admin.questions.create');
+            Route::get('/create', 'createQuestion')->name('admin.exam.questions.create');
         });
     });
     // Gestion individuelle des questions (hors contexte d'examen spécifique)
@@ -163,10 +165,18 @@ Route::middleware([])->group(function () {
         Route::get('/{id}/edit', 'editQuestion')->whereNumber('id')->name('admin.questions.edit');
         Route::put('/{id}/update', 'updateQuestion')->whereNumber('id')->name('admin.questions.update');
     });
+
+
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('coupons', CouponController::class)->except(['show']);
         Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
         Route::get('/coupons/{coupon}', [CouponController::class, 'show'])->name('coupons.show');
+
+
+        Route::resource('quizzes', AdminQuizController::class);
+        Route::get('quizzes/{quiz_id}/questions', [AdminQuizQuestionController::class, 'index'])->name('questions.index');
+        Route::resource('quizzes.questions', AdminQuizQuestionController::class)->except(['index']);
+
 
     });
 });
