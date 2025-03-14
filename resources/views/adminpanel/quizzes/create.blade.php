@@ -2,94 +2,159 @@
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Blank</title>
+    <title>Admin - Create Quiz</title>
 
     <!-- Custom fonts for this template-->
-    <link href="adminassets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="{{ asset('adminassets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('adminassets/css/sb-admin-2.min.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('adminassets/css/quiz.css') }}" rel="stylesheet">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 
 <body id="page-top">
-
-    <!-- Page Wrapper -->
     <div id="wrapper">
-
         <!-- Sidebar -->
         @include('adminpanel.sidebar')
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
-
             <!-- Main Content -->
-            <div class="content">
-                <h2>Ajouter un Quiz</h2>
-                <form action="{{ route('admin.quizzes.store') }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="section_id" class="form-label">Section</label>
-                        <select name="section_id" class="form-control">
-                            @foreach ($sections as $section)
-                                <option value="{{ $section->id }}">{{ $section->title }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="passing_score" class="form-label">Score Minimum (%)</label>
-                        <input type="number" name="passing_score" class="form-control" min="0" max="100"
-                            required>
-                    </div>
-                    <button type="submit" class="btn btn-success">Créer</button>
-                </form>
-            </div>
+            <div id="content">
+                <!-- Topbar -->
+                @include('adminpanel.navbar')
+                <!-- End of Topbar -->
 
-            </div>
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Create New Quiz</h1>
+                        <a href="{{ route('admin.quizzes.index') }}" class="btn btn-secondary btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-arrow-left"></i>
+                            </span>
+                            <span class="text">Back to List</span>
+                        </a>
+                    </div>
 
-            <!-- End of Main Content -->
+                    <!-- Create Quiz Card -->
+                    <div class="quiz-card">
+                        <div class="quiz-card-header">
+                            <h6 class="quiz-card-title">
+                                <i class="fas fa-plus-circle"></i>
+                                Quiz Information
+                            </h6>
+                        </div>
+                        <div class="quiz-container">
+                            <form action="{{ route('admin.quizzes.store') }}" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="quiz-input-group">
+                                            <label class="quiz-label">
+                                                <i class="fas fa-book-open"></i>
+                                                Section
+                                            </label>
+                                            <select name="section_id" class="quiz-select @error('section_id') quiz-input-error @enderror">
+                                                @foreach ($sections as $section)
+                                                    <option value="{{ $section->id }}">{{ $section->title }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('section_id')
+                                                <div class="quiz-error-message">
+                                                    <i class="fas fa-exclamation-circle"></i>
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quiz-input-group">
+                                            <label class="quiz-label">
+                                                <i class="fas fa-percentage"></i>
+                                                Passing Score (%)
+                                            </label>
+                                            <input type="number" name="passing_score" 
+                                                   class="quiz-input @error('passing_score') quiz-input-error @enderror"
+                                                   min="0" max="100" required>
+                                            @error('passing_score')
+                                                <div class="quiz-error-message">
+                                                    <i class="fas fa-exclamation-circle"></i>
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-right mt-4">
+                                    <a href="{{ route('admin.quizzes.index') }}" class="quiz-btn quiz-btn-secondary mr-2">
+                                        <span class="quiz-btn-icon">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                        <span class="quiz-btn-text">Cancel</span>
+                                    </a>
+                                    <button type="submit" class="quiz-btn quiz-btn-primary">
+                                        <span class="quiz-btn-icon">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span class="quiz-btn-text">Create Quiz</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Footer -->
-
-            <!-- End of Footer -->
-
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2023</span>
+                    </div>
+                </div>
+            </footer>
         </div>
-        <!-- End of Content Wrapper -->
-
     </div>
-    <!-- End of Page Wrapper -->
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 
+    <!-- Bootstrap core JavaScript-->
+    <script src="{{ asset('adminassets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('adminassets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
+    <!-- Core plugin JavaScript-->
+    <script src="{{ asset('adminassets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
+    <!-- Custom scripts for all pages-->
+    <script src="{{ asset('adminassets/js/sb-admin-2.min.js') }}"></script>
+
+    <!-- Select2 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.select2').select2({
+                theme: 'bootstrap4',
+                width: '100%'
+            });
+        });
+    </script>
 </body>
-
-<!-- Bootstrap core JavaScript-->
-<script src="adminassets/vendor/jquery/jquery.min.js"></script>
-<script src="adminassets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="adminassets/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="adminassets/js/sb-admin-2.min.js"></script>
-<!-- Chart.js Graph -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ asset('adminassets/js/finances.js') }}"></script>
-
 </html>

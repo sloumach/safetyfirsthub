@@ -298,7 +298,8 @@
 
 .coupon-container {
     position: relative !important;
-    height: 46px !important; /* Fixed height to prevent layout shift */
+    height: 46px !important;
+    margin-bottom: 30px !important;
 }
 
 /* Coupon Trigger Button */
@@ -371,6 +372,8 @@
     cursor: pointer !important;
     transition: all 0.3s ease !important;
     box-shadow: 0 2px 4px rgba(255, 138, 0, 0.1) !important;
+    position: relative !important;
+    z-index: 1 !important;
 }
 
 .coupon-apply-btn:hover {
@@ -382,6 +385,47 @@
 .coupon-apply-btn:active {
     transform: translateY(0) !important;
     box-shadow: 0 2px 4px rgba(255, 138, 0, 0.1) !important;
+}
+
+/* Tooltip for Apply Button */
+.coupon-apply-btn::before {
+    content: "Click to apply your coupon code" !important;
+    position: absolute !important;
+    top: -45px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    padding: 8px 12px !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: white !important;
+    font-size: 12px !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.3s ease !important;
+    z-index: 9999 !important;
+    pointer-events: none !important;
+}
+
+.coupon-apply-btn::after {
+    content: "" !important;
+    position: absolute !important;
+    top: -10px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    border: 6px solid transparent !important;
+    border-top-color: rgba(0, 0, 0, 0.8) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.3s ease !important;
+    z-index: 9999 !important;
+    pointer-events: none !important;
+}
+
+.coupon-apply-btn:hover::before,
+.coupon-apply-btn:hover::after {
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 /* Responsive Design */
@@ -784,4 +828,34 @@ div.table-responsive>div.dataTables_wrapper>div.row {
     flex: 0 0 auto !important;
     padding: 0 !important;
     margin: 0 !important;
+}
+
+/* Coupon Message Styling */
+#coupon-message {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -25px !important;
+    font-size: 14px !important;
+    padding: 4px 0 !important;
+}
+
+#coupon-message .text-success {
+    color: #10B981 !important;
+}
+
+#coupon-message .text-danger {
+    color: #EF4444 !important;
+}
+
+/* Update Coupon Container to accommodate message */
+.coupon-container {
+    position: relative !important;
+    height: 46px !important;
+    margin-bottom: 30px !important;
+}
+
+/* Ensure proper spacing for elements below */
+.cart-totals {
+    margin-top: 10px !important;
 }

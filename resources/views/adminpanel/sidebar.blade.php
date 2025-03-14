@@ -61,12 +61,12 @@
             <span>Quiz Management</span>
         </a>
     </li>
-    <li class="nav-item dropdown active">
+    <!-- <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="quizDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-list-ul"></i>
             <span>Quiz Questions</span>
         </a>
-    </li>
+    </li> -->
     <li class="nav-item active">
         <a class="nav-link" href="{{ route('usersManagement') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
