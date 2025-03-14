@@ -25,9 +25,8 @@
     <div class="sidebar-heading">
         Management
     </div>
-
     <!-- Nav Item - Courses Dropdown -->
-    <li class="nav-item">
+    <li class="nav-item active">
         <a class="nav-link" href="#" data-toggle="collapse" data-target="#coursesDropdown"
             aria-expanded="true" aria-controls="coursesDropdown" style="color: white;">
             <i class="fas fa-fw fa-book"></i>
@@ -48,32 +47,26 @@
     <li class="nav-item active">
         <a class="nav-link" href="{{ route('adminfinanceindex') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>finances</span></a>
+            <span>Finances</span></a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item active">
         <a class="nav-link" href="{{ route('admin.coupons.index') }}">
             <i class="fas fa-tags"></i> <!-- Icône des coupons -->
             <span>Coupons Management</span>
         </a>
     </li>
-
-    <li class="nav-item">
+    <li class="nav-item active">
         <a class="nav-link" href="{{ route('admin.quizzes.index') }}">
             <i class="fas fa-question-circle"></i> <!-- Icône de quiz -->
             <span>Quiz Management</span>
         </a>
     </li>
-
-    <li class="nav-item dropdown">
+    <!-- <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="quizDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-list-ul"></i> <!-- Icône des questions -->
+            <i class="fas fa-list-ul"></i>
             <span>Quiz Questions</span>
         </a>
-
-    </li>
-
-
-
+    </li> -->
     <li class="nav-item active">
         <a class="nav-link" href="{{ route('usersManagement') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
