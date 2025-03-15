@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Section;
 use App\Models\ExamUser;
 use App\Models\VideoProgress;
+use App\Models\UserSectionAttempt;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
 
@@ -84,20 +85,27 @@ class DashboardController extends Controller
 
     public function getCourseSections($course_id)
     {
-        $course = Course::with('sections.videos')->findOrFail($course_id);
-
+        $course = Course::with(['sections.videos', 'sections.quiz.questions.choices'])->findOrFail($course_id);
+        $userId = auth()->id();
+    
         return response()->json([
-            'sections' => $course->sections->map(function ($section) {
+            'sections' => $course->sections->map(function ($section) use ($userId) {
+                // Vérifier si l'utilisateur a réussi le quiz de cette section
+                $userAttempt = \App\Models\UserSectionAttempt::where('user_id', $userId)
+                    ->where('section_id', $section->id)
+                    ->orderByDesc('created_at') // Dernière tentative en premier
+                    ->first();
+    
                 return [
                     'id'     => $section->id,
                     'title'  => $section->title,
-                    'videos' => $section->videos->map(function ($video) use ($section) {
+                    'videos' => $section->videos->map(function ($video) use ($section, $userId) {
                         return [
                             'id'           => $video->id,
                             'title'        => $video->title,
                             'duration'     => $video->duration,
-                            'video_url'    => url("/sections/{$section->id}/video"), // 🔹 Nouvelle URL de streaming
-                            'is_completed' => VideoProgress::where('user_id', auth()->id())
+                            'video_url'    => url("/sections/{$section->id}/video"), 
+                            'is_completed' => VideoProgress::where('user_id', $userId)
                                 ->where('video_id', $video->id)
                                 ->where('is_completed', true)
                                 ->exists(),
@@ -110,11 +118,31 @@ class DashboardController extends Controller
                             'content' => $slide->content,
                         ];
                     }),
+                    'quiz' => $section->quiz ? [
+                        'id'             => $section->quiz->id,
+                        'passing_score'  => $section->quiz->passing_score,
+                        'is_attempted'   => $userAttempt !== null, // Si une tentative existe
+                        'is_passed'      => $userAttempt ? $userAttempt->score >= $section->quiz->passing_score : false, // Vérifie si l'utilisateur a réussi
+                        'score'          => $userAttempt->score ?? null, // Score obtenu
+                        'questions'      => $section->quiz->questions->map(function ($question) {
+                            return [
+                                'id'      => $question->id,
+                                'text'    => $question->question_text,
+                                'choices' => $question->choices->map(function ($choice) {
+                                    return [
+                                        'id'   => $choice->id,
+                                        'text' => $choice->choice_text,
+                                    ];
+                                }),
+                            ];
+                        }),
+                    ] : null,
                 ];
             }),
         ]);
-
     }
+    
+
 
     public function getVideoUrl($video_id)
     {

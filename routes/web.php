@@ -20,7 +20,7 @@ use App\Http\Controllers\ExamAttemptController;
 use App\Http\Controllers\VideoProgressController;
 use App\Http\Controllers\AdminQuizController;
 use App\Http\Controllers\AdminQuizQuestionController;
-
+use App\Http\Controllers\SectionQuizController;
 
 
 
@@ -102,30 +102,32 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
         Route::post('/{session_id}/complete', [ExamController::class, 'markExamAsCompleted'])->whereNumber('session_id');
         Route::get('/history', [ExamController::class, 'userExamHistory']);
     });
-
     // 📌 Routes pour la gestion des réponses et des questions
     Route::prefix('exam/{session_id}')->group(function () {
         Route::get('/next-question', [ExamAttemptController::class, 'getNextQuestion'])->whereNumber('session_id')->name('exam.next_question');
         Route::post('/submit-answer', [ExamAttemptController::class, 'submitAnswer'])->whereNumber('session_id');
     });
-
     // 📌 Routes pour la gestion de la progression vidéo
     Route::prefix('video/progress')->group(function () {
         Route::post('/update', [VideoProgressController::class, 'updateProgress']);
         Route::get('/check/{course_id}', [VideoProgressController::class, 'checkProgress'])->whereNumber('course_id');
         Route::post('/complete', [VideoProgressController::class, 'markAsCompleted']);
         Route::get('/course/{course_id}', [VideoProgressController::class, 'checkCourseCompletion'])
-    ->whereNumber('course_id');
+        ->whereNumber('course_id');
 
     });
     Route::get('/courses/{course_id}/sections', [DashboardController::class, 'getCourseSections'])
     ->whereNumber('course_id');
-
     Route::prefix('certificates')->controller(CertificateController::class)->group(function () {
         Route::get('/generate/{exam_id}', 'generateCertificate')->whereNumber('exam_id')->name('certificates.generate');
         Route::get('/{certificate_url}/scan', 'scanCertificate')->where('certificate_url', '.*')->name('certificates.scan');
         Route::get('/{certificate_url}/view', 'viewCertificate')->where('certificate_url', '.*')->name('certificates.view');
     });
+    Route::controller(SectionQuizController::class)->group(function () {
+        Route::post('/sections/{sectionId}/quiz/submit', [SectionQuizController::class, 'submitQuizAnswers']);
+    });
+    
+
 });
     // ------------------ Routes pour l'administration ------------------
 Route::controller(AdminController::class)->group(function () {
