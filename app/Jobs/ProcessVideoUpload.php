@@ -38,23 +38,28 @@ class ProcessVideoUpload implements ShouldQueue
             return;
         }
 
-        $outputFileName = uniqid() . ".mp4";
-        $outputPath = "courses/videos/" . $outputFileName;
+        $outputPath = "courses/videos/" . basename($this->videoPath);
+
 
         try {
-            // 🔹 Conversion et compression avec FFmpeg
+            /* // 🔹 Conversion et compression avec FFmpeg
             FFMpeg::fromDisk('local')
                 ->open($this->videoPath)
                 ->export()
                 ->toDisk('private') // 🔒 Stockage sécurisé
                 ->inFormat(new \FFMpeg\Format\Video\X264)
-                ->save($outputPath);
+                ->save($outputPath); */
+            // 🔹 Déplacer le fichier sans compression
+            Storage::disk('private')->put($outputPath, Storage::disk('local')->get($this->videoPath));
 
             // 🔹 Mise à jour du chemin final dans la base de données
             $video->update(['video_path' => $outputPath]);
 
             // 🔹 Suppression du fichier temporaire
             Storage::disk('local')->delete($this->videoPath);
+
+
+
         } catch (\Exception $e) {
             \Log::error("FFmpeg processing failed: " . $e->getMessage());
             // Réessaye après 30 secondes

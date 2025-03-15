@@ -202,7 +202,7 @@ class DashboardController extends Controller
         if (!Storage::disk('private')->exists($video->video_path)) {
             abort(404, 'Video file not found.');
         }
-//w9eft zok om hné el video famech fil player w fil tab jdid tet7al!!!!!
+
         // 📌 Streaming sécurisé
         return response()->stream(function () use ($video) {
             $stream = Storage::disk('private')->readStream($video->video_path);
