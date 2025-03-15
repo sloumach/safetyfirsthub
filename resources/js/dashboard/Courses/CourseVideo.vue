@@ -64,6 +64,27 @@
                                             </span>
                                         </div>
                                     </div>
+                                    <!-- Update the quiz item in sidebar -->
+                                    <div v-if="section.quiz" 
+                                         class="section-item quiz-item"
+                                         :class="{
+                                             'completed': section.quiz.is_passed,
+                                             'locked': !areAllVideosCompleted(section)
+                                         }"
+                                         @click="handleQuizClick(section)">
+                                        <div class="quiz-item-content">
+                                            <div class="quiz-info">
+                                                <i class="fas" :class="getQuizIcon(section)"></i>
+                                                Section Quiz
+                                            </div>
+                                            <div v-if="section.quiz.is_passed" class="quiz-score-badge">
+                                                Score: {{ section.quiz.score }}%
+                                            </div>
+                                            <span v-if="!areAllVideosCompleted(section)" class="lock-icon">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -125,30 +146,11 @@
                             </div>
                         </div>
 
-                        <!-- Card body only shows for video content -->
-                        <!-- <div v-if="currentContent.type === 'video'" class="card-body p-3">
-                            <h2 class="card-title mb-2">{{ course?.name || course?.title }}</h2>
-                            <p class="card-text small mb-2">{{ course?.description }}</p>
-
-                            <div class="course-meta d-flex align-items-center gap-2 mb-2">
-                                <span class="badge bg-primary">
-                                    {{ course?.duration || '2h 30min' }}
-                                </span>
-                                <span class="text-muted small">
-                                    <i class="fas fa-users"></i> {{ course?.students || 0 }} students
-                                </span>
-                            </div>
-                            <div class="course-instructor small text-muted mb-2">
-
-                                Instructor: {{ course?.instructor || 'Instructor' }}
-                            </div>
-                            <div class="course-price">
-                                <span class="badge bg-success">
-                                    {{ course?.price ? `$${course.price}` : 'Free' }}
-                                </span>
-                            </div>
+                        <!-- Quiz Content -->
+                        <div v-if="currentContent.type === 'quiz'" class="quiz-container">
+                            <SectionQuiz :quiz="currentContent.quiz" :sectionId="currentContent.section_id"
+                                @quizCompleted="handleQuizCompletion" />
                         </div>
-                        -->
                     </div>
                 </div>
             </div>
@@ -156,11 +158,12 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
 import PreventSecurity from '@/dashboard/Security/security.js';
+import SectionQuiz from './SectionQuiz.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -180,6 +183,8 @@ const isVideoSessionActive = ref(true);
 const lastValidTime = ref(0);
 const isForwardAttempted = ref(false);
 const hasStartedPlaying = ref(false);
+const currentSection = ref(null);
+const currentVideo = ref(null);
 
 const preventSeeking = (e) => {
     if (videoPlayer.value) {
@@ -368,11 +373,10 @@ const markAsCompleted = async (section_id, video_id) => {
     }
 
     if (!isVideoSessionActive.value) {
-        return; // Don't mark as completed if session is inactive
+        return;
     }
 
     try {
-
         await axios.post(`/video/progress/complete`, {
             video_id: video_id,
             section_id: section_id
@@ -380,37 +384,32 @@ const markAsCompleted = async (section_id, video_id) => {
 
         isCompleted.value = true;
 
-        // Mettre à jour la progression de la section
-        const section = sections.value.find(sec => sec.videos.some(video => video.id === video_id));
-        const currentSection = sections.value.find(sec => sec.id === section_id);
-        if (currentSection) {
-            // Update the videos completion status
-            const videoIndex = currentSection.videos.findIndex(v => v.id === video_id);
+        // Update video completion status in the section
+        if (currentSection.value) {
+            const videoIndex = currentSection.value.videos.findIndex(v => v.id === video_id);
             if (videoIndex !== -1) {
-                currentSection.videos[videoIndex].is_completed = true;
-            }
-
-            // Check if all videos in the section are completed
-            const allVideosCompleted = currentSection.videos.every(video => video.is_completed);
-            if (allVideosCompleted) {
-                sectionProgress.value[section_id] = true;
-
-                // Find the next section and make it accessible
-                const nextSectionIndex = sections.value.findIndex(sec => sec.id === section_id) + 1;
-                if (nextSectionIndex < sections.value.length) {
-                    const nextSection = sections.value[nextSectionIndex];
-                    sectionProgress.value[nextSection.id] = false; // Reset but make it accessible
-
-                    // Optionally show a notification that next section is unlocked
-                    Swal.fire({
-                        title: 'Section Déverrouillée',
-                        text: 'La section suivante est maintenant accessible !',
-                        icon: 'success',
-                        timer: 2000
-                    });
-                }
+                currentSection.value.videos[videoIndex].is_completed = true;
+                currentVideo.value = currentSection.value.videos[videoIndex];
             }
         }
+
+        // Update section progress
+        const section = sections.value.find(sec => sec.id === section_id);
+        if (section) {
+            const allVideosCompleted = section.videos.every(video => video.is_completed);
+            if (allVideosCompleted) {
+                sectionProgress.value[section_id] = true;
+            }
+        }
+
+        // Show completion message
+        await Swal.fire({
+            title: 'Vidéo Complétée',
+            text: 'Vous pouvez maintenant passer le quiz de la section.',
+            icon: 'success',
+            confirmButtonColor: '#FF8A00'
+        });
+
     } catch (error) {
         console.error("Erreur lors de la complétion de la vidéo :", error);
     }
@@ -427,6 +426,25 @@ const selectContent = (content) => {
     currentContent.value = content;
     showPreview.value = false;
 
+    // If it's a slide, ensure proper scroll into view
+    if (content.type === 'text') {
+        nextTick(() => {
+            const slideElement = document.querySelector(`[data-slide-title="${content.title}"]`);
+            if (slideElement) {
+                slideElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+
+    if (content.type === 'quiz') {
+        currentSection.value = sections.value.find(s => s.id === content.section_id);
+        // Make sure quiz data is properly set in currentContent
+        currentContent.value = {
+            type: 'quiz',
+            quiz: content.quiz,
+            section_id: content.section_id
+        };
+    }
 };
 
 // Add these new functions
@@ -449,24 +467,48 @@ const handleVideoClick = (section, video, index) => {
         return;
     }
 
+    currentSection.value = section;
+    currentVideo.value = video;
+    isCompleted.value = video.is_completed;
     fetchVideo(video.id);
 };
 
-// Add/modify these functions
+// Modify canAccessSection function
 const canAccessSection = (sectionIndex) => {
     // First section is always accessible
     if (sectionIndex === 0) return true;
 
-    // Check if previous section is completed
+    // Check if previous section exists
     const previousSection = sections.value[sectionIndex - 1];
-    return sectionProgress.value[previousSection.id] === true;
+    if (!previousSection) return false;
+
+    // Check if all videos in previous section are completed
+    const allVideosCompleted = previousSection.videos.every(video => video.is_completed);
+
+    // Check if quiz exists and has been attempted
+    const quizCompleted = previousSection.quiz ? previousSection.quiz.is_attempted : true;
+
+    // Section is accessible only if all videos AND quiz are completed
+    return allVideosCompleted && quizCompleted;
 };
 
+// Update handleSectionClick to show appropriate message
 const handleSectionClick = (section, sectionIndex) => {
     if (!canAccessSection(sectionIndex)) {
+        const previousSection = sections.value[sectionIndex - 1];
+        let message = 'You need to complete the previous section first.';
+
+        if (previousSection) {
+            if (!previousSection.videos.every(video => video.is_completed)) {
+                message = 'Please complete all videos in the previous section.';
+            } else if (previousSection.quiz && !previousSection.quiz.is_attempted) {
+                message = 'Please complete the quiz in the previous section.';
+            }
+        }
+
         Swal.fire({
-            title: 'Section verrouillée',
-            text: 'Vous devez terminer la section précédente avant de pouvoir accéder à celle-ci.',
+            title: 'Section Locked',
+            text: message,
             icon: 'warning',
             confirmButtonColor: '#3085d6',
         });
@@ -513,10 +555,10 @@ const hidePreview = () => {
 
 const reportSecurityBreach = async (reason) => {
     console.log('Security breach reported:', reason);
-    
+
     // First redirect
     await router.push("/dashboard/courses");
-    
+
     // Then show alert
     await Swal.fire({
         title: 'Security Alert',
@@ -528,6 +570,120 @@ const reportSecurityBreach = async (reason) => {
     });
 };
 
+// Add this method to handle quiz clicks
+const handleQuizClick = (section) => {
+    // Check if all videos are completed
+    if (!areAllVideosCompleted(section)) {
+        Swal.fire({
+            title: 'Quiz Locked',
+            text: 'Please complete all videos in this section before taking the quiz.',
+            icon: 'warning',
+            confirmButtonColor: '#FF8A00'
+        });
+        return;
+    }
+
+    // If quiz is already passed
+    if (section.quiz.is_passed) {
+        Swal.fire({
+            title: 'Quiz Already Completed',
+            html: `
+                <div class="quiz-success-message">
+                    <i class="fas fa-trophy" style="color: #FFD700; font-size: 48px; margin-bottom: 16px;"></i>
+                    <p>You've already passed this quiz!</p>
+                    <p>Your score: ${section.quiz.score}%</p>
+                </div>
+            `,
+            icon: 'success',
+            confirmButtonColor: '#FF8A00'
+        });
+        return;
+    }
+
+    // If all conditions met, show quiz
+    selectContent({ 
+        type: 'quiz', 
+        quiz: section.quiz,
+        section_id: section.id 
+    });
+};
+
+// Update handleQuizCompletion method
+const handleQuizCompletion = async ({ passed, score }) => {
+    if (passed) {
+        // Immediately update the current section's quiz status
+        if (currentSection.value?.quiz) {
+            currentSection.value.quiz.is_attempted = true;
+            currentSection.value.quiz.is_passed = true;
+            currentSection.value.quiz.score = score;
+        }
+
+        // Show success message
+        await Swal.fire({
+            title: 'Congratulations! 🎉',
+            text: `Your score: ${score}%. You can now proceed to the next section!`,
+            icon: 'success',
+            confirmButtonColor: '#FF8A00'
+        });
+
+        // Find and unlock next section if exists
+        const currentSectionIndex = sections.value.findIndex(
+            s => s.id === currentSection.value.id
+        );
+        if (currentSectionIndex < sections.value.length - 1) {
+            openSections.value[sections.value[currentSectionIndex + 1].id] = true;
+        }
+
+        // Force UI update by triggering reactivity
+        sections.value = [...sections.value];
+
+        // Reset current content to show updated quiz status
+        selectContent({ 
+            type: 'text', 
+            title: currentSection.value.slides[0]?.title || '', 
+            content: currentSection.value.slides[0]?.content || '' 
+        });
+    } else {
+        // Reset video completion status for the section
+        if (currentSection.value) {
+            currentSection.value.videos.forEach(video => {
+                video.is_completed = false;
+            });
+        }
+
+        // Show failure message
+        await Swal.fire({
+            title: 'Quiz Failed',
+            text: `Your score: ${score}%. Please try again.`,
+            icon: 'error',
+            confirmButtonColor: '#FF8A00'
+        });
+
+        // Reset current content to show first slide
+        if (currentSection.value?.slides?.length > 0) {
+            selectContent({ 
+                type: 'text', 
+                title: currentSection.value.slides[0].title, 
+                content: currentSection.value.slides[0].content 
+            });
+        }
+
+        // Force UI update for the section
+        sections.value = [...sections.value]; // Trigger reactivity
+    }
+};
+
+// Add these methods
+const areAllVideosCompleted = (section) => {
+    return section.videos.every(video => video.is_completed);
+};
+
+const getQuizIcon = (section) => {
+    if (section.quiz.is_passed) return 'fa-check-circle';
+    if (!areAllVideosCompleted(section)) return 'fa-lock';
+    return 'fa-question-circle';
+};
+
 // 🎯 Montage du composant
 onMounted(() => {
     fetchCourse();
@@ -535,7 +691,7 @@ onMounted(() => {
     
     console.log('Setting up security...'); // This should show in console
     
-    // Set the security callback first
+    
     PreventSecurity.setSecurityCallback(reportSecurityBreach);
     
     // Then initialize video security
@@ -572,6 +728,13 @@ onBeforeUnmount(() => {
     if (videoPlayer.value) {
         videoPlayer.value.removeEventListener('seeking', preventSeeking, true);
         videoPlayer.value.removeEventListener('seeked', preventSeeking, true);
+    }
+});
+
+// Add a watch for isCompleted
+watch(isCompleted, (newValue) => {
+    if (newValue && currentSection.value?.quiz) {
+        console.log('Video completed, quiz available:', currentSection.value.quiz);
     }
 });
 </script>
@@ -1091,5 +1254,96 @@ onBeforeUnmount(() => {
 
 .section-header.locked h5 {
     color: #999;
+}
+/* Add these styles */
+.quiz-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-item {
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.quiz-item.completed {
+    background-color: #f0f9f0 !important;
+    border: 1px solid #e0e0e0;
+}
+
+.quiz-item-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.quiz-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quiz-info i {
+    font-size: 16px;
+}
+
+.quiz-item.completed i {
+    color: #4CAF50;
+}
+
+.quiz-score-badge {
+    background-color: #4CAF50;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* When hovering over the quiz item */
+.quiz-item:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+.quiz-item.completed:hover {
+    background-color: #e8f5e8 !important;
+}
+
+.quiz-success-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.quiz-success-message p {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+/* Add these styles */
+.quiz-item.locked {
+    opacity: 0.7;
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.quiz-item.locked .quiz-info {
+    color: #666;
+}
+
+.lock-icon {
+    color: #666;
+    margin-left: 10px;
+}
+
+.quiz-item.locked:hover {
+    background-color: #f5f5f5;
 }
 </style>

@@ -32,4 +32,13 @@ class Section extends Model
     {
         return $this->hasMany(Video::class);
     }
+
+    // Relation avec les quiz
+    public function quiz()
+    {
+        return $this->hasOne(SectionQuiz::class, 'section_id')->with('questions.choices');
+    }
+    
+
+   
 }
