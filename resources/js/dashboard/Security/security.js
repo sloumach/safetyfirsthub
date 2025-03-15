@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 const PreventSecurity = (() => {
     let isExamSessionActive = true;
     let isCourseVideoSessionActive = true;
+    let isQuizSessionActive = true;
     let router = null;
     let detectDevToolsInterval = null;
     let securityCallback = null;
@@ -43,31 +44,21 @@ const PreventSecurity = (() => {
         if (isExamSessionActive) {
             triggerSecurityEvent('raison');
             isExamSessionActive = false;
-            // await Swal.fire({
-            //     title: 'Window Unfocused',
-            //     text: 'Your exam session has ended due to switching applications.',
-            //     icon: 'warning',
-            //     confirmButtonColor: '#3085d6',
-            //     allowOutsideClick: false,
-            //     allowEscapeKey: false,
-            // });
             router.push('/dashboard/exams');
+        } else if (isQuizSessionActive) {
+            triggerSecurityEvent('quiz_security_breach');
         }
     };
 
     const handleVisibilityChange = async () => {
-        if (document.hidden || isExamSessionActive) {
-            triggerSecurityEvent('raison');
-            isExamSessionActive = false;
-            // await Swal.fire({
-            //     title: 'Session Ended',
-            //     text: 'Your exam session has ended due to switching tabs.',
-            //     icon: 'warning',
-            //     confirmButtonColor: '#3085d6',
-            //     allowOutsideClick: false,
-            //     allowEscapeKey: false,
-            // });
-            router.push('/dashboard/exams');
+        if (document.hidden) {
+            if (isExamSessionActive) {
+                triggerSecurityEvent('raison');
+                isExamSessionActive = false;
+                router.push('/dashboard/exams');
+            } else if (isQuizSessionActive) {
+                triggerSecurityEvent('quiz_security_breach');
+            }
         }
     };
 
@@ -76,24 +67,30 @@ const PreventSecurity = (() => {
     };
 
     const handleKeydown = async (e) => {
-        if (!isExamSessionActive) return;
-        triggerSecurityEvent('raison');
-        const blockedKeys = ['F12', 'F5', 'r'];
-        const blockedCombos = [
-            e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)
-        ];
-
-        if (blockedKeys.includes(e.key) || blockedCombos.includes(true)) {
+        if (isExamSessionActive) {
             triggerSecurityEvent('raison');
-            e.preventDefault();
-            isExamSessionActive = false;
-            // await Swal.fire({
-            //     title: 'Unauthorized Action',
-            //     text: 'This action is not allowed during the exam.',
-            //     icon: 'warning',
-            //     confirmButtonColor: '#3085d6',
-            // });
-            router.push('/dashboard/exams');
+            const blockedKeys = ['F12', 'F5', 'r'];
+            const blockedCombos = [
+                e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)
+            ];
+
+            if (blockedKeys.includes(e.key) || blockedCombos.includes(true)) {
+                triggerSecurityEvent('raison');
+                e.preventDefault();
+                isExamSessionActive = false;
+                router.push('/dashboard/exams');
+            }
+        } else if (isQuizSessionActive) {
+            const blockedKeys = ['F12', 'F5', 'r'];
+            const blockedCombos = [
+                e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)
+            ];
+
+            if (blockedKeys.includes(e.key) || blockedCombos.includes(true)) {
+                e.preventDefault();
+                triggerSecurityEvent('quiz_security_breach');
+                router.push('/dashboard/courses');
+            }
         }
     };
 
@@ -101,13 +98,9 @@ const PreventSecurity = (() => {
         if (isExamSessionActive) {
             triggerSecurityEvent('raison');
             window.history.pushState(null, '', window.location.href);
-            // await Swal.fire({
-            //     title: 'Navigation Detected',
-            //     text: 'Please use the application navigation.',
-            //     icon: 'warning',
-            //     confirmButtonColor: '#3085d6',
-            // });
             router.push('/dashboard/exams');
+        } else if (isQuizSessionActive) {
+            triggerSecurityEvent('quiz_security_breach');
         }
     };
 
@@ -128,6 +121,9 @@ const PreventSecurity = (() => {
         if (isCourseVideoSessionActive) {
             console.log('Blur detected');
             await handleSecurityViolation(router);
+        }else if (isQuizSessionActive) {
+            triggerSecurityEvent('quiz_security_breach');
+            router.push("/dashboard/courses");
         }
     };
 
@@ -135,25 +131,36 @@ const PreventSecurity = (() => {
         if (document.hidden && isCourseVideoSessionActive) {
             console.log('Visibility change detected');
             await handleSecurityViolation(router);
+        }else if (isQuizSessionActive) {
+            triggerSecurityEvent('quiz_security_breach');
+            router.push("/dashboard/courses");
         }
     };
 
     const handleKeydownVideo = async (e, router) => {
         if (isCourseVideoSessionActive && ((e.ctrlKey && e.key === 'r') || e.key === 'F5')) {
             e.preventDefault();
-            // await Swal.fire({
-            //     title: 'Refresh Attempted',
-            //     text: 'Refreshing will end your video session.',
-            //     icon: 'warning',
-            //     confirmButtonColor: '#3085d6',
-            // });
             router.push("/dashboard/courses");
+        }else if (isQuizSessionActive) {
+            const blockedKeys = ['F12', 'F5', 'r'];
+            const blockedCombos = [
+                e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)
+            ];
+
+            if (blockedKeys.includes(e.key) || blockedCombos.includes(true)) {
+                e.preventDefault();
+                triggerSecurityEvent('quiz_security_breach');
+                router.push("/dashboard/courses");
+            }
         }
     };
 
     const handlePopstateVideo = async (router, currentContent, isCompleted) => {
         // Simply navigate back when popstate occurs
         if (isCourseVideoSessionActive) {
+            router.push("/dashboard/courses");
+        }else if (isQuizSessionActive) {
+            triggerSecurityEvent('quiz_security_breach');
             router.push("/dashboard/courses");
         }
     };
@@ -167,25 +174,26 @@ const PreventSecurity = (() => {
         }
     };
 
-    const init = (appRouter) => {
+    const init = (appRouter, isQuiz = false) => {
         router = appRouter;
+        isQuizSessionActive = isQuiz;
+        
         window.addEventListener('blur', handleBlur);
         document.addEventListener('visibilitychange', handleVisibilityChange);
         document.addEventListener('contextmenu', disableRightClick);
         window.addEventListener('keydown', handleKeydown);
         window.addEventListener('popstate', handlePopstate);
         window.history.pushState(null, '', window.location.href);
-
-        
     };
 
-    const initVideo = (appRouter, videoPlayerRef, contentRef, completedRef) => {
+    const initVideo = (appRouter, videoPlayerRef, contentRef, completedRef, isQuiz = false) => {
         router = appRouter;
         videoRef = videoPlayerRef;
         currentContent = contentRef;
-        isCourseVideoSessionActive = true;
+        isCourseVideoSessionActive = !isQuiz; // Set to false if it's a quiz
+        isQuizSessionActive = isQuiz; // Set to true if it's a quiz
 
-        console.log('Initializing video security');
+        console.log('Initializing security for:', isQuiz ? 'quiz' : 'video');
 
         window.addEventListener('blur', () => handleBlurVideo(appRouter));
         document.addEventListener('visibilitychange', () => handleVisibilityChangeVideo(appRouter));
@@ -193,9 +201,6 @@ const PreventSecurity = (() => {
         window.addEventListener('keydown', (e) => handleKeydownVideo(e, appRouter));
         window.addEventListener('popstate', () => handlePopstateVideo(appRouter, contentRef.value, completedRef.value));
         window.addEventListener('beforeunload', (e) => handleBeforeUnload(e, contentRef.value, completedRef.value));
-        
-        // Remove this line that was causing the issue
-        // window.history.pushState(null, '', window.location.href);
     };
 
     const cleanup = () => {
@@ -208,6 +213,7 @@ const PreventSecurity = (() => {
         if (isExamSessionActive) {
             router.push('/dashboard/exams');
         }
+        isQuizSessionActive = false;
     };
 
     const cleanupVideo = () => {
