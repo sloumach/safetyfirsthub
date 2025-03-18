@@ -53,7 +53,7 @@
                             
                             <div class="course-content">
                                 <h3>{{ course.name }}</h3>
-                                <p>{{ course.description }}</p>
+                                <p>{{ course.short_description }}</p>
                                 
                                 <div class="course-meta">
                                     <!-- <span>
@@ -130,6 +130,7 @@ export default {
                 
                 if (response.data && response.data.length > 0) {
                     courses.value = response.data;
+                    console.log(courses.value);
                 } else {
                     courses.value = [];
                     Swal.fire({

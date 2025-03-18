@@ -53,6 +53,7 @@ class DashboardController extends Controller
                         'students'     => $course->students ?? 0,
                         'examcheck'    => false, // ❌ Aucun examen valide trouvé
                         'exam_id'      => null,
+                        'short_description' => $course->short_description,
                     ];
                 }
                 $examcheck = ExamUser::query()
@@ -73,6 +74,7 @@ class DashboardController extends Controller
                     'students'     => $course->students ?? 0,
                     'examcheck'    => (bool) $examcheck, // ✅ Vérification basée sur le score minimum requis
                     'exam_id'      => $examcheck,
+                    'short_description' => $course->short_description,
                 ];
             });
 

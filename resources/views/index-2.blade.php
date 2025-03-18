@@ -227,27 +227,28 @@
 						<div class="{{ count($courses) > 3 ? 'courses-slider-two owl-theme owl-carousel' : 'row justify-content-center' }}">
 							@foreach ($courses as $course)
 								<div class="{{ count($courses) <= 3 ? 'col-lg-4 col-md-6' : '' }} course-item" data-category="{{ $course->category }}">
-									<div class="single-course wow fadeInUp" data-wow-delay="{{ $loop->index * 0.2 }}s">
-										<div class="course-img" style="height: 200px; position: relative; overflow: hidden;">
-											<img 
-												src="{{ asset('storage/' . $course->cover) }}" 
-												alt="{{ $course->name }}"
-												style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"
-											>
-											<div class="price">${{ round($course->price) }}</div>
-											<span class="tag">{{ $course->category }}</span>
-										</div>
-										<div class="course-content">
-											<h3 style="min-height: 48px;">{{ $course->name }}</h3>
-											<div class="course-footer">
-												<div class="course-info">
-													<i class="bx bx-video-recording"></i> {{ $course->total_videos }} Lessons
-													<i class="bx bx-user ms-2"></i> {{ $course->students }} Students
+									<a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="course-link">
+										<div class="single-course wow fadeInUp" data-wow-delay="{{ $loop->index * 0.2 }}s">
+											<div class="course-img" style="height: 200px; position: relative; overflow: hidden;">
+												<img 
+													src="{{ asset('storage/' . $course->cover) }}" 
+													alt="{{ $course->name }}"
+													style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"
+												>
+												<div class="price">${{ round($course->price) }}</div>
+												<span class="tag">{{ $course->category }}</span>
+											</div>
+											<div class="course-content">
+												<h3 style="min-height: 48px;">{{ $course->name }}</h3>
+												<p class="course-description">{{ $course->short_description }}</p>
+												<div class="course-footer">
+													<div class="course-info">
+														<i class="bx bx-video-recording"></i> {{ $course->total_videos }} Lessons
+													</div>
 												</div>
-												<a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="read-more">Learn More <i class="bx bx-right-arrow-alt"></i></a>
 											</div>
 										</div>
-									</div>
+									</a>
 								</div>
 							@endforeach
 						</div>

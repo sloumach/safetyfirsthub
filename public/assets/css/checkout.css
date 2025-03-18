@@ -189,7 +189,55 @@
     }
 }
 
-/* Responsive Design */
+/* Custom Select Styling */
+.select-wrapper {
+    position: relative !important;
+    width: 100% !important;
+}
+
+.custom-select {
+    display: block !important;
+    width: 100% !important;
+    height: 45px !important;
+    padding: 0 15px !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    color: #333333 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+.select-wrapper::after {
+    content: '\25BC' !important;
+    position: absolute !important;
+    top: 50% !important;
+    right: 15px !important;
+    transform: translateY(-50%) !important;
+    pointer-events: none !important;
+    font-size: 12px !important;
+    color: #666 !important;
+}
+
+.custom-select:focus {
+    border-color: #FF8A00 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(255, 138, 0, 0.2) !important;
+}
+
+.custom-select option {
+    padding: 12px !important;
+    background: #ffffff !important;
+    color: #333333 !important;
+    font-size: 15px !important;
+    line-height: 20px !important;
+}
+
+/* Mobile Optimization */
 @media (max-width: 768px) {
     .billing-details,
     .cart-totals {
@@ -225,5 +273,100 @@
 
     .cart-totals ul li:last-child span {
         font-size: 18px !important;
+    }
+
+    .custom-select {
+        height: 42px !important;
+        font-size: 14px !important;
+    }
+    
+    .custom-select option {
+        padding: 10px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* For Firefox */
+.custom-select {
+    -moz-padding-start: 10px !important;
+}
+
+/* For IE and Edge */
+.custom-select::-ms-expand {
+    display: none !important;
+}
+
+/* For Safari */
+@media not all and (min-resolution:.001dpcm) { 
+    @supports (-webkit-appearance:none) {
+        .custom-select {
+            padding-right: 30px !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 12px center !important;
+            background-size: 12px !important;
+        }
+    }
+}
+
+/* Select2 Custom Styling */
+.select2-container--default .select2-selection--single {
+    height: 45px !important;
+    padding: 8px 15px !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 8px !important;
+    background-color: #F9FAFB !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 45px !important;
+    right: 10px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 28px !important;
+    color: #333 !important;
+    padding-left: 0 !important;
+}
+
+.select2-dropdown {
+    border: 1px solid #E5E7EB !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #FF8A00 !important;
+    color: white !important;
+}
+
+.select2-results__option {
+    padding: 10px 15px !important;
+    font-size: 15px !important;
+}
+
+.select2-search__field {
+    padding: 8px 12px !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 4px !important;
+}
+
+.select2-search__field:focus {
+    border-color: #FF8A00 !important;
+    outline: none !important;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    .select2-container--default .select2-selection--single {
+        height: 42px !important;
+        font-size: 14px !important;
+    }
+    
+    .select2-results__option {
+        padding: 8px 12px !important;
+        font-size: 14px !important;
     }
 } 

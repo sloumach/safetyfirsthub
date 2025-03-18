@@ -308,8 +308,36 @@
     }
 
     .description-content {
-        font-size: 14px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Show only 2 lines by default */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        transition: all 0.3s ease;
         padding: 12px;
+        font-size: 14px;
+    }
+
+    .description-content.expanded {
+        -webkit-line-clamp: unset; /* Show all lines when expanded */
+    }
+
+    /* Read more button */
+    .read-more-btn {
+        display: block;
+        color: #FF8A00;
+        font-weight: 500;
+        margin-top: 10px;
+        cursor: pointer;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .read-more-btn:after {
+        content: 'Read More';
+    }
+
+    .read-more-btn.expanded:after {
+        content: 'Read Less';
     }
 }
 

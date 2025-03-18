@@ -406,6 +406,7 @@
   .single-course-area .single-course-content h3 {
     text-align: center;
     font-size: 15px;
+    padding-right: 9px;
   }
   .single-course-area .course-rating h4 {
     font-size: 15px;
@@ -542,6 +543,7 @@
   }
   .user-area-style.recover-password-area p {
     margin-bottom: 20px;
+    color: white !important;
   }
   .user-area-style.recover-password-area .default-btn {
     margin-bottom: 0 !important;
@@ -1907,7 +1909,12 @@ Continuer Custom Width Area Style*/
         font-size: 12px !important;
     }
 }
-
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .single-course .course-content .price {
+      width: 95px !important;
+      
+  }
+}
 /* Base styles for smallest screens (under 512px) */
 @media screen and (max-width: 512px) {
     body .courses-container .row.courses-grid > div[class*="col-"] {
@@ -1918,7 +1925,8 @@ Continuer Custom Width Area Style*/
     }
 
     body .courses-container .single-course {
-        margin: 0 0 20px 0 !important;
+        margin: 0 0 20px 0;
+        height: 309px !important;
     }
 
     body .courses-container .course-content {

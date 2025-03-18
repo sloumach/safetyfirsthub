@@ -252,6 +252,11 @@
 
 /* Add responsive adjustments */
 @media (max-width: 768px) {
+    /* Hide the page title area in responsive */
+    .page-title-area {
+        display: none !important;
+    }
+
     .login-container {
         margin: 1rem;
         padding: 1.5rem;
@@ -265,5 +270,13 @@
     
     .shape {
         display: none;
+    }
+}
+
+/* Additional specific mobile breakpoint */
+@media only screen and (max-width: 767px) {
+    .ptb-100 {
+        padding-top: 4px !important;
+        padding-bottom: 50px !important;
     }
 } 

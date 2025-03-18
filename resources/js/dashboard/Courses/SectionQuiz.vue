@@ -125,75 +125,41 @@ const moveToNextQuestion = async () => {
 const submitQuiz = async () => {
     clearInterval(timerInterval);
     
-    // Log all answers before submission
-    console.log('All Quiz Answers:', {
-        quizId: props.quiz.id,
-        sectionId: props.sectionId,
-        answers: props.quiz.questions.map(question => ({
-            questionId: question.id,
-            questionText: question.text,
-            selectedAnswerId: selectedAnswers.value[question.id] || null,
-            selectedAnswerText: question.choices.find(
-                c => c.id === selectedAnswers.value[question.id]
-            )?.text || 'No answer',
-            correctAnswerId: question.choices.find(c => c.is_correct === 1)?.id,
-            correctAnswerText: question.choices.find(c => c.is_correct === 1)?.text
-        }))
-    });
-
     try {
         const answers = props.quiz.questions.map(question => ({
             question_id: question.id,
             selected_choice_id: selectedAnswers.value[question.id] || null
         }));
 
-        // Log the data being sent to server
-        console.log('Submitting to server:', {
-            quiz_id: props.quiz.id,
-            answers: answers
-        });
-
         const response = await axios.post(`/sections/${props.sectionId}/quiz/submit`, {
             quiz_id: props.quiz.id,
             answers: answers
         });
 
-        // Log server response
-        console.log('Server Response:', response.data);
-
         const { score, passed } = response.data;
 
-        // Log final results
-        console.log('Quiz Results:', {
-            score,
-            passed,
-            totalQuestions: props.quiz.questions.length,
-            answeredQuestions: Object.keys(selectedAnswers.value).length
-        });
+        // First emit the result
+        emit('quizCompleted', { passed, score });
 
+        // Then show the alert
         await Swal.fire({
             title: passed ? 'Congratulations! 🎉' : 'Quiz Failed',
             text: `Your score: ${score}%. ${passed ? 'You can now proceed to the next section!' : 'Please try again.'}`,
             icon: passed ? 'success' : 'error',
-            confirmButtonColor: '#FF8A00'
+            confirmButtonColor: '#FF8A00',
+            allowOutsideClick: false,
+            allowEscapeKey: false
         });
-
-        emit('quizCompleted', { passed, score });
 
     } catch (error) {
-        // Log any errors in detail
-        console.error('Quiz Submission Error:', {
-            error: error.message,
-            response: error.response?.data,
-            status: error.response?.status,
-            quizId: props.quiz.id,
-            sectionId: props.sectionId
-        });
-
+        console.error('Quiz Submission Error:', error);
+        
         Swal.fire({
             title: 'Error',
             text: 'Failed to submit quiz. Please try again.',
-            icon: 'error'
+            icon: 'error',
+            allowOutsideClick: false,
+            allowEscapeKey: false
         });
     }
 };
@@ -258,7 +224,6 @@ onMounted(() => {
         true // isQuiz flag
     );
 
-    // Add event listeners for tab visibility and blur
     document.addEventListener('visibilitychange', () => {
         if (document.hidden && isQuizActive.value) {
             handleSecurityViolation();
@@ -491,5 +456,13 @@ onUnmounted(() => {
     .question-card {
         padding: 16px;
     }
+    .timer {
+   
+    margin-left: 16px;
+   
+}
+.passing-score{
+    margin-left: 16px;
+}
 }
 </style> 

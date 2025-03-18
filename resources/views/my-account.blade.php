@@ -81,7 +81,7 @@
 								<div class="row">
 									<div class="col-12">
 										<div class="form-group">
-											<label>Email or Phone</label>
+											<label>Email</label>
 											<input class="form-control" type="text" name="name">
 										</div>
 									</div>

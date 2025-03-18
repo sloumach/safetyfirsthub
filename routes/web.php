@@ -158,7 +158,7 @@ Route::middleware([])->group(function () {
         Route::prefix('{exam_id}/questions')->whereNumber('exam_id')->group(function () {
             Route::get('/', 'listQuestions')->name('admin.exams.questions');
             Route::post('/store', 'storeQuestion')->name('admin.exams.questions.store');
-            Route::get('/create', 'createQuestion')->name('admin.exam.questions.create');
+            Route::get('/create', 'createQuestion')->name('admin.questions.create');
         });
     });
     // Gestion individuelle des questions (hors contexte d'examen spécifique)

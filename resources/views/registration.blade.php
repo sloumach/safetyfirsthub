@@ -39,6 +39,7 @@
 		<!-- Title -->
 		<title>Safety FirstHUB</title>
 		<link rel="stylesheet" href="assets/css/register.css">
+		
     </head>
     <body>
 
@@ -77,7 +78,7 @@
 
 					<div id="notification-container"></div>
 
-					<form method="POST" action="{{ route('register') }}">
+					<form method="POST" action="{{ route('register') }}" id="registrationForm">
 						@csrf
 						<div class="register-form-group">
 							<label>First Name</label>
@@ -91,7 +92,8 @@
 
 						<div class="register-form-group">
 							<label>Email Address</label>
-							<input type="email" name="email" required>
+							<input type="email" name="email" id="email" required>
+							<span id="emailError" class="error-message"></span>
 						</div>
 
 						<div class="register-form-group">
@@ -136,5 +138,31 @@
     </body>
     @include('layouts.scripts')
     <!-- Page Specific Scripts -->
+    <script>
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            
+            if (!isValidEmail(email)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Email',
+                    text: 'Please enter a valid email address',
+                    confirmButtonColor: '#FF8A00'
+                });
+                return;
+            }
+            
+            // If email is valid, submit the form
+            this.submit();
+        });
+    </script>
     <script src="assets/js/register.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>

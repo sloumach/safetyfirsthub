@@ -25,6 +25,7 @@ class AdminExamsController extends Controller
 
     public function storeExam(Request $request)
     {
+        
         $rules = [
             'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',

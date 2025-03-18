@@ -55,3 +55,45 @@
     justify-content: center;
     gap: 15px;
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .verify-card {
+        padding: 30px 20px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .buttons-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-resend, .btn-logout {
+        width: 100%;
+        margin: 0;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .bx {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .verify-card {
+        padding: 25px 15px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 15px !important;
+    }
+
+    .bx.bx-envelope {
+        font-size: 40px !important;
+    }
+}

@@ -302,17 +302,38 @@
                                 <span class="mob">0</span>
                             </a>
                         </div>
-
+                        @guest
                         <div class="register">
                             <a href="{{ route('login') }}" class="default-btn">
                                 Login
                             </a>
-                        </div>
-                        <div class="register">
+
                             <a href="{{ route('register') }}" class="default-btn">
-                                Register
+                                register
                             </a>
                         </div>
+                        @else
+                        <div class="register">
+                            <div class="nav-profile-dropdown">
+                                <a href="#" onclick="toggleProfileMenu(event)" style="text-decoration: none;">
+                                    <div class="nav-profile-icon">
+                                        <img src="{{ asset('assets/img/man.png') }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                </a>
+                                <div class="profile-dropdown-menu" id="profileDropdown">
+                                    <a href="{{ route('profile') }}" class="dropdown-item">
+                                        <i class='bx bx-user-circle'></i>
+                                        Profile
+                                    </a>
+                                    <a href="{{ route('logout') }}" class="dropdown-item">
+                                        <i class='bx bx-log-out'></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        @endguest 
+                       
                     </div>
                 </div>
             </div>
@@ -323,16 +344,37 @@
 <script>
 function toggleProfileMenu(event) {
     event.preventDefault();
-    const dropdown = document.getElementById('profileDropdown');
-    dropdown.classList.toggle('show');
+    // Get both desktop and mobile dropdowns
+    const dropdowns = document.querySelectorAll('.profile-dropdown-menu');
+    
+    // Toggle both dropdowns
+    dropdowns.forEach(dropdown => {
+        dropdown.classList.toggle('show');
+    });
 
     // Close when clicking outside
     document.addEventListener('click', function closeDropdown(e) {
         if (!e.target.closest('.nav-profile-dropdown')) {
-            dropdown.classList.remove('show');
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
             document.removeEventListener('click', closeDropdown);
         }
     });
+
+    // Stop event propagation
+    event.stopPropagation();
 }
+
+// Add this to handle mobile menu container clicks
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileOptionInner = document.querySelector('.option-inner');
+    if (mobileOptionInner) {
+        mobileOptionInner.addEventListener('click', function(e) {
+            // Prevent clicks inside the mobile menu from closing it
+            e.stopPropagation();
+        });
+    }
+});
 </script>
 

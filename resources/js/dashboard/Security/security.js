@@ -1,8 +1,21 @@
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 
-
-
+const showSecurityAlert = async (message) => {
+    await Swal.fire({
+        title: 'Security Alert',
+        text: message,
+        icon: 'error',
+        confirmButtonColor: '#FF8A00',
+        customClass: {
+            container: 'security-alert-container',
+            popup: 'security-alert-popup',
+            title: 'security-alert-title',
+            content: 'security-alert-content',
+            confirmButton: 'security-alert-button'
+        }
+    });
+};
 
 const PreventSecurity = (() => {
     let isExamSessionActive = true;

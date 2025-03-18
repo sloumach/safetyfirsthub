@@ -43,3 +43,4 @@
 <!-- Footer JS -->
 <script src="{{ asset('assets/js/footer.js') }}"></script>
 <script src="{{ asset('assets/js/cart.js') }}"></script>
+<script src="{{ asset('adminassets/vendor/datatables/jquery.dataTables.min.js') }}"></script>

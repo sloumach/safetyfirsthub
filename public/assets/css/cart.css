@@ -430,10 +430,12 @@
 
 /* Responsive Design */
 @media (max-width: 991px) {
-    .col-lg-8,
-    .col-lg-4 {
-        width: 100% !important;
-    }
+    
+        .col-lg-8, .col-lg-4 {
+            width: 100% !important;
+            margin-bottom: 10px;
+        }
+    
     
     .cart-totals {
         margin-top: 24px !important;
@@ -509,7 +511,8 @@
 
     .cart-checkout-title {
         font-size: 18px !important;
-        padding: 14px 20px !important;
+        padding: 6px 20px !important;
+        margin-bottom: -2px !important;
     }
 
     .cart-totals {

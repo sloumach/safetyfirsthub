@@ -25,7 +25,12 @@
     position: relative;
     padding-bottom: 15px;
 }
-
+@media only screen and (max-width: 767px) {
+    .ptb-100 {
+        padding-top: 4px !important;
+        padding-bottom: 50px !important;
+    }
+}
 .registration-title h2:after {
     content: '';
     position: absolute;
@@ -234,7 +239,20 @@
 }
 
 /* Responsive Styles */
-@media (max-width: 768px) {
+@media only screen and (max-width: 767px) {
+    .ptb-100 {
+        padding-top: 66px !important;
+        padding-bottom: 50px !important;
+    }
+    .register-form-group {
+        margin-bottom: 9px;
+        position: relative;
+    }
+    /* Hide the page title area in responsive */
+    .page-title-area {
+        display: none !important;
+    }
+
     .registration-container {
         margin: 1rem;
         padding: 1.5rem;
