@@ -185,7 +185,7 @@
             .then(data => {
                 let messageBox = document.querySelector('#coupon-message');
                 if (data.success) {
-                    messageBox.innerHTML = `<span class="text-success">${data.message}</span>`;
+                    // Just update the totals
                     document.querySelector('#discount').innerText = `$${data.discount}`;
                     document.querySelector('#payable_total').innerHTML = `<b>$${data.new_total}</b>`;
                 } else {
@@ -197,7 +197,7 @@
 
     <!-- Page Specific Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="adminassets/vendor/datatables/jquery.dataTables.min.js"></script>
+    
     <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script src="{{ asset('assets/js/cart.js') }}"></script>
 </html>

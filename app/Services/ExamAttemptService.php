@@ -11,6 +11,10 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\Payment;
+use App\Models\Order;
+use App\Models\UserSectionAttempt;
+
 class ExamAttemptService
 {
     public function submitAnswer($session_id, $question_id, $choice_id = null)
@@ -106,7 +110,7 @@ class ExamAttemptService
     }
 
 
-    private function finalizeExam($examUser)
+    public function finalizeExam($examUser)
     {
         $totalQuestions = Question::where('exam_id', $examUser->exam_id)->count();
         $correctAnswers = UserAnswer::where('exam_user_id', $examUser->id)->where('is_correct', true)->count();
@@ -116,28 +120,55 @@ class ExamAttemptService
 
         HelperService::markExamAsCompleted($examUser->id, $score, $status);
         $status === 'failed' ? HelperService::resetAllVideos($examUser) : null;
-
-        // 📌 Vérifier le nombre total de tentatives échouées
-        if ($status === 'failed') {
-            $attemptsCount = ExamUser::where('user_id', $examUser->user_id)
+        $attemptsCount = ExamUser::where('user_id', $examUser->user_id)
                 ->where('exam_id', $examUser->exam_id)
                 ->where('status', 'completed')
                 ->where('score', '<', $examUser->exam->passing_score) // Vérifie si les tentatives étaient des échecs
                 ->count();
+                Log::info($attemptsCount);
 
+                Log::info("role changed");
+                    Log::info($attemptsCount);
+                    Log::info($status);
+                    Log::info($score);
+                    Log::info($correctAnswers);
+        // 📌 Vérifier le nombre total de tentatives échouées
+        if ($status === 'failed') {
+            
             if ($attemptsCount >= 3) {
                 $courseId = $examUser->exam->course_id;
                 $userId = $examUser->user_id;
                 $user = User::find($userId);
-                
+                ExamUser::where('user_id', $user->id)
+                ->whereHas('exam', function ($query) use ($courseId) {
+                    $query->where('course_id', $courseId);
+                })->delete();
+                // 📌 1. Supprimer les paiements liés à l’achat du cours
+                Payment::where('user_id', $user->id)
+                ->whereHas('orders', function ($query) use ($courseId) {
+                    $query->where('course_id', $courseId);
+                })->delete();
+
+                // 📌 2. Supprimer les commandes d’achat de ce cours
+                Order::where('user_id', $user->id)
+                ->where('course_id', $courseId)
+                ->delete();
+
+                UserSectionAttempt::where('user_id', $user->id)
+                ->whereHas('section', function ($query) use ($courseId) {
+                    $query->where('course_id', $courseId);
+                })->delete();
                 // 📌 Supprimer l'accès au cours
                 $user->courses()->detach($courseId);
+
                 $courseCount = User::find($userId)->courses()
                 ->whereNotNull('course_user.created_at') // 🔥 Ajout du préfixe 'course_user.'
                 ->count();
-                Log::info($courseCount);
+                
                 if ($courseCount == 0) {
                     Log::info("role change");
+                    
+                    
                     // 📌 Gérer les rôles de l'utilisateur
                     $studentRole = Role::where('name', 'student')->first();
                     $userRole = Role::where('name', 'user')->first();
@@ -153,6 +184,7 @@ class ExamAttemptService
                         'retry_allowed'  => $status === 'failed' && $examUser->attempts < 3,
                         'attempts_left'  => max(0, 3 - $attemptsCount),
                         'role_changed'  => 1,
+                        'message' => 'Exam failed, You have exceeded your maximum attempts and will need to repurchase the course to try again.',
                     ];
                 }
                    

@@ -40,7 +40,7 @@
 
           <div class="exam-content">
             <h3>{{ course.name }}</h3>
-            <p>{{ course.description }}</p>
+            <p>{{ course.short_description }}</p>
 
             <div class="exam-info">
               <div class="info-item">

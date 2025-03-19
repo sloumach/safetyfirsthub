@@ -127,27 +127,29 @@
 				</div>
 
 				<div class="courses-container">
-					<div class="row courses-grid" id="coursesGrid">
+					<div class="row courses-grid" >
 						@foreach ($courses as $course)
 							<div class="course-item col-lg-4 col-md-6 col-sm-12">
-								<div class="single-course" onmousemove="moveHelper(event, this)">
-									<div class="course-helper">Click to start learning</div>
-									
-									<a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="course-img-wrapper">
-										<img src="{{ asset('storage/' . $course->cover) }}" alt="Cover for {{ $course->category }}">
-									</a>
+								<a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="course-link">
+									<div class="single-course" onmousemove="moveHelper(event, this)">
+										<div class="course-helper">Click to start learning</div>
+										
+										<div class="course-img-wrapper">
+											<img src="{{ asset('storage/' . $course->cover) }}" alt="Cover for {{ $course->category }}">
+										</div>
 
-									<div class="course-content" href="{{ route('singlecourse', ['id' => $course->id]) }}">
-										<span class="price">${{ $course->price }}</span>
-										<span class="tag">{{ $course->category }}</span>
+										<div class="course-content">
+											<span class="price">${{ $course->price }}</span>
+											
+											<div class="title-container">
+												<h3>{{ $course->name }}</h3>
+												<span class="tag">{{ $course->category }}</span>
+											</div>
 
-										<a href="{{ route('singlecourse', ['id' => $course->id]) }}" style="padding-top: 2%;">
-											<h3>{{ $course->name }}</h3>
-										</a>
-
-										<p>{{ $course->short_description }}</p>
+											<p>{{ $course->short_description }}</p>
+										</div>
 									</div>
-								</div>
+								</a>
 							</div>
 						@endforeach
 					</div>

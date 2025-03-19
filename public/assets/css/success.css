@@ -1,14 +1,29 @@
+/* Reset container styles */
+body {
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+}
+
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 89vh;
-    text-align: center;
-    background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    max-width: 1542px;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: calc(100vh - 80px) !important; /* Adjust for navbar height */
+    text-align: center !important;
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%) !important;
+    padding: 20px !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    position: fixed !important; /* Keep container fixed */
+    top: 80px !important; /* Adjust based on your navbar height */
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
 }
 
 .success-message {
@@ -16,12 +31,13 @@
     padding: 40px !important;
     border-radius: 20px !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
-    max-width: 500px !important;
+    max-width: 90% !important;
     width: 100% !important;
     position: relative !important;
     z-index: 2 !important;
     backdrop-filter: blur(10px) !important;
     border: 1px solid rgba(40, 167, 69, 0.1) !important;
+    margin: 20px auto !important;
 }
 
 .checkmark {
@@ -120,23 +136,67 @@ p {
     50% { transform: translate(30px, -30px) rotate(180deg); }
 }
 
-/* Responsive */
-@media (max-width: 600px) {
+/* Mobile Responsive Fixes */
+@media (max-width: 768px) {
+    .container {
+        position: fixed !important;
+        top: 60px !important; /* Adjust for mobile navbar height */
+        padding: 10px !important;
+        height: calc(100vh - 60px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
     .success-message {
-        padding: 25px;
+        margin: auto !important;
+        max-width: 95% !important;
+        padding: 20px !important;
+    }
+
+    .checkmark {
+        font-size: 40px !important;
+        width: 60px !important;
+        height: 60px !important;
+        line-height: 50px !important;
+        border-width: 3px !important;
     }
 
     h1 {
-        font-size: 24px;
+        font-size: 20px !important;
+        margin-top: 15px !important;
     }
 
     p {
-        font-size: 14px;
+        font-size: 14px !important;
+        margin: 10px 0 !important;
+        padding: 0 10px !important;
+    }
+
+    .buttons {
+        margin-top: 20px !important;
     }
 
     .default-btn {
-        font-size: 14px;
-        padding: 10px 20px;
+        padding: 8px 16px !important;
+        font-size: 14px !important;
+        margin: 5px !important;
+        width: auto !important;
+        min-width: 120px !important;
+    }
+
+    .floating-circle,
+    .floating-check {
+        display: none !important;
+    }
+}
+
+/* Very small screens */
+@media (max-height: 500px) {
+    .container {
+        position: relative !important;
+        min-height: 100vh !important;
+        height: auto !important;
+        top: 0 !important;
     }
 }
 

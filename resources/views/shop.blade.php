@@ -76,10 +76,7 @@
 				<path fill="currentColor" d="M8 6h8v2H8zm0 4h8v2H8zm0 4h5v2H8z"/>
 			</svg>
 
-			<svg class="moving-icon icon-2" viewBox="0 0 24 24" width="24" height="24">
-				<path fill="currentColor" d="M12 3L1 9l11 6l11-6z"/>
-				<path fill="currentColor" d="M2 12l10 6l10-6"/>
-			</svg>
+		
 
 			<svg class="moving-icon icon-3" viewBox="0 0 24 24" width="24" height="24">
 				<path fill="currentColor" d="M20.71 5.63l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-3.12 3.12-1.93-1.91-1.41 1.41 1.42 1.42L3 16.25V21h4.75l8.92-8.92 1.42 1.42 1.41-1.41-1.92-1.92 3.12-3.12c.4-.4.4-1.03.01-1.42zM6.92 19H5v-1.92l8.06-8.06 1.92 1.92L6.92 19z"/>

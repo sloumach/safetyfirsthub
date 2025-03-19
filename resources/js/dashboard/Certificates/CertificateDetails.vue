@@ -297,7 +297,7 @@ export default {
     .certificate-card {
         width: 100%;
         padding: 20px;
-        margin-top: 78px;
+        margin-top: 34px;
     }
 
     .certificate-content {

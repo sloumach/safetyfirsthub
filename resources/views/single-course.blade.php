@@ -74,14 +74,14 @@
 				<div class="row">
 					<div class="col-lg-8">
 						<div class="single-course-content">
-							<div class="row">
-								<h3>
-									{{ $course->name }}
-									<div class="course-rating">
-										<h4>Categories:</h4>
-										<span>{{ $course->category }}</span>
+							<div class="course-header">
+								<div class="course-title-wrapper">
+									<h3>{{ $course->name }}</h3>
+									<div class="course-category">
+										<span class="category-label">Category:</span>
+										<span class="category-name">{{ $course->category }}</span>
 									</div>
-								</h3>
+								</div>
 							</div>
 
 							<div class="course-content-wrapper">
@@ -98,7 +98,8 @@
 										<div class="tab_content">
 											<div class="tabs_item">
 												<h4 style="color: #FF8A00 !important;">Course Description</h4>
-												<p style="color: black !important;">{{ $course->description }}</p>
+												<p style="color: black !important;" id="courseDescription">{{ $course->description }}</p>
+												<span class="read-more-btn" onclick="toggleDescription()"></span>
 											</div>
 										</div>
 									</div>
@@ -344,4 +345,13 @@
     <!-- Page Specific Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/single-course.js') }}"></script>
+    <script>
+    function toggleDescription() {
+        const description = document.getElementById('courseDescription');
+        const btn = document.querySelector('.read-more-btn');
+        
+        description.classList.toggle('expanded');
+        btn.classList.toggle('expanded');
+    }
+    </script>
 </html>

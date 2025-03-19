@@ -79,15 +79,16 @@
 						<h1 style="color:rgb(0, 0, 0) !important;">Login to your account</h1>
 					</div>
 
-					<form method="POST" action="{{ route('login') }}">
+					<form method="POST" action="{{ route('login') }}" id="loginForm">
 						@csrf
 						<div class="login-form-group">
-							<label>Email or Phone</label>
+							<label>Email</label>
 							<input class="@error('email') is-invalid @enderror" 
 								   type="text" 
 								   name="email" 
+								   id="email"
 								   value="{{ old('email') }}">
-						</div>
+						</div>	
 
 						<div class="login-form-group">
 							<label>Password</label>
@@ -125,5 +126,31 @@
 		<!-- End Go Top Area -->
 
     </body>
+	<script>
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            
+            if (!isValidEmail(email)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Email',
+                    text: 'Please enter a valid email address',
+                    confirmButtonColor: '#FF8A00'
+                });
+                return;
+            }
+            
+            // If email is valid, submit the form
+            this.submit();
+        });
+    </script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @include('layouts.scripts')
 </html>

@@ -49,9 +49,8 @@
               />
               <div class="image-overlay"></div>
             </div>
-
             <div class="certificate-details">
-              <p>{{ course.description }}</p>
+              <p>{{ course.short_description }}</p>
               <div class="achievement-info">
                 <div class="info-item">
                   <i class='bx bx-calendar-check'></i>

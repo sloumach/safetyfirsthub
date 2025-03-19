@@ -130,7 +130,7 @@ const fetchNextQuestion = async () => {
     try {
      
         const response = await axios.get(`/exam/${sessionId.value}/next-question`);
-        console.log("fetchNextQuestion", response.data)
+      
         if (response.data.exam_completed) {
             await handleExamCompletion(response.data);
             return;
@@ -225,44 +225,71 @@ const handleExamCompletion = async (examData) => {
     clearInterval(timerInterval); // Clear timer when exam is complete
     try {
         const { score, passing_score, retry_allowed, attempts_left, role_changed } = examData;
-        console.log("attempts_left", attempts_left)
-        const hasPassed = score >= 70; // Consider pass if score is 70% or higher
-        const result = await Swal.fire({
-            title: hasPassed ? "Félicitations ! 🎉" : "Examen échoué ❌",
-            text: hasPassed
-                ? `Vous avez réussi avec un score de ${score}% (Minimum requis : ${passing_score}%).`
-                : `Votre score est de ${score}%. ${retry_allowed ? `Il vous reste ${attempts_left} tentatives.` : "Vous ne pouvez plus réessayer."}`,
-            icon: hasPassed ? "success" : "error",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: hasPassed ? "Obtenir le certificat" : "OK",
-            showCancelButton: hasPassed,
-            cancelButtonText: hasPassed ? "Retour aux examens" : undefined,
-        });
+        const hasPassed = score >= passing_score; // Use passing_score from backend instead of hardcoded 70
 
-        if (hasPassed && result.isConfirmed) {
-            // Redirect to certificate page            
-            router.push("/dashboard/certificates");
-            
-        } else {       
-                router.push("/dashboard/exams"); 
+        if (hasPassed) {
+            // Show success message
+            const result = await Swal.fire({
+                title: "Félicitations ! 🎉",
+                text: `Vous avez réussi avec un score de ${score}% (Minimum requis : ${passing_score}%).`,
+                icon: "success",
+                confirmButtonColor: "#4CAF50",
+                confirmButtonText: "Obtenir le certificat",
+                showCancelButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+
+            // Redirect to certificate page on success
+            if (result.isConfirmed) {
+                window.location.href = "/dashboard/certificate"; // Use window.location.href instead of router.push
+            }
+        } else {
+            // Show failure message
+            await Swal.fire({
+                title: "Examen échoué ❌",
+                text: `Votre score est de ${score}%. ${retry_allowed ? `Il vous reste ${attempts_left} tentatives.` : "Vous ne pouvez plus réessayer."}`,
+                icon: "error",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+
+            // Redirect to exams page on failure
+            router.push("/dashboard/exams");
         }
     } catch (error) {
         console.error("Error handling exam completion:", error);
-        router.push("/dashboard/exams"); // Ensure redirect even on error
+        router.push("/dashboard/exams");
     }
 };
 
 const reportSecurityBreach = async (reason) => {
-                const response = await axios.post(`/exam/${sessionId.value}/complete`, { 
-                    message: reason, 
-                    timestamp: new Date().toISOString() 
-                });
-             
-                await Swal.fire({
-                    title: response.data.message,
-                    icon: 'warning',
-                    confirmButtonText: 'OK',
-                });
+    const response = await axios.post(`/exam/${sessionId.value}/complete`, { 
+        message: reason, 
+        timestamp: new Date().toISOString() 
+    });
+    
+    if(response.data.role_changed){
+        await Swal.fire({
+            title: response.data.message,
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            
+        }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/courses';
+                        }
+                    });
+    }else{
+        await Swal.fire({
+            title: response.data.message || 'Exam cancelled and will be marked as failed',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            
+        });
+    }
             
 };
 
@@ -440,33 +467,112 @@ body {
 }
 
 @media (max-width: 576px) {
+    .container {
+        max-width: 95% !important; /* Increase container width on mobile */
+        padding: 15px !important;
+        margin: 20px auto !important;
+    }
+
     .quiz-content {
-        flex-direction: column;
-        align-items: center;
+        flex-direction: column !important;
+        align-items: stretch !important; /* Change from center to stretch */
+        gap: 15px !important;
     }
 
     .question {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 20px;
+        width: 100% !important;
+        text-align: left !important; /* Change from center to left */
+        margin-bottom: 20px !important;
     }
 
-    .timer {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
+    .question-text {
+        font-size: 16px !important; /* Smaller font size for mobile */
+        line-height: 1.4 !important; /* Better line height for readability */
+        word-wrap: break-word !important; /* Ensure long words break */
+        overflow-wrap: break-word !important;
+        hyphens: auto !important;
+    }
+
+    .question-header {
+        align-items: flex-start !important; /* Align items to top */
+        gap: 10px !important;
+    }
+
+    .question-icon {
+        font-size: 20px !important;
+        margin-top: 3px !important; /* Align icon with text */
     }
 
     .options-container {
-        width: 100%;
+        width: 100% !important;
+        margin-top: 15px !important;
+    }
+
+    .option-item {
+        padding: 8px 0 !important;
+        margin-bottom: 8px !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: flex-start !important; /* Align items to top */
+        gap: 12px !important;
+    }
+
+    .circle {
+        min-width: 20px !important; /* Prevent circle from shrinking */
+        margin-top: 3px !important; /* Align circle with text */
+    }
+
+    .option-item span:not(.circle) {
+        flex: 1 !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        hyphens: auto !important;
+    }
+
+    .timer {
+        position: fixed !important;
+        top: 70px !important; /* Adjust based on your header height */
+        right: 10px !important;
+        z-index: 1000 !important;
     }
 
     .button-container {
-        justify-content: center;
-        width: 100%;
+        margin-top: 20px !important;
+    }
+
+    .btn-success {
+        width: 100% !important; /* Full width button on mobile */
+        padding: 12px !important;
+        font-size: 16px !important;
+    }
+}
+
+/* Add these new styles for better text wrapping */
+.question-text b {
+    display: inline-block !important;
+    width: 100% !important;
+    white-space: pre-wrap !important;
+}
+
+.option-item span {
+    white-space: pre-wrap !important;
+}
+
+/* Ensure container doesn't overflow on very small screens */
+@media (max-width: 320px) {
+    .container {
+        margin: 10px auto !important;
+        padding: 10px !important;
+    }
+
+    .question-text {
+        font-size: 14px !important;
+    }
+
+    .option-item span:not(.circle) {
+        font-size: 13px !important;
     }
 }
 

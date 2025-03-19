@@ -1620,15 +1620,57 @@ Course Area Style
 }
 
 .single-course {
-    background: #fff;
-    border-radius: 15px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    margin-bottom: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    position: relative;
-    z-index: 1;
-    cursor: pointer;
+  background: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  height: 400px;  /* Set fixed height */
+  width: 100%;    /* Set fixed width */
+  display: flex;
+  flex-direction: column;
+}
+
+.course-img {
+  height: 200px !important;  /* Fixed image height */
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.course-content {
+  padding: 20px;
+  height: 200px;  /* Fixed content height */
+  display: flex;
+  flex-direction: column;
+}
+
+.course-content h3 {
+  font-size: 18px;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+  height: 50px;  /* Fixed title height */
+  overflow: hidden;
+}
+
+.course-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  height: 63px;  /* Fixed description height (3 lines) */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  margin-bottom: 15px;
+}
+
+.course-footer {
+  margin-top: auto;
 }
 
 .single-course:hover {
@@ -1677,12 +1719,17 @@ Course Area Style
 }
 
 .course-content h3 {
-    font-size: 18px;
-    margin: 10px 0;
-    line-height: 1.4;
-    font-weight: 600;
-    color: #333;
-    transition: color 0.3s ease;
+  font-size: 18px;
+  margin: 10px 0;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #333;
+  transition: color 0.3s ease;
+  width: 100%; /* Reset width */
+  position: static; /* Reset position */
+  left: auto; /* Reset left offset */
+  top: auto; /* Reset top offset */
+  text-align: left; /* Ensure left alignment */
 }
 
 .course-content h3:hover {
@@ -3324,6 +3371,7 @@ Page Title Area Style
   background-image: url(../../assets/img/banner-img/about.jpg);
 }
 
+
 .page-title-area.bg-2 {
   background-image: url(../../assets/img/page-bg/page-bg-2.jpg);
 }
@@ -3334,6 +3382,305 @@ Page Title Area Style
 
 .page-title-area.bg-4 {
   background-image: url(../../assets/img/banner-img/certifications.jpg);
+  
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+ 
+  .page-title-area.bg-1 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }
+  .page-title-area.bg-2 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }
+  .page-title-area.bg-3 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }
+  .page-title-area.bg-4 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }
+  .page-title-area.bg-5 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }
+  .page-title-area.bg-6 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }
+  .page-title-area.bg-7 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }
+  .page-title-area.bg-8 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }
+  .page-title-area.bg-9 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  } 
+  .page-title-area.bg-10 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  } 
+  .page-title-area.bg-11 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }  
+  .page-title-area.bg-12 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }     
+  .page-title-area.bg-13 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }     
+  .page-title-area.bg-14 {
+    background-position: right -61px center;
+    background-size: 116% auto;
+    height: 307px;
+  }     
+  .page-title-area.bg-15 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;
+  }     
+  .page-title-area.bg-16 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }
+  .page-title-area.bg-17 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }
+  .page-title-area.bg-18 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }
+  .page-title-area.bg-19 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }
+  .page-title-area.bg-20 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }
+  .page-title-area.bg-21 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }
+  
+  .page-title-area.bg-22 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }         
+  .page-title-area.bg-23 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  } 
+  .page-title-area.bg-24 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }  
+  .page-title-area.bg-25 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }   
+  .page-title-area.bg-26 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }    
+  .page-title-area.bg-27 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }     
+  .page-title-area.bg-28 {
+    background-position: right -61px center;
+    background-size: 116% auto; 
+    height: 307px;  
+  }      
+   
+}
+  
+  
+  
+  
+  
+  
+      
+@media (max-width: 768px) {
+  
+  .page-title-area.bg-1 {
+    background-position: right -180px center;
+    background-size: 236% auto;
+    height: 265px;
+  } 
+  .page-title-area.bg-2 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  } 
+  .page-title-area.bg-3 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  } 
+  .page-title-area.bg-4 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }
+  .page-title-area.bg-5 {
+    background-position: right -206px center;
+    background-size: 236% auto;
+    height: 265px;
+  }  
+    .page-title-area.bg-6 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }  
+  .page-title-area.bg-7 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }  
+  .page-title-area.bg-8 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }   
+  .page-title-area.bg-9 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }    
+  .page-title-area.bg-10 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }    
+  .page-title-area.bg-11 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }       
+  .page-title-area.bg-12 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }    
+  .page-title-area.bg-13 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }     
+  .page-title-area.bg-14 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }      
+  .page-title-area.bg-15 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }        
+  .page-title-area.bg-16 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }       
+  .page-title-area.bg-17 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }        
+  .page-title-area.bg-18 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }         
+  .page-title-area.bg-19 {
+    background-position: right -100px center;
+    background-size: 236% auto;
+    height: 265px;
+  }              
+  .page-title-area.bg-20 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }                 
+  .page-title-area.bg-21 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }                  
+  .page-title-area.bg-22 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }                   
+  .page-title-area.bg-23 {
+    background-position: right -209px center;
+    background-size: 236% auto;
+    height: 265px;
+  }                    
+  .page-title-area.bg-24 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }                         
+  .page-title-area.bg-25 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }                          
+  .page-title-area.bg-26 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }                           
+  .page-title-area.bg-27 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }                            
+    .page-title-area.bg-28 {
+    background-position: right -440px center;
+    background-size: 236% auto;
+    height: 265px;
+  }                            
+  
 }
 
 .page-title-area.bg-5 {
@@ -3427,6 +3774,17 @@ Page Title Area Style
 .page-title-area .page-title-content {
   position: relative;
   margin-top: -10px;
+}
+@media (max-width: 991px) {
+  .page-title-area .page-title-content {
+    margin-top: -20px; /* Adjusted for tablets */
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title-area .page-title-content {
+    margin-top: -60px; /* Adjusted for mobile devices */
+  }
 }
 
 .page-title-area .page-title-content h2 {
@@ -4356,7 +4714,6 @@ Shop Area Two Style
 .single-shop {
   text-align: center;
   margin-bottom: 0px;
-  height: 83%;
   display: flex;
   flex-direction: column;
 }

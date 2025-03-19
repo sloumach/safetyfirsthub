@@ -100,9 +100,8 @@
 
                         <div class="product-description">
                             <h4>Description</h4>
-                            <div class="description-content">
-                                {{ $product->description }}
-                            </div>
+                            <div class="description-content" id="productDescription">{{ $product->description }}</div>
+                            <span class="read-more-btn" onclick="toggleProductDescription()"></span>
                         </div>
 
                         <ul class="product-summery">
@@ -361,4 +360,13 @@
     <!-- Page Specific Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/single-product.js') }}"></script>
+    <script>
+    function toggleProductDescription() {
+        const description = document.getElementById('productDescription');
+        const btn = document.querySelector('.read-more-btn');
+        
+        description.classList.toggle('expanded');
+        btn.classList.toggle('expanded');
+    }
+    </script>
 </html>

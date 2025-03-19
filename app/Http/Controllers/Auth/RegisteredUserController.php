@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
             $request->validate([
                 'firstname' => ['required', 'string', 'max:25'],
                 'lastname' => ['required', 'string', 'max:25'],
-                'email' => ['required', 'string', 'lowercase', 'email', 'max:50', 'unique:'.User::class],
+                'email' => ['required', 'string', 'lowercase', 'email:rfc,dns', 'max:50', 'unique:'.User::class],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
             ]);
 
@@ -61,7 +61,7 @@ class RegisteredUserController extends Controller
             ]);
 
             //SendEmailVerificationJob::dispatch($user);
-            event(new Registered($user));
+            event(new Registered($user)); // il prend minimum 5 secondes pour envoyer le mail
 
             Auth::login($user);
 

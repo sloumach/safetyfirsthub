@@ -20,10 +20,16 @@
                 <!-- Sidebar Column -->
                 <div class="col-lg-3 col-md-4">
                     <div class="course-sidebar">
-                        <h4 class="sidebar-title">Course Content</h4>
+                        <h4 class="sidebar-title d-flex justify-content-between align-items-center" 
+                            @click="toggleMobileSidebar">
+                            Course Content
+                            <i class="fas d-md-none" 
+                               :class="isSidebarOpen ? 'fa-chevron-up' : 'fa-chevron-down'">
+                            </i>
+                        </h4>
 
-                        <!-- Course Sections -->
-                        <div class="course-sections">
+                        <!-- Course Sections - Add mobile collapse -->
+                        <div class="course-sections" :class="{ 'mobile-collapsed': !isSidebarOpen }">
                             <div v-for="(section, sectionIndex) in sections" :key="section.id" class="section">
                                 <!-- Section Header -->
                                 <div class="section-header" @click="handleSectionClick(section, sectionIndex)"
@@ -53,7 +59,7 @@
                                         <div v-for="(video, index) in section.videos" :key="video.id"
                                             class="section-item" :class="{ 'locked': !canAccessVideo(section, index) }"
                                             @click="handleVideoClick(section, video, index)" style="cursor: pointer;">
-                                            <i class="fas"
+                                            <i class="fas" style="color: #FF8A00;"
                                                 :class="video.is_completed ? 'fa-check-circle' : 'fa-play-circle'"></i>
                                             {{ video.title }}
                                             <span v-if="!canAccessVideo(section, index)" class="section-status">
@@ -65,13 +71,10 @@
                                         </div>
                                     </div>
                                     <!-- Update the quiz item in sidebar -->
-                                    <div v-if="section.quiz" 
-                                         class="section-item quiz-item"
-                                         :class="{
-                                             'completed': section.quiz.is_passed,
-                                             'locked': !areAllVideosCompleted(section)
-                                         }"
-                                         @click="handleQuizClick(section)">
+                                    <div v-if="section.quiz" class="section-item quiz-item" :class="{
+                                        'completed': section.quiz.is_passed,
+                                        'locked': !areAllVideosCompleted(section)
+                                    }" @click="handleQuizClick(section)">
                                         <div class="quiz-item-content">
                                             <div class="quiz-info">
                                                 <i class="fas" :class="getQuizIcon(section)"></i>
@@ -94,39 +97,42 @@
                 <div class="col-lg-9 col-md-8">
                     <div class="card">
                         <!-- Video Content -->
-                        <!-- 🎥 Section Player -->
-                        <div v-if="currentContent.type === 'video'" class="video-content">
-                            <div class="video-container">
-                                <!-- Single watermark with random position -->
-                                <div class="watermark" :style="watermarkPosition">
-                                    {{ watermarkText }}
+                        <div v-if="currentContent.type === 'video'" class="documentation-container">
+                            <div class="doc-container">
+                                <div class="doc-header">
+                                    <h2 class="doc-title">{{ currentContent.title }}</h2>
+                                    <div class="doc-breadcrumb">
+                                        <i class="fas fa-play-circle"></i>
+                                        <span>Video</span>
+                                    </div>
                                 </div>
 
-                                <div v-if="showPreview" class="video-overlay" @click="playVideo">
-                                    <img v-if="previewImage" :src="previewImage" alt="Preview" class="preview-image" />
-                                    <button class="play-button">▶</button>
-                                </div>
+                                <div class="doc-content video-wrapper">
+                                    <div class="video-container">
+                                        <!-- Simple watermark -->
+                                        <div class="video-watermark">{{ userEmail }} | safetyfirsthub.com</div>
+                                        
+                                        <video 
+                                            ref="videoPlayer" 
+                                            class="video-player" 
+                                            controls 
+                                            @timeupdate="updateProgress(currentContent.section_id, currentContent.video_id, $event)"
+                                            @ended="markAsCompleted(currentContent.section_id, currentContent.video_id)"
+                                            @seeking="preventSeeking">
+                                            <source :src="videoUrl" type="video/mp4" />
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
 
-                                <video ref="videoPlayer" class="w-100" controls v-show="!showPreview"
-                                    @play="hidePreview"
-                                    @timeupdate="updateProgress(currentContent.section_id, currentContent.video_id, $event)"
-                                    @ended="markAsCompleted(currentContent.section_id, currentContent.video_id)"
-                                    @seeking="preventSeeking" @webkitfullscreenchange="handleFullscreenChange"
-                                    @mozfullscreenchange="handleFullscreenChange"
-                                    @fullscreenchange="handleFullscreenChange">
-                                    <source :src="videoUrl" type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-
-                            <div class="video-messages">
-                                <div v-if="isCompleted" class="video-status-message success">
-
-                                    <span>Vous avez terminé cette vidéo ! Vous pouvez maintenant passer l'examen.</span>
-                                </div>
-                                <div v-else class="video-status-message warning">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Vous devez regarder toute la vidéo avant de passer l'examen.</span>
+                                    <div class="video-messages">
+                                        <div v-if="isCompleted" class="video-status-message success">
+                                            <span>Vous avez terminé cette vidéo ! Vous pouvez maintenant passer l'examen.</span>
+                                        </div>
+                                        <div v-else class="video-status-message warning">
+                                            <i class="fas fa-clock"></i>
+                                            <span>You must watch the entire video before taking the exam.</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -158,12 +164,13 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
 import PreventSecurity from '@/dashboard/Security/security.js';
 import SectionQuiz from './SectionQuiz.vue';
+import throttle from 'lodash/throttle';
 
 const route = useRoute();
 const router = useRouter();
@@ -177,14 +184,14 @@ const openSections = ref({}); // Gère l'ouverture des sections
 const sectionProgress = ref({}); // Gère la progression par section.
 const videoUrl = ref("");
 const lastTime = ref(0);
-const watermarkText = ref('safetyfirsthub.com');
-const watermarkPosition = ref({});
+const userEmail = ref('achraftawes@gmail.com'); // Replace with actual user email from your auth system
 const isVideoSessionActive = ref(true);
 const lastValidTime = ref(0);
 const isForwardAttempted = ref(false);
 const hasStartedPlaying = ref(false);
 const currentSection = ref(null);
 const currentVideo = ref(null);
+const isSidebarOpen = ref(true);
 
 const preventSeeking = (e) => {
     if (videoPlayer.value) {
@@ -243,17 +250,11 @@ const getRandomPosition = () => {
     return positions[Math.floor(Math.random() * positions.length)];
 };
 
-// 🔄 Récupérer les détails du cours
+        // 🔄 Récupérer les détails du cours
 const fetchCourse = async () => {
     try {
         const response = await axios.get(`/api/course/${route.params.id}`);
         course.value = response.data;
-
-        // Set random position for watermark
-        watermarkPosition.value = getRandomPosition();
-
-        // Update watermark text with email
-        watermarkText.value = `${course.value.email || 'student@example.com'} | safetyfirsthub.com`;
 
     } catch (error) {
         console.error('Error fetching course:', error);
@@ -261,13 +262,11 @@ const fetchCourse = async () => {
         router.push("/dashboard/courses");
     }
 };
+
+
 const fetchVideo = async (videoId) => {
     try {
-
-
         const response = await axios.get(`/api/videos/${videoId}/video-url`);
-
-
         if (response.data.video_url) {
             // Force reset the video player state
             if (videoPlayer.value) {
@@ -308,7 +307,6 @@ const fetchSections = async () => {
     try {
         const response = await axios.get(`/courses/${route.params.id}/sections`);
         sections.value = response.data.sections;
-
         // Initialize sections state
         sections.value.forEach((section, index) => {
             openSections.value[section.id] = index === 0; // Open first section
@@ -333,18 +331,14 @@ const fetchSections = async () => {
 };
 
 // 📌 Suivi de la progression
-const updateProgress = async (sectionId, videoId, event) => {
+const updateProgress = throttle(async (sectionId, videoId, event) => {
     if (!videoId) return;
-
     const currentTime = Math.floor(event.target.currentTime);
     const totalDuration = Math.floor(event.target.duration);
 
-    // Update lastValidTime only during normal playback
     if (currentTime <= lastValidTime.value + 1) {
         lastValidTime.value = currentTime;
     }
-
-
 
     try {
         await axios.post(`/video/progress/update`, {
@@ -354,12 +348,10 @@ const updateProgress = async (sectionId, videoId, event) => {
             total_duration: totalDuration,
             is_completed: false
         });
-
-
     } catch (error) {
         console.error("🚨 Erreur lors de la mise à jour de la progression :", error);
     }
-};
+}, 10000); // Mise à jour toutes les 5 secondes
 
 // ✅ Marquer une vidéo comme complétée
 const markAsCompleted = async (section_id, video_id) => {
@@ -554,8 +546,6 @@ const hidePreview = () => {
 };
 
 const reportSecurityBreach = async (reason) => {
-    console.log('Security breach reported:', reason);
-
     // First redirect
     await router.push("/dashboard/courses");
 
@@ -601,10 +591,10 @@ const handleQuizClick = (section) => {
     }
 
     // If all conditions met, show quiz
-    selectContent({ 
-        type: 'quiz', 
+    selectContent({
+        type: 'quiz',
         quiz: section.quiz,
-        section_id: section.id 
+        section_id: section.id
     });
 };
 
@@ -618,31 +608,49 @@ const handleQuizCompletion = async ({ passed, score }) => {
             currentSection.value.quiz.score = score;
         }
 
-        // Show success message
-        await Swal.fire({
-            title: 'Congratulations! 🎉',
-            text: `Your score: ${score}%. You can now proceed to the next section!`,
-            icon: 'success',
-            confirmButtonColor: '#FF8A00'
-        });
+        // Check if this is the last section
+        const isLastSection = currentSection.value.id === sections.value[sections.value.length - 1].id;
 
-        // Find and unlock next section if exists
-        const currentSectionIndex = sections.value.findIndex(
-            s => s.id === currentSection.value.id
-        );
-        if (currentSectionIndex < sections.value.length - 1) {
-            openSections.value[sections.value[currentSectionIndex + 1].id] = true;
+        if (isLastSection) {
+            // Show success message and redirect
+            await Swal.fire({
+                title: 'Congratulations! 🎉',
+                text: 'You have completed all sections! You will now be redirected to the final exam.',
+                icon: 'success',
+                confirmButtonColor: '#FF8A00'
+            });
+            
+            // Redirect to exam page
+            router.push('/dashboard/exams');
+        } else {
+            // Show regular success message for non-final sections
+            await Swal.fire({
+                title: 'Congratulations! 🎉',
+                text: `Your score: ${score}%. You can now proceed to the next section!`,
+                icon: 'success',
+                confirmButtonColor: '#FF8A00'
+            });
+
+            // Find and unlock next section if exists
+            const currentSectionIndex = sections.value.findIndex(
+                s => s.id === currentSection.value.id
+            );
+            if (currentSectionIndex < sections.value.length - 1) {
+                openSections.value[sections.value[currentSectionIndex + 1].id] = true;
+            }
         }
 
         // Force UI update by triggering reactivity
         sections.value = [...sections.value];
 
         // Reset current content to show updated quiz status
-        selectContent({ 
-            type: 'text', 
-            title: currentSection.value.slides[0]?.title || '', 
-            content: currentSection.value.slides[0]?.content || '' 
-        });
+        if (!isLastSection) {
+            selectContent({
+                type: 'text',
+                title: currentSection.value.slides[0]?.title || '',
+                content: currentSection.value.slides[0]?.content || ''
+            });
+        }
     } else {
         // Reset video completion status for the section
         if (currentSection.value) {
@@ -651,25 +659,17 @@ const handleQuizCompletion = async ({ passed, score }) => {
             });
         }
 
-        // Show failure message
-        await Swal.fire({
-            title: 'Quiz Failed',
-            text: `Your score: ${score}%. Please try again.`,
-            icon: 'error',
-            confirmButtonColor: '#FF8A00'
-        });
-
-        // Reset current content to show first slide
+        // Reset content without showing alert
         if (currentSection.value?.slides?.length > 0) {
-            selectContent({ 
-                type: 'text', 
-                title: currentSection.value.slides[0].title, 
-                content: currentSection.value.slides[0].content 
+            selectContent({
+                type: 'text',
+                title: currentSection.value.slides[0].title,
+                content: currentSection.value.slides[0].content
             });
         }
 
-        // Force UI update for the section
-        sections.value = [...sections.value]; // Trigger reactivity
+        // Force UI update
+        sections.value = [...sections.value];
     }
 };
 
@@ -688,19 +688,19 @@ const getQuizIcon = (section) => {
 onMounted(() => {
     fetchCourse();
     fetchSections();
-    
-    console.log('Setting up security...'); // This should show in console
-    
-    
+
     PreventSecurity.setSecurityCallback(reportSecurityBreach);
-    
-    // Then initialize video security
+
     PreventSecurity.initVideo(
         router,
         videoPlayer.value,
         currentContent,
         isCompleted
     );
+
+    // Check localStorage for saved state, default to true if not set
+    const savedState = localStorage.getItem('courseSidebarOpen');
+    isSidebarOpen.value = savedState === null ? true : savedState === 'true';
 });
 
 
@@ -734,58 +734,61 @@ onBeforeUnmount(() => {
 // Add a watch for isCompleted
 watch(isCompleted, (newValue) => {
     if (newValue && currentSection.value?.quiz) {
-        console.log('Video completed, quiz available:', currentSection.value.quiz);
+     
     }
 });
+
+const toggleMobileSidebar = () => {
+    if (window.innerWidth <= 768) {
+        isSidebarOpen.value = !isSidebarOpen.value;
+        // Save state to localStorage
+        localStorage.setItem('courseSidebarOpen', isSidebarOpen.value);
+    }
+};
 </script>
 
 
 
 <style scoped>
-.watermark {
-    position: absolute;
-    color: #ffffff80;
-    font-size: 28px;
-    font-weight: 600;
-    z-index: 100;
-    pointer-events: none;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
-    background: transparent;
-    padding: 6px 12px;
-    transform: rotate(-15deg);
-    opacity: .4;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-    white-space: nowrap;
-    font-family: Arial, sans-serif;
-    letter-spacing: .5px;
+.video-container {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
 }
 
-/* Fullscreen watermark styles */
-.video-container:fullscreen .watermark {
-    position: fixed;
-    font-size: 20px;
-    opacity: 0.5;
+.video-player {
+    width: 100% !important;
+    max-height: 400px !important;
+    border-radius: 8px !important;
+    background: #000 !important;
+    aspect-ratio: 9/16 !important;
+    object-fit: contain !important;
 }
 
-/* Support for different browser prefixes */
-.video-container:-webkit-full-screen .watermark {
-    position: fixed;
-    font-size: 20px;
-    opacity: 0.5;
+.video-watermark {
+    position: absolute !important;
+    bottom: 50% !important;
+    left: 50% !important;
+    transform: translateX(-50%) rotate(-25deg) !important;
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-size: 20px !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    white-space: nowrap !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important;
 }
 
-.video-container:-moz-full-screen .watermark {
-    position: fixed;
-    font-size: 20px;
-    opacity: 0.5;
-}
-
-.video-container:-ms-fullscreen .watermark {
-    position: fixed;
-    font-size: 20px;
-    opacity: 0.5;
+@media (max-width: 768px) {
+    .video-player {
+        max-height: 350px !important;
+    }
+    
+    .video-watermark {
+        font-size: 11px !important;
+        bottom: 45% !important;
+    }
 }
 
 .course-video-container {
@@ -940,11 +943,17 @@ watch(isCompleted, (newValue) => {
 }
 
 .sidebar-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #FF8A00;
+    color: #FF8A00 !important; /* Orange color to match theme */
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin-bottom: 15px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 2px solid #FF8A00 !important; /* Orange underline */
+}
+
+/* Icon color for mobile toggle */
+.sidebar-title i {
+    color: #FF8A00 !important;
 }
 
 .section {
@@ -976,22 +985,47 @@ watch(isCompleted, (newValue) => {
 }
 
 .section-item {
-    padding: 8px 10px;
-    margin: 5px 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-radius: 5px;
-    transition: background-color 0.2s;
-}
-
-.section-item:hover {
-    background-color: #f8f9fa;
+    display: flex !important;
+    align-items: center !important;
+    padding: 10px 15px !important;
+    margin: 5px 0 !important;
+    gap: 10px !important;
+    cursor: pointer !important;
+    border-radius: 6px !important;
+    transition: background-color 0.2s ease !important;
 }
 
 .section-item i {
-    color: #FF8A00;
+    width: 20px !important; /* Fixed width for icons */
+    text-align: center !important; /* Center the icon */
+    font-size: 14px !important;
+}
+
+/* Quiz item specific alignment */
+.section-item.quiz-item {
+    padding-left: 15px !important;
+}
+
+.quiz-item-content {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+
+.quiz-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+/* Ensure all icons are aligned */
+.fa-file-alt,
+.fa-play-circle,
+.fa-lock,
+.fa-check-circle {
+    width: 20px !important;
+    text-align: center !important;
 }
 
 /* Documentation styles */
@@ -1255,6 +1289,7 @@ watch(isCompleted, (newValue) => {
 .section-header.locked h5 {
     color: #999;
 }
+
 /* Add these styles */
 .quiz-section {
     margin-top: 2rem;
@@ -1345,5 +1380,167 @@ watch(isCompleted, (newValue) => {
 
 .quiz-item.locked:hover {
     background-color: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+    .sidebar-title {
+        padding: 15px !important;
+        margin-bottom: 0 !important;
+    }
+
+    .course-sections {
+        transition: max-height 0.3s ease-in-out !important;
+        overflow: hidden !important;
+    }
+
+    .course-sections.mobile-collapsed {
+        max-height: 0 !important;
+    }
+
+    .course-sections:not(.mobile-collapsed) {
+        max-height: 80vh !important;
+        overflow-y: auto !important;
+        /* Add this to ensure content is visible initially */
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
+
+/* Hide chevron on desktop */
+@media (min-width: 769px) {
+    .d-md-none {
+        display: none !important;
+    }
+    .watermark {
+        font-size: 11px !important;
+        bottom: 70% !important;
+        left: 49% !important;
+    }
+}
+
+/* Update these styles */
+.video-wrapper {
+    background: white !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+    position: relative !important;
+    max-width: 100% !important; /* Add max-width */
+    margin: 0 auto !important; /* Center the container */
+}
+
+.video-player {
+    width: 100% !important;
+    max-height: 400px !important; /* Control maximum height */
+    border-radius: 8px !important;
+    background: #000 !important;
+    margin-bottom: 20px !important;
+    aspect-ratio: 9/16 !important; /* Maintain vertical video aspect ratio */
+    object-fit: contain !important; /* Maintain aspect ratio without stretching */
+}
+
+.video-messages {
+    margin-top: 20px !important;
+    padding: 15px !important;
+    border-radius: 8px !important;
+}
+
+.video-status-message {
+    padding: 15px !important;
+    border-radius: 8px !important;
+    margin-bottom: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.video-status-message.success {
+    background-color: #e8f5e9 !important;
+    color: #2e7d32 !important;
+}
+
+.video-status-message.warning {
+    background-color: #fff3e0 !important;
+    color: #ef6c00 !important;
+}
+
+.video-status-message i {
+    font-size: 20px !important;
+}
+
+.preview-image {
+    width: 100% !important;
+    border-radius: 8px !important;
+}
+
+.play-button {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    background: rgba(255, 138, 0, 0.9) !important;
+    border: none !important;
+    color: white !important;
+    font-size: 24px !important;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.play-button:hover {
+    background: #FF8A00 !important;
+    transform: translate(-50%, -50%) scale(1.1) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .video-wrapper {
+        padding: 10px !important;
+        max-width: 100% !important;
+    }
+
+    .video-player {
+        max-height: 201px  !important;
+    }
+}
+
+/* Section header chevron icons */
+.fas.fa-chevron-up,
+.fas.fa-chevron-down,
+.fas.fa-play-circle,
+.fas.fa-lock{
+    color: #FF8A00 !important; /* Orange */
+}
+
+/* File icon */
+.fas.fa-file-alt {
+    color: #FF8A00 !important; /* Orange */
+}
+
+/* Section titles */
+h5 {
+    color: #2c3e50 !important; /* Dark blue/gray */
+    font-weight: 600 !important;
+}
+
+/* Quiz icon */
+.fas.fa-question-circle {
+    color: #FF8A00 !important; /* Orange */
+}
+
+/* Quiz info text */
+.quiz-info {
+    color: #666666 !important; /* Gray */
+}
+
+/* Quiz item when completed */
+.quiz-item.completed .fas.fa-question-circle {
+    color: #4CAF50 !important; /* Green */
+}
+
+/* Quiz item when locked */
+.quiz-item.locked .fas.fa-question-circle {
+    color: #999999 !important; /* Gray */
 }
 </style>

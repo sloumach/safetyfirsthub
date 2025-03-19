@@ -32,6 +32,7 @@
 		<!-- Responsive CSS -->
 		<link rel="stylesheet" href="assets/css/responsive.css">
 		<link rel="stylesheet" href="assets/css/navbar.css">
+		<link rel="stylesheet" href="assets/css/forgotpassword.css">
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="assets/img/favicon.png">
 		<!-- Title -->
@@ -95,7 +96,7 @@
 							</div>
 
 							<div class="col-lg-6 col-md-6 col-sm-6">
-								<a class="now-log-in font-q" href="{{ route('login') }}">Log In to your account</a>
+								<a class="now-log-in font-q words" href="{{ route('login') }}">Log In to your account</a>
 							</div>
 
 							<div class="col-lg-6 col-md-6 col-sm-6">

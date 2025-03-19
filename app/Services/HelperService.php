@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Services\VideoProgressService;
 use App\Models\ExamUser;
 use App\Models\VideoProgress;
-
+use App\Models\UserSectionAttempt;
 class HelperService 
 {
     
@@ -40,7 +40,11 @@ class HelperService
             $query->where('course_id', $examUser->exam->course_id);
         })
         ->update(['is_completed' => 0]);      
-        
+        UserSectionAttempt::where('user_id', $examUser->user_id)
+        ->whereHas('section', function ($query) use ($examUser) {
+            $query->where('course_id', $examUser->exam->course_id);
+        })
+        ->delete();
     }
 }
 

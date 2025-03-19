@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('price_stripe')->nullable(); // Produit du cours dans stripe
             $table->string('category'); // Catégorie du cours
             $table->integer('total_videos'); // Nombre total de vidéos
-            $table->text('description'); // Description du cours
+            $table->text('description'); // Description du cours long description
             $table->string('cover', 2048); // Chemin vers l'image de couverture
             $table->timestamps(); // Timestamps created_at et updated_at
             $table->text('short_description'); // Courte description du cours
