@@ -4,7 +4,7 @@
     background: linear-gradient(135deg, #f8faff 0%, #ffffff 100%) !important;
     position: relative !important;
     overflow: hidden !important;
-    min-height: 100vh !important;
+    min-height: 100vh;
 }
 
 /* Shop Card Wrapper */
@@ -23,7 +23,13 @@
     display: flex !important;
     flex-direction: column !important;
 }
-
+@media only screen and (max-width: 767px) {
+    .ptb-100 {
+        padding-top: 50px;
+        padding-bottom: 50px;
+        min-height: 71vh !important;
+    }
+}
 .single-shop:hover {
     transform: translateY(-10px) !important;
     box-shadow: 0 15px 40px rgba(255, 138, 0, 0.1) !important;
