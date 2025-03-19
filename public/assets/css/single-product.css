@@ -113,6 +113,7 @@
     gap: 10px;
     margin-bottom: 20px;
     animation: fadeInUp 0.5s ease-out 0.2s both;
+    top: 81px !important;
 }
 
 .new-price {

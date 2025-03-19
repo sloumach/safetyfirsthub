@@ -1787,10 +1787,10 @@
     margin-top: 70px;
   }
   .mean-container .mean-nav ul li a:hover {
-    color: #FF8A00;
+    color: #FF8A00 !important;
   }
   .mean-container .mean-nav ul li a.active {
-    color: #FF8A00;
+    color: #FF8A00 !important;
   }
   .mean-container a.meanmenu-reveal {
     padding: 23px 15px 0 0;
