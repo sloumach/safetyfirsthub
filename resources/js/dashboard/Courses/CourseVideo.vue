@@ -546,8 +546,6 @@ const hidePreview = () => {
 };
 
 const reportSecurityBreach = async (reason) => {
-    console.log('Security breach reported:', reason);
-
     // First redirect
     await router.push("/dashboard/courses");
 
@@ -691,9 +689,6 @@ onMounted(() => {
     fetchCourse();
     fetchSections();
 
-    console.log('Setting up security...'); // This should show in console
-
-
     PreventSecurity.setSecurityCallback(reportSecurityBreach);
 
     PreventSecurity.initVideo(
@@ -739,7 +734,7 @@ onBeforeUnmount(() => {
 // Add a watch for isCompleted
 watch(isCompleted, (newValue) => {
     if (newValue && currentSection.value?.quiz) {
-        console.log('Video completed, quiz available:', currentSection.value.quiz);
+     
     }
 });
 

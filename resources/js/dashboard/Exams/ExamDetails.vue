@@ -130,7 +130,7 @@ const fetchNextQuestion = async () => {
     try {
      
         const response = await axios.get(`/exam/${sessionId.value}/next-question`);
-        console.log("fetchNextQuestion", response.data)
+      
         if (response.data.exam_completed) {
             await handleExamCompletion(response.data);
             return;

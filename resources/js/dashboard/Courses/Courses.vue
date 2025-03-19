@@ -130,7 +130,6 @@ export default {
                 
                 if (response.data && response.data.length > 0) {
                     courses.value = response.data;
-                    console.log(courses.value);
                 } else {
                     courses.value = [];
                     Swal.fire({

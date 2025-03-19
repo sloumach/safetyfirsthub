@@ -43,7 +43,7 @@ const PreventSecurity = (() => {
     };
 
     const setSecurityCallback = (callback) => {
-        console.log('Setting security callback');
+       
         securityCallback = callback;
     };
     
@@ -118,10 +118,10 @@ const PreventSecurity = (() => {
     };
 
     const handleSecurityViolation = async (router) => {
-        console.log('Security violation detected');
+       
         
         if (securityCallback) {
-            console.log('Calling security callback');
+         
             await securityCallback('video_security_breach');
         }
 
@@ -132,7 +132,7 @@ const PreventSecurity = (() => {
 
     const handleBlurVideo = async (router) => {
         if (isCourseVideoSessionActive) {
-            console.log('Blur detected');
+           
             await handleSecurityViolation(router);
         }else if (isQuizSessionActive) {
             triggerSecurityEvent('quiz_security_breach');
@@ -142,7 +142,7 @@ const PreventSecurity = (() => {
 
     const handleVisibilityChangeVideo = async (router) => {
         if (document.hidden && isCourseVideoSessionActive) {
-            console.log('Visibility change detected');
+           
             await handleSecurityViolation(router);
         }else if (isQuizSessionActive) {
             triggerSecurityEvent('quiz_security_breach');
@@ -206,8 +206,7 @@ const PreventSecurity = (() => {
         isCourseVideoSessionActive = !isQuiz; // Set to false if it's a quiz
         isQuizSessionActive = isQuiz; // Set to true if it's a quiz
 
-        console.log('Initializing security for:', isQuiz ? 'quiz' : 'video');
-
+        
         window.addEventListener('blur', () => handleBlurVideo(appRouter));
         document.addEventListener('visibilitychange', () => handleVisibilityChangeVideo(appRouter));
         document.addEventListener('contextmenu', disableRightClick);

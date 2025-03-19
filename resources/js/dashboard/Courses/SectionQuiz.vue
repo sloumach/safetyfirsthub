@@ -97,21 +97,13 @@ const startTimer = () => {
 };
 
 const handleTimeUp = () => {
-    console.log('Time up for question:', {
-        questionId: currentQuestion.value.id,
-        questionText: currentQuestion.value.text,
-        answer: 'No answer provided (time expired)'
-    });
+   
     clearInterval(timerInterval);
     moveToNextQuestion();
 };
 
 const moveToNextQuestion = async () => {
-    console.log('Moving to next question:', {
-        currentQuestionIndex: currentQuestionIndex.value,
-        totalQuestions: props.quiz.questions.length,
-        remainingQuestions: props.quiz.questions.length - (currentQuestionIndex.value + 1)
-    });
+   
     
     if (currentQuestionIndex.value === props.quiz.questions.length - 1) {
         await submitQuiz();
@@ -167,12 +159,7 @@ const submitQuiz = async () => {
 // Watch for answer selection to automatically move to next question
 watch(() => selectedAnswers.value[currentQuestion.value?.id], (newValue) => {
     if (newValue !== undefined) {
-        console.log('Question answered:', {
-            questionId: currentQuestion.value.id,
-            questionText: currentQuestion.value.text,
-            selectedAnswerId: newValue,
-            selectedAnswerText: currentQuestion.value.choices.find(c => c.id === newValue)?.text
-        });
+       
         setTimeout(() => moveToNextQuestion(), 500);
     }
 });

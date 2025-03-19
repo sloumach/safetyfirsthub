@@ -92,6 +92,24 @@
 .dropdown-item:first-child {
     border-radius: 8px 8px 0 0;
 }
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .navbar-area .others-option {
+        top: 18px !important;
+        position: absolute;
+        right: 93px;
+    }
+}
+@media (max-width: 768px) {
+    .register {
+        display: flex !important;
+     
+        margin: 10px 0 !important;
+        justify-content: center !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+    }
+}
 @media (max-width: 991px) {
     .nav-profile-icon {
         width: 35px;
@@ -102,15 +120,7 @@
         position: relative;
         top: 4px;
     }
-    .register {
-        display: flex !important;
-     
-        margin: 10px 0 !important;
-        justify-content: center !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        flex-wrap: nowrap !important;
-    }
+    
 
     .register .default-btn {
         padding: 6px 12px;
