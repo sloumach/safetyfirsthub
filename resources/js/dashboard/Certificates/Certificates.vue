@@ -1,12 +1,6 @@
 <template>
   <div class="certificates-dashboard certificates-section">
-    <div class="celebration-background" v-if="courses.length > 0">
-      <div class="firework"></div>
-      <div class="firework"></div>
-      <div class="firework"></div>
-      <div class="firework"></div>
-      <div class="firework"></div>
-    </div>
+   
 
     <div class="exams-header">
       <h1>🎉 Your Achievement Gallery 🎉</h1>
