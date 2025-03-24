@@ -106,6 +106,13 @@ class CouponController extends Controller
 
         // Récupération du total actuel
         $cartCount = session('cart', []);
+        if (empty($cartCount)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your cart is empty.'
+            ]);
+        }
+
         $subtotal = Course::whereIn('id', $cartCount)->sum('price');
 
         // Calcul du discount

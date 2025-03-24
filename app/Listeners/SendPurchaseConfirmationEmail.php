@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Mail\PurchaseConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 
-class SendPurchaseConfirmationEmail implements ShouldQueue
+class SendPurchaseConfirmationEmail
 
 {
     /**
