@@ -127,19 +127,26 @@ class AdminController extends Controller
                 if (!empty($sectionData['videos'])) {
                     foreach ($sectionData['videos'] as $videoData) {
                         $file = $videoData['video'];
-                        $tempVideoPath = "courses/videos/temp/" . uniqid() . '.' . $file->getClientOriginalExtension();
+                        $originalExtension = $file->getClientOriginalExtension();
+                        $filename = uniqid() . '.' . $originalExtension;
 
-                        // 🔹 Stockage temporaire avant traitement en queue
-                        Storage::disk('local')->put($tempVideoPath, file_get_contents($file));
+                        $tempPath = "courses/videos/temp/" . $filename;
+                        $finalPath = "courses/videos/" . $filename;
 
-                        // 🔹 Création d'une entrée vidéo en base de données
-                        $video = $section->videos()->create([
-                            'title' => $videoData['title'],
-                            'video_path' => 'processing', // Statut en cours de traitement
+                        // 🔸 Enregistrement temporaire
+                        Storage::disk('local')->put($tempPath, file_get_contents($file));
+
+                        // 🔸 Déplacement vers le dossier privé
+                        Storage::disk('private')->put($finalPath, Storage::disk('local')->get($tempPath));
+
+                        // 🔸 Suppression du fichier temporaire
+                        Storage::disk('local')->delete($tempPath);
+
+                        // 🔸 Sauvegarde en base
+                        $section->videos()->create([
+                            'title'      => $videoData['title'],
+                            'video_path' => $finalPath,
                         ]);
-
-                        // 🔹 Dispatch du job de traitement vidéo
-                        ProcessVideoUpload::dispatch($video->id, $tempVideoPath);
                     }
                 }
             }
