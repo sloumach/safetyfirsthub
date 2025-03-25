@@ -70,17 +70,14 @@ class AdminController extends Controller
                 'description'       => 'required|string|max:2000',
                 'cover'             => 'required|file|mimes:jpg,jpeg,png|max:2048',
                 'duration'          => 'required|integer|min:1', // Durée en mois
-
                 // Sections validation
                 'sections'                  => 'required|array',
                 'sections.*.title'          => 'required|string|max:255',
-
                 // Slides validation
                 'sections.*.slides'                 => 'array',
                 'sections.*.slides.*.title'         => 'required|string|max:255',
-                'sections.*.slides.*.content'       => 'nullable|string|max:5000',
+                'sections.*.slides.*.content'       => 'nullable|string|max:10000',
                 'sections.*.slides.*.file'          => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240', // PDF / Image
-
                 // Videos validation
                 'sections.*.videos'                 => 'array',
                 'sections.*.videos.*.title'         => 'required|string|max:255',
@@ -120,7 +117,7 @@ class AdminController extends Controller
 
                         $section->slides()->create([
                             'title'    => $slideData['title'],
-                            'content'  => $slideData['content'] ?? null,
+                            'content'  => json_encode($slideData['content']),
                             'file_path'=> $filePath,
                         ]);
                     }
