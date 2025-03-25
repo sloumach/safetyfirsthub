@@ -28,9 +28,15 @@ class ExamService
         /* if(!HelperService::checkCourseCompletion($course_id)->completed){
             return ['error' => __('exam.course_not_completeddd'), 'status' => 403];
         } */
-        $exam = Exam::where('course_id', $course_id)
-            ->where('is_active', true)
-            ->first();
+        $attemptedExamIds = ExamUser::where('user_id', $user->id)
+        ->pluck('exam_id')
+        ->toArray();
+        $availableExams = Exam::where('course_id', $course_id)
+        ->where('is_active', true)
+        ->whereNotIn('id', $attemptedExamIds)
+        ->get();
+        $exam = $availableExams->random();
+       
 
         if (!$exam) {
             return ['error' => __('exam.no_exam_available'), 'status' => 404];

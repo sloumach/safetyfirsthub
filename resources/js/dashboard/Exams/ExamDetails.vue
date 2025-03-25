@@ -75,6 +75,13 @@ const isSubmitting = ref(false);
 const hasAttemptsExhausted = ref(false);
 const noQuestionsAvailable = ref(false);
 let isActive = true;
+// Add timer ref
+const timer = ref(10);
+let timerInterval = null;
+
+// Add these security-related refs
+const isExamSessionActive = ref(true);
+
 
 // Add currentQuestionIndex ref
 const currentQuestionIndex = ref(0);
@@ -85,22 +92,16 @@ const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-// Add timer ref
-const timer = ref(10);
-let timerInterval = null;
-
-// Add these security-related refs
-const isExamSessionActive = ref(true);
 
 // Modify handleTimeUp function to automatically submit and move to next question
 const handleTimeUp = async () => {
     if (isSubmitting.value) return; // Prevent multiple submissions
-    
+
     try {
         // If user selected an answer, use it. Otherwise, use null
         const selectedAnswer = userAnswers.value[currentQuestionIndex.value] || null;
         userAnswers.value[currentQuestionIndex.value] = selectedAnswer;
-        
+
         // Submit answer and move to next question
         await submitAnswer();
     } catch (error) {
@@ -112,7 +113,7 @@ const handleTimeUp = async () => {
 const startTimer = () => {
     timer.value = 10;
     clearInterval(timerInterval);
-    
+
     timerInterval = setInterval(() => {
         if (timer.value > 0) {
             timer.value--;
@@ -128,9 +129,9 @@ const fetchNextQuestion = async () => {
     if (!isActive) return;
 
     try {
-     
+
         const response = await axios.get(`/exam/${sessionId.value}/next-question`);
-      
+
         if (response.data.exam_completed) {
             await handleExamCompletion(response.data);
             return;
@@ -142,7 +143,7 @@ const fetchNextQuestion = async () => {
         console.error("Error fetching next question:", error);
 
         const errorMessage = error.response?.data?.error || 'There was an error loading the next question.';
-        
+
         // Show error to user
         await Swal.fire({
             title: 'Error',
@@ -182,7 +183,7 @@ const submitAnswer = async () => {
             choice_id: selectedChoice,
         });
 
-   
+
 
         if (response.data.exam_completed) {
             if (response.data.role_changed) {
@@ -197,13 +198,13 @@ const submitAnswer = async () => {
         currentQuestion.value = response.data.question;
         currentQuestionIndex.value++;
         startTimer(); // Start timer for the new question
-        
+
     } catch (error) {
         console.error("Error submitting answer:", error);
-        
+
         // Show specific error message to user
         const errorMessage = error.response?.data?.error || 'There was an issue submitting your answer. Please try again.';
-        
+
         await Swal.fire({
             title: 'Warning',
             text: errorMessage,
@@ -266,31 +267,31 @@ const handleExamCompletion = async (examData) => {
 };
 
 const reportSecurityBreach = async (reason) => {
-    const response = await axios.post(`/exam/${sessionId.value}/complete`, { 
-        message: reason, 
-        timestamp: new Date().toISOString() 
+    const response = await axios.post(`/exam/${sessionId.value}/complete`, {
+        message: reason,
+        timestamp: new Date().toISOString()
     });
-    
-    if(response.data.role_changed){
+
+    if (response.data.role_changed) {
         await Swal.fire({
             title: response.data.message,
             icon: 'warning',
             confirmButtonText: 'OK',
-            
+
         }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = '/courses';
-                        }
-                    });
-    }else{
+            if (result.isConfirmed) {
+                window.location.href = '/courses';
+            }
+        });
+    } else {
         await Swal.fire({
             title: response.data.message || 'Exam cancelled and will be marked as failed',
             icon: 'warning',
             confirmButtonText: 'OK',
-            
+
         });
     }
-            
+
 };
 
 // 🏁 Démarrer une session d'examen
@@ -301,12 +302,12 @@ onMounted(async () => {
         const response = await axios.post(`/exam/start/${route.params.id}`);
         sessionId.value = response.data.session_id;
         fetchNextQuestion();
-    } catch (error) { 
-      
+    } catch (error) {
+
         // Handle max attempts reached error
         if (error.response?.status === 403 && error.response?.data?.error === 'exam.max_attempts_reached') {
             hasAttemptsExhausted.value = true;
-            
+
             // Show alert before resetting progress
             await Swal.fire({
                 title: 'Maximum Attempts Reached',
@@ -314,10 +315,10 @@ onMounted(async () => {
                 icon: 'warning',
                 confirmButtonText: 'OK'
             });
-     
+
         }
     }
-    
+
 });
 
 // 🛑 Nettoyage à la fermeture de la page
@@ -330,7 +331,7 @@ onUnmounted(() => {
 onBeforeUnmount(() => {
     PreventSecurity.cleanup();
 
-    
+
 });
 </script>
 
@@ -468,39 +469,47 @@ body {
 
 @media (max-width: 576px) {
     .container {
-        max-width: 95% !important; /* Increase container width on mobile */
+        max-width: 95% !important;
+        /* Increase container width on mobile */
         padding: 15px !important;
         margin: 20px auto !important;
     }
 
     .quiz-content {
         flex-direction: column !important;
-        align-items: stretch !important; /* Change from center to stretch */
+        align-items: stretch !important;
+        /* Change from center to stretch */
         gap: 15px !important;
     }
 
     .question {
         width: 100% !important;
-        text-align: left !important; /* Change from center to left */
+        text-align: left !important;
+        /* Change from center to left */
         margin-bottom: 20px !important;
     }
 
     .question-text {
-        font-size: 16px !important; /* Smaller font size for mobile */
-        line-height: 1.4 !important; /* Better line height for readability */
-        word-wrap: break-word !important; /* Ensure long words break */
+        font-size: 16px !important;
+        /* Smaller font size for mobile */
+        line-height: 1.4 !important;
+        /* Better line height for readability */
+        word-wrap: break-word !important;
+        /* Ensure long words break */
         overflow-wrap: break-word !important;
         hyphens: auto !important;
     }
 
     .question-header {
-        align-items: flex-start !important; /* Align items to top */
+        align-items: flex-start !important;
+        /* Align items to top */
         gap: 10px !important;
     }
 
     .question-icon {
         font-size: 20px !important;
-        margin-top: 3px !important; /* Align icon with text */
+        margin-top: 3px !important;
+        /* Align icon with text */
     }
 
     .options-container {
@@ -513,13 +522,16 @@ body {
         margin-bottom: 8px !important;
         width: 100% !important;
         display: flex !important;
-        align-items: flex-start !important; /* Align items to top */
+        align-items: flex-start !important;
+        /* Align items to top */
         gap: 12px !important;
     }
 
     .circle {
-        min-width: 20px !important; /* Prevent circle from shrinking */
-        margin-top: 3px !important; /* Align circle with text */
+        min-width: 20px !important;
+        /* Prevent circle from shrinking */
+        margin-top: 3px !important;
+        /* Align circle with text */
     }
 
     .option-item span:not(.circle) {
@@ -533,7 +545,8 @@ body {
 
     .timer {
         position: fixed !important;
-        top: 70px !important; /* Adjust based on your header height */
+        top: 70px !important;
+        /* Adjust based on your header height */
         right: 10px !important;
         z-index: 1000 !important;
     }
@@ -543,7 +556,8 @@ body {
     }
 
     .btn-success {
-        width: 100% !important; /* Full width button on mobile */
+        width: 100% !important;
+        /* Full width button on mobile */
         padding: 12px !important;
         font-size: 16px !important;
     }

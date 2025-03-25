@@ -49,7 +49,7 @@
                                     <!-- 🔹 Affichage des slides (contenu écrit du cours) -->
                                     <div v-if="section.slides.length > 0">
                                         <div v-for="slide in section.slides" :key="slide.id" class="section-item"
-                                            @click="selectContent({ type: 'text', title: slide.title, content: slide.content })">
+                                            @click="selectContent({ type: 'text', title: slide.title, content: JSON.parse(slide.content) })">
                                             <i class="fas fa-file-alt"></i>
                                             {{ slide.title }}
                                         </div>
@@ -321,7 +321,7 @@ const fetchSections = async () => {
                 selectContent({
                     type: 'text',
                     title: firstSlide.title,
-                    content: firstSlide.content
+                    content: JSON.parse(firstSlide.content)
                 });
             }
         }
