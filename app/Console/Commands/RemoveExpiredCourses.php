@@ -31,7 +31,7 @@ class RemoveExpiredCourses extends Command
 
             foreach ($user->courses as $course) {
                 $purchaseDate = $course->pivot->created_at;
-                $expirationDate = Carbon::parse($purchaseDate)->addMonths($course->duration);
+                $expirationDate = Carbon::parse($purchaseDate)->addMonths(3);
 
                 if (now()->greaterThan($expirationDate)) {
                     // Stocker les cours expirés

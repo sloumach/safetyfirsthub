@@ -27,7 +27,7 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         #submitBtn:disabled {
             cursor: not-allowed;
             opacity: 0.7;
@@ -60,7 +60,7 @@
 
                     <!-- Page Heading -->
                     <h1 class="h3 mb-4 text-gray-800">Courses managements</h1>
-                    
+
                     <form action="{{ route('addcourse') }}" method="POST" enctype="multipart/form-data" class="course-form">
                         @csrf
                         <div class="row">
@@ -75,7 +75,7 @@
                                             <label>📌 Course Name</label>
                                             <input type="text" name="name" class="form-control" placeholder="Enter course name" required>
                                         </div>
-                                        
+
                                         <div class="form-group">
                                             <label>📁 Category</label>
                                             <input type="text" name="category" class="form-control" placeholder="Enter category" required>
@@ -97,7 +97,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label>📆 Duration (Months)</label>
+                                            <label>📆 Duration of the certificate (Months)</label>
                                             <input type="number" name="duration" class="form-control" min="1" required>
                                         </div>
 
@@ -229,7 +229,7 @@
     <script>
 document.addEventListener("DOMContentLoaded", function() {
     let sectionCounter = 0;
-    
+
     // Initialize the first section as accordion on page load
     const firstSection = createAccordionSection(0);
     document.getElementById("sections").innerHTML = firstSection;
@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><span class="accordion-toggle">▼</span> 📑 Slide ${slideIndex + 1}</h5>
                         <div>
-                            
+
                             <button type="button" class="btn-icon remove-slide-btn">
                                 <i class="fas fa-trash-alt text-danger"></i>
                             </button>
@@ -273,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><span class="accordion-toggle">▼</span> 🎥 Video ${videoIndex + 1}</h5>
                         <div>
-                            
+
                             <button type="button" class="btn-icon remove-video-btn">
                                 <i class="fas fa-trash-alt text-danger"></i>
                             </button>
@@ -353,7 +353,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const sectionIndex = section.dataset.sectionIndex;
             const slidesWrapper = section.querySelector(".slides-wrapper");
             const slideIndex = slidesWrapper.querySelectorAll(".slide-accordion").length;
-            
+
             const newSlide = createSlideAccordion(sectionIndex, slideIndex);
             slidesWrapper.insertAdjacentHTML('beforeend', newSlide);
         }
@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const sectionIndex = section.dataset.sectionIndex;
             const videosWrapper = section.querySelector(".videos-wrapper");
             const videoIndex = videosWrapper.querySelectorAll(".video-accordion").length;
-            
+
             const newVideo = createVideoAccordion(sectionIndex, videoIndex);
             videosWrapper.insertAdjacentHTML('beforeend', newVideo);
         }
@@ -377,7 +377,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (e.target.classList.contains("accordion-toggle") || e.target.closest(".accordion-toggle")) {
             const header = e.target.closest(".accordion-header") || e.target.closest(".sub-accordion-header");
             const content = header.nextElementSibling;
-            
+
             header.classList.toggle("active");
             content.classList.toggle("show");
         }
@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (e.target.closest('.accordion-header')) {
             const header = e.target.closest('.accordion-header');
             const content = header.nextElementSibling;
-            
+
             header.classList.toggle('active');
             content.classList.toggle('show');
         }
@@ -394,7 +394,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (e.target.closest('.sub-accordion-header:not(.main-sub-header)')) {
             const header = e.target.closest('.sub-accordion-header');
             const content = header.nextElementSibling;
-            
+
             header.classList.toggle('active');
             content.classList.toggle('show');
         }
@@ -443,7 +443,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const submitBtn = document.getElementById('submitBtn');
             const normalState = submitBtn.querySelector('.normal-state');
             const loadingState = submitBtn.querySelector('.loading-state');
-            
+
             // Disable button and show loading state
             submitBtn.disabled = true;
             normalState.classList.add('d-none');
