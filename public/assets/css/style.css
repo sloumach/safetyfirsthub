@@ -1642,32 +1642,11 @@ Course Area Style
   overflow: hidden;
 }
 
-.course-content {
-  padding: 20px;
-  height: 200px;  /* Fixed content height */
-  display: flex;
-  flex-direction: column;
-}
 
-.course-content h3 {
-  font-size: 18px;
-  margin: 0 0 10px 0;
-  line-height: 1.4;
-  height: 50px;  /* Fixed title height */
-  overflow: hidden;
-}
 
-.course-description {
-  color: #666;
-  font-size: 14px;
-  line-height: 1.5;
-  height: 63px;  /* Fixed description height (3 lines) */
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  margin-bottom: 15px;
-}
+
+
+
 
 .course-footer {
   margin-top: auto;
@@ -1692,8 +1671,13 @@ Course Area Style
 }
 
 .course-content {
-    padding: 12px;
-    position: relative;
+  padding: 12px;
+  position: relative;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  width: 381px;
+  box-sizing: border-box; /* Ensures padding is included in width calculation */
 }
 
 .price {
@@ -1783,7 +1767,7 @@ Course Area Style
     }
     
     .course-img-wrapper img {
-        height: 200px;
+    height: 200px;
     }
 }
 
