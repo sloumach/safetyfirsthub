@@ -61,7 +61,7 @@ class RegisteredUserController extends Controller
             ]);
 
             //SendEmailVerificationJob::dispatch($user);
-            event(new Registered($user)); // il prend minimum 5 secondes pour envoyer le mail
+            //event(new Registered($user)); // il prend minimum 5 secondes pour envoyer le mail
 
             Auth::login($user);
 

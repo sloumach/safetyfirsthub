@@ -66,21 +66,15 @@
                                                 <td>{{ $course->category }}</td>
                                                 <td>{{ $course->total_videos }}</td>
                                                 <td>
-                                                    <button class="btn btn-warning btn-sm edit-btn"
-                                                        data-id="{{ $course->id }}" 
-                                                        data-name="{{ $course->name }}"
-                                                        data-price="{{ $course->price }}"
-                                                        data-category="{{ $course->category }}"
-                                                        data-total_videos="{{ $course->total_videos }}"
-                                                        data-short_description="{{ $course->short_description }}"
-                                                        data-description="{{ $course->description }}">
+                                                    <a href="{{ route('edit.course', $course->id) }}" class="btn btn-warning btn-sm">
                                                         <i class="fas fa-edit"></i> Edit
-                                                    </button>
-                                                    
+                                                     </a>
+
+
                                                     <form action="{{ route('delete.course', $course->id) }}" method="POST" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm" 
+                                                        <button type="submit" class="btn btn-danger btn-sm"
                                                             onclick="return confirm('Are you sure you want to delete this course?')">
                                                             <i class="fas fa-trash"></i> Delete
                                                         </button>
@@ -94,7 +88,7 @@
                         </div>
                     </div>
 
-                   
+
                 </div>
                 <!-- End of Main Content -->
 
@@ -167,7 +161,7 @@
                             </div>
                         </div>
                     </div>
-   
+
 </body>
 
     <!-- Bootstrap core JavaScript-->
@@ -185,4 +179,4 @@
     <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <script src="{{ asset('adminassets/js/removecourses.js') }}"></script>
-</html> 
+</html>

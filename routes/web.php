@@ -48,7 +48,7 @@ Route::controller(CourseController::class)->group(function () {
     Route::get('/courses', 'index')->name('courses');
 });
 
-Route::group([ 'middleware' => ['auth','verified']], function () {
+Route::group([ 'middleware' => ['auth'/* ,'verified' */]], function () {
 
     Route::controller(ShopController::class)->group(function () {
         Route::get('/shop', 'index')->name('shop');
@@ -77,7 +77,7 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
     });
 });
 
-Route::group(['middleware' => ['auth', 'verified', 'role:student']], function () {
+Route::group(['middleware' => ['auth', /* 'verified', */ 'role:student']], function () {
     // Dashboard route
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard/{any?}', 'index')->where('any', '.*')->name('dashboard');
@@ -126,7 +126,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student']], function ()
     Route::controller(SectionQuizController::class)->group(function () {
         Route::post('/sections/{sectionId}/quiz/submit', [SectionQuizController::class, 'submitQuizAnswers']);
     });
-    
+
 
 });
     // ------------------ Routes pour l'administration ------------------
@@ -141,6 +141,9 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('/admin/course/update/{id}', 'updateCourse')->name('update.course');
     // Route pour supprimer un cours
     Route::delete('/admin/course/delete/{id}','deleteCourse')->name('delete.course');
+
+    Route::get('/admin/course/edit/{id}', 'edit')->name('edit.course');
+
 
 });
 
