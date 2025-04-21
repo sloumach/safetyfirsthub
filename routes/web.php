@@ -74,6 +74,8 @@ Route::group([ 'middleware' => ['auth'/* ,'verified' */]], function () {
     });
     Route::controller(UserController::class)->group(function () {
         Route::get('/profile', 'profile')->name('profile');//added par yassine page profile
+        Route::post('/profile/update', 'updateProfile')->name('profile.update');
+
     });
 });
 
