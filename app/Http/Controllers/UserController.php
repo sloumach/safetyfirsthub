@@ -25,6 +25,6 @@ class UserController extends Controller
             return $payment;
         });
 
-        return view('user', compact('payments'));
+        return view('user', compact('payments','user'));
     }
 }
