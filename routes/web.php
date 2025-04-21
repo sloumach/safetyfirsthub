@@ -164,14 +164,11 @@ Route::middleware([])->group(function () {
             Route::get('/create', 'createQuestion')->name('admin.questions.create');
         });
     });
-    // Gestion individuelle des questions (hors contexte d'examen spécifique)
     Route::prefix('admin/questions')->controller(AdminExamsController::class)->group(function () {
         Route::delete('/{id}/delete', 'deleteQuestion')->whereNumber('id')->name('admin.questions.delete');
         Route::get('/{id}/edit', 'editQuestion')->whereNumber('id')->name('admin.questions.edit');
         Route::put('/{id}/update', 'updateQuestion')->whereNumber('id')->name('admin.questions.update');
     });
-
-
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('coupons', CouponController::class)->except(['show']);
         Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');

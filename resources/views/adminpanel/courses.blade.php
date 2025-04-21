@@ -368,11 +368,9 @@
                 if (e.target.classList.contains("remove-slide-btn") || e.target.closest(".remove-slide-btn")) {
                     const slide = e.target.closest(".slide-accordion");
                     const slidesWrapper = slide.closest(".slides-wrapper");
-                    if (slidesWrapper.querySelectorAll(".slide-accordion").length > 1) {
+
                         slide.remove();
-                    } else {
-                        alert("You cannot remove the last slide!");
-                    }
+
                 }
 
                 // Remove video
