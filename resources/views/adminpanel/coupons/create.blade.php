@@ -59,16 +59,16 @@
                             <form action="{{ route('admin.coupons.store') }}" method="POST" class="coupon-form">
                                 @csrf
 
-                                <div class="form-group">
+                               {{--  <div class="form-group">
                                     <label for="code">Coupon Code</label>
                                     <input type="text" class="form-control" id="code" name="code" required>
-                                </div>
+                                </div> --}}
 
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="discount_type">Discount Type</label>
-                                            <select class="form-control" id="discount_type" name="discount_type" required>
+                                            <select class="form-control p-0" id="discount_type" name="discount_type" required>
                                                 <option value="fixed">Fixed Amount</option>
                                                 <option value="percentage">Percentage</option>
                                             </select>
@@ -99,7 +99,7 @@
 
                                 <div class="form-group">
                                     <label for="is_active">Status</label>
-                                    <select class="form-control" id="is_active" name="is_active">
+                                    <select class="form-control p-0 " id="is_active" name="is_active">
                                         <option value="1">Active</option>
                                         <option value="0">Inactive</option>
                                     </select>

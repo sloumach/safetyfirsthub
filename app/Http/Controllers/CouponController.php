@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Coupon;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use App\Services\HelperService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 
@@ -42,14 +43,14 @@ class CouponController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'code' => 'required|string|unique:coupons,code|max:255',
+            /* 'code' => 'required|string|unique:coupons,code|max:255', */
             'discount_type' => 'required|in:fixed,percentage',
             'discount_value' => 'required|numeric|min:0',
             'expiration_date' => 'required|date',
             'usage_limit' => 'nullable|integer|min:1',
             'is_active' => 'required|boolean',
         ]);
-
+        $validated['code'] = HelperService::generateUniqueCouponCode();
         Coupon::create($validated);
 
         return redirect()->route('admin.coupons.index')->with('success', 'Coupon créé avec succès !');
