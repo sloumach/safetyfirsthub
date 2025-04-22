@@ -47,13 +47,20 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container mt-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-4">Exams Management</h2>
+                <div class="row justify-content-center mt-4">
+
+                        <div class="col-6">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="mb-4">Exams Management</h2>
+
+                            </div>
+                        </div>
+
                         <a href="{{ route('admin.exams.create') }}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Add New Exam
                         </a>
-                    </div>
+
+
 
                     <div class="card shadow-sm">
                         <div class="card-body">
@@ -163,7 +170,7 @@
         </div>
     </div> --}}
 
-  
+
 
 
 
