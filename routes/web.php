@@ -132,24 +132,9 @@ Route::group(['middleware' => ['auth', /* 'verified', */ 'role:student']], funct
 
 });
     // ------------------ Routes pour l'administration ------------------
-Route::controller(AdminController::class)->group(function () {
-    Route::get('adminindex', 'index')->name('adminindex');
-    Route::get('adminfinanceindex', 'finance')->name('adminfinanceindex');
-    Route::get('usersmanagement', 'usersManagement')->name('usersManagement');
-    Route::get('admincourses', 'addcourses')->name('admincourses');
-    Route::get('removecourses', 'removecourses')->name('removecourses');
-    Route::post('addcourse', 'addcourse')->name('addcourse');
-    // Route pour mettre à jour un cours
-    Route::post('/admin/course/update/{id}', 'updateCourse')->name('update.course');
-    // Route pour supprimer un cours
-    Route::delete('/admin/course/delete/{id}','deleteCourse')->name('delete.course');
-
-    Route::get('/admin/course/edit/{id}', 'edit')->name('edit.course');
 
 
-});
-
-Route::middleware([])->group(function () {
+Route::middleware(['auth', /*'verified',*/ 'role:admin'])->group(function () {
     Route::prefix('admin/exams')->controller(AdminExamsController::class)->group(function () {
         // Gestion des examens
         Route::get('/', 'listExams')->name('admin.exams');
@@ -180,6 +165,22 @@ Route::middleware([])->group(function () {
         Route::resource('quizzes', AdminQuizController::class);
         Route::get('quizzes/{quiz_id}/questions', [AdminQuizQuestionController::class, 'index'])->name('questions.index');
         Route::resource('quizzes.questions', AdminQuizQuestionController::class)->except(['index']);
+
+
+    });
+    Route::controller(AdminController::class)->group(function () {
+        //Route::get('adminindex', 'index')->name('adminindex');
+        Route::get('adminfinanceindex', 'finance')->name('adminfinanceindex');
+        Route::get('usersmanagement', 'usersManagement')->name('usersManagement');
+        Route::get('admincourses', 'addcourses')->name('admincourses');
+        Route::get('removecourses', 'removecourses')->name('removecourses');
+        Route::post('addcourse', 'addcourse')->name('addcourse');
+        // Route pour mettre à jour un cours
+        Route::post('/admin/course/update/{id}', 'updateCourse')->name('update.course');
+        // Route pour supprimer un cours
+        Route::delete('/admin/course/delete/{id}','deleteCourse')->name('delete.course');
+
+        Route::get('/admin/course/edit/{id}', 'edit')->name('edit.course');
 
 
     });
