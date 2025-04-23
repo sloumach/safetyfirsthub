@@ -81,6 +81,7 @@ Route::group([ 'middleware' => ['auth'/* ,'verified' */]], function () {
 
 Route::group(['middleware' => ['auth', /* 'verified', */ 'role:student']], function () {
     // Dashboard route
+    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard/{any?}', 'index')->where('any', '.*')->name('dashboard');
         // API routes under '/api' prefix
@@ -158,7 +159,7 @@ Route::middleware(['auth', /*'verified',*/ 'role:admin'])->group(function () {
     });
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('coupons', CouponController::class)->except(['show']);
-        Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
+
         Route::get('/coupons/{coupon}', [CouponController::class, 'show'])->name('coupons.show');
 
 
