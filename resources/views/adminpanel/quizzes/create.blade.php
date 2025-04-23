@@ -60,59 +60,64 @@
                             <form action="{{ route('admin.quizzes.store') }}" method="POST">
                                 @csrf
                                 <div class="row">
+                                    <!-- Select Course -->
                                     <div class="col-md-6">
                                         <div class="quiz-input-group">
                                             <label class="quiz-label">
-                                                <i class="fas fa-book-open"></i>
-                                                Section
+                                                <i class="fas fa-book"></i> Course
                                             </label>
-                                            <select name="section_id" class="quiz-select @error('section_id') quiz-input-error @enderror">
-                                                @foreach ($sections as $section)
-                                                    <option value="{{ $section->id }}">{{ $section->title }}</option>
+                                            <select id="course-select" class="quiz-select" required>
+                                                <option value="" disabled selected>Select a course</option>
+                                                @foreach ($courses as $course)
+                                                    <option value="{{ $course->id }}">{{ $course->name }}</option>
                                                 @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Select Section (filtered) -->
+                                    <div class="col-md-6">
+                                        <div class="quiz-input-group">
+                                            <label class="quiz-label">
+                                                <i class="fas fa-book-open"></i> Section
+                                            </label>
+                                            <select name="section_id" id="section-select" class="quiz-select @error('section_id') quiz-input-error @enderror" required>
+                                                <option value="" disabled selected>Select a section</option>
+                                                {{-- Options ajoutées dynamiquement via JS --}}
                                             </select>
                                             @error('section_id')
                                                 <div class="quiz-error-message">
-                                                    <i class="fas fa-exclamation-circle"></i>
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="quiz-input-group">
-                                            <label class="quiz-label">
-                                                <i class="fas fa-percentage"></i>
-                                                Passing Score (%)
-                                            </label>
-                                            <input type="number" name="passing_score" 
-                                                   class="quiz-input @error('passing_score') quiz-input-error @enderror"
-                                                   min="0" max="100" required>
-                                            @error('passing_score')
-                                                <div class="quiz-error-message">
-                                                    <i class="fas fa-exclamation-circle"></i>
-                                                    {{ $message }}
+                                                    <i class="fas fa-exclamation-circle"></i> {{ $message }}
                                                 </div>
                                             @enderror
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="text-right mt-4">
-                                    <a href="{{ route('admin.quizzes.index') }}" class="quiz-btn quiz-btn-secondary mr-2">
-                                        <span class="quiz-btn-icon">
-                                            <i class="fas fa-times"></i>
-                                        </span>
-                                        <span class="quiz-btn-text">Cancel</span>
-                                    </a>
+                                <!-- Other inputs (Passing Score etc.) -->
+                                <div class="col-md-6 mt-3">
+                                    <div class="quiz-input-group">
+                                        <label class="quiz-label">
+                                            <i class="fas fa-percentage"></i> Passing Score (%)
+                                        </label>
+                                        <input type="number" name="passing_score" class="quiz-input @error('passing_score') quiz-input-error @enderror" min="0" max="100" required>
+                                        @error('passing_score')
+                                            <div class="quiz-error-message">
+                                                <i class="fas fa-exclamation-circle"></i> {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <!-- Submit -->
+                                <div class="text-right mt-4 col-12">
                                     <button type="submit" class="quiz-btn quiz-btn-primary">
-                                        <span class="quiz-btn-icon">
-                                            <i class="fas fa-check"></i>
-                                        </span>
+                                        <span class="quiz-btn-icon"><i class="fas fa-check"></i></span>
                                         <span class="quiz-btn-text">Create Quiz</span>
                                     </button>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -156,5 +161,28 @@
             });
         });
     </script>
+    <script>
+        const courses = @json($courses);
+        const courseSelect = document.getElementById('course-select');
+        const sectionSelect = document.getElementById('section-select');
+
+        courseSelect.addEventListener('change', function () {
+            const courseId = parseInt(this.value);
+            const selectedCourse = courses.find(course => course.id === courseId);
+
+            // Vider les anciennes options
+            sectionSelect.innerHTML = '<option value="" disabled selected>Select a section</option>';
+
+            if (selectedCourse) {
+                selectedCourse.sections.forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section.id;
+                    option.textContent = section.title;
+                    sectionSelect.appendChild(option);
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\SectionQuiz;
-use App\Models\SectionQuizQuestion;
-use App\Models\SectionQuizChoice;
+use App\Models\Course;
 use App\Models\Section;
+use App\Models\SectionQuiz;
+use Illuminate\Http\Request;
+use App\Models\SectionQuizChoice;
+use App\Models\SectionQuizQuestion;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 
 class AdminQuizController extends Controller
@@ -20,8 +21,8 @@ class AdminQuizController extends Controller
 
     public function create()
     {
-        $sections = Section::all();
-        return view('adminpanel.quizzes.create', compact('sections'));
+        $courses = Course::with('sections')->get(); // toutes les sections groupées par cours
+        return view('adminpanel.quizzes.create', compact('courses'));
     }
 
     public function store(Request $request)
