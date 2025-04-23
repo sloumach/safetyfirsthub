@@ -47,22 +47,30 @@ class AdminQuizController extends Controller
     public function edit($id)
     {
         $quiz = SectionQuiz::findOrFail($id);
-        $sections = Section::all();
-        return view('adminpanel.quizzes.edit', compact('quiz', 'sections'));
+        $courses = Course::with('sections')->get();
+
+        return view('adminpanel.quizzes.edit', compact('quiz', 'courses'));
     }
+
 
     public function update(Request $request, $id)
     {
         $request->validate([
+            'title' => 'required|string|max:255',
             'section_id' => 'required|exists:sections,id',
             'passing_score' => 'required|integer|min:0|max:100',
         ]);
 
         $quiz = SectionQuiz::findOrFail($id);
-        $quiz->update($request->all());
+        $quiz->update([
+            'title' => $request->title,
+            'section_id' => $request->section_id,
+            'passing_score' => $request->passing_score,
+        ]);
 
         return redirect()->route('admin.quizzes.index')->with('success', 'Quiz mis à jour avec succès.');
     }
+
 
     public function destroy($id)
     {
