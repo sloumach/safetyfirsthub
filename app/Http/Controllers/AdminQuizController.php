@@ -28,6 +28,7 @@ class AdminQuizController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'title' => 'required|string|max:255',
             'section_id' => 'required|exists:sections,id',
             'passing_score' => 'required|integer|min:0|max:100',
         ]);

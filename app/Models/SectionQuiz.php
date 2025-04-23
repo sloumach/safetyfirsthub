@@ -8,7 +8,7 @@ class SectionQuiz extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['section_id', 'passing_score'];
+    protected $fillable = ['section_id','title', 'passing_score'];
 
     public function section()
     {

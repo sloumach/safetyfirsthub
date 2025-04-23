@@ -70,46 +70,55 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Section</th>
+                                            <th>title</th>
                                             <th>Passing Score</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($quizzes as $quiz)
+                                        @forelse ($quizzes as $quiz)
                                             <tr>
                                                 <td>{{ $quiz->id }}</td>
-                                                <td>{{ $quiz->section->title }}</td>
+
+                                                {{-- Affichage du titre du quiz --}}
+                                                <td>
+                                                    <strong>{{ $quiz->title ?? 'No title' }}</strong><br>
+                                                </td>
+
                                                 <td>
                                                     <span class="badge badge-info">
                                                         {{ $quiz->passing_score }}%
                                                     </span>
                                                 </td>
+
                                                 <td>
-                                                    <a href="{{ route('admin.quizzes.show', $quiz->id) }}" 
+                                                    <a href="{{ route('admin.quizzes.show', $quiz->id) }}"
                                                        class="btn btn-info btn-sm btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-eye"></i>
                                                         </span>
                                                         <span class="text">View</span>
                                                     </a>
-                                                    <a href="{{ route('admin.quizzes.edit', $quiz->id) }}" 
+
+                                                    <a href="{{ route('admin.quizzes.edit', $quiz->id) }}"
                                                        class="btn btn-warning btn-sm btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
                                                         <span class="text">Edit</span>
                                                     </a>
-                                                    <a href="{{ route('admin.questions.index', $quiz->id) }}" 
+
+                                                    <a href="{{ route('admin.questions.index', $quiz->id) }}"
                                                        class="btn btn-primary btn-sm btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-question"></i>
                                                         </span>
                                                         <span class="text">Questions</span>
                                                     </a>
-                                                    <form action="{{ route('admin.quizzes.destroy', $quiz->id) }}" 
+
+                                                    <form action="{{ route('admin.quizzes.destroy', $quiz->id) }}"
                                                           method="POST" class="d-inline">
-                                                        @csrf 
+                                                        @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm btn-icon-split">
                                                             <span class="icon text-white-50">
@@ -120,7 +129,11 @@
                                                     </form>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="text-center text-muted">No quizzes found.</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>

@@ -107,6 +107,13 @@
                                             </div>
                                         @enderror
                                     </div>
+                                    <div class="quiz-input-group">
+                                        <label class="quiz-label">
+                                            <i class="fas fa-percentage"></i> title
+                                        </label>
+                                        <input type="text" name="title" class="quiz-input" required>
+
+                                    </div>
                                 </div>
 
                                 <!-- Submit -->
