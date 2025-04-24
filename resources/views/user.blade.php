@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="assets/css/flaticon.css">
     <!-- Meanmenu Min CSS -->
     <link rel="stylesheet" href="assets/css/meanmenu.min.css">
-  
+
     <!-- Odometer Min CSS-->
     <link rel="stylesheet" href="assets/css/odometer.min.css">
     <!-- Style CSS -->
@@ -51,7 +51,7 @@
     @include('navbar')
     <!-- End Navbar Area -->
     <!-- Start Preloader Area -->
-    
+
     <!-- End Preloader Area -->
 
     <div class="ud-container">
@@ -67,47 +67,49 @@
 
         <!-- Tab Content -->
         <div id="profile-tab" class="ud-tab-content active">
-            <form id="profile-form">
+            <form id="profile-form" method="POST" action="{{ route('profile.update') }}">
+                @csrf
                 <div class="ud-form-grid">
                     <div class="ud-form-group">
                         <label class="ud-label">First Name</label>
-                        <input type="text" class="ud-input" name="firstname" required>
+                        <input type="text" class="ud-input" name="firstname" value="{{ $user->firstname }}" required>
                     </div>
                     <div class="ud-form-group">
                         <label class="ud-label">Last Name</label>
-                        <input type="text" class="ud-input" name="lastname" required>
+                        <input type="text" class="ud-input" name="lastname" value="{{ $user->lastname }}" required>
                     </div>
                     <div class="ud-form-group">
                         <label class="ud-label">Country</label>
                         <div class="ud-select-wrapper">
                             <select class="ud-select" name="country" required>
-                                <option value="" disabled selected>Select a country</option>
-                                <option value="United Kingdom">United Kingdom</option>
-                                <option value="Spain">Spain</option>
-                                <option value="USA">USA</option>
-                                <option value="Canada">Canada</option>
+                                <option value="" disabled {{ !$user->country ? 'selected' : '' }}>Select a country</option>
+                                @foreach($countries as $country)
+                                    <option value="{{ $country }}" {{ $user->country == $country ? 'selected' : '' }}>{{ $country }}</option>
+                                @endforeach
                             </select>
+
+
                             <div class="ud-select-arrow"></div>
                         </div>
                     </div>
                     <div class="ud-form-group">
                         <label class="ud-label">Street Address</label>
-                        <input type="text" class="ud-input" name="address" required>
+                        <input type="text" class="ud-input" name="address" value="{{ $user->adress }}" required>
                     </div>
                     <div class="ud-form-group">
                         <label class="ud-label">Town / City</label>
-                        <input type="text" class="ud-input" name="city" required>
+                        <input type="text" class="ud-input" name="city" value="{{ $user->city }}" required>
                     </div>
                     <div class="ud-form-group">
                         <label class="ud-label">State</label>
-                        <input type="text" class="ud-input" name="state" required>
+                        <input type="text" class="ud-input" name="state" value="{{ $user->state }}" required>
                     </div>
                     <div class="ud-form-group">
                         <label class="ud-label">Zip</label>
-                        <input type="text" class="ud-input" name="zip" required>
+                        <input type="text" class="ud-input" name="zip" value="{{ $user->zipcode }}" required>
                     </div>
                 </div>
-                
+
                 <div class="ud-button-group">
                     <button type="button" class="ud-btn ud-btn-secondary">Cancel</button>
                     <button type="submit" class="ud-btn ud-btn-primary">Update</button>
@@ -120,7 +122,7 @@
                 <table class="ud-table" id="paymentTable">
                     <thead>
                         <tr>
-                            
+
                             <th>Course Name</th>
                             <th>Amount</th>
                             <th>Status</th>

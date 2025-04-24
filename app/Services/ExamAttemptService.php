@@ -121,20 +121,22 @@ class ExamAttemptService
         HelperService::markExamAsCompleted($examUser->id, $score, $status);
         $status === 'failed' ? HelperService::resetAllVideos($examUser) : null;
         $attemptsCount = ExamUser::where('user_id', $examUser->user_id)
-                ->where('exam_id', $examUser->exam_id)
-                ->where('status', 'completed')
-                ->where('score', '<', $examUser->exam->passing_score) // Vérifie si les tentatives étaient des échecs
-                ->count();
-                Log::info($attemptsCount);
+            ->whereHas('exam', function ($query) use ($examUser) {
+                $query->where('course_id', $examUser->exam->course_id);
+            })
+            ->where('status', 'completed')
+            ->where('score', '<', $examUser->exam->passing_score)
+            ->count();        // 📌 Vérifier le nombre total de tentatives échouées
 
-                Log::info("role changed");
-                    Log::info($attemptsCount);
-                    Log::info($status);
-                    Log::info($score);
-                    Log::info($correctAnswers);
-        // 📌 Vérifier le nombre total de tentatives échouées
+        Log::info($attemptsCount);
+        Log::info("role changed");
+        Log::info($attemptsCount);
+        Log::info($status);
+        Log::info($score);
+        Log::info($correctAnswers);
+
         if ($status === 'failed') {
-            
+
             if ($attemptsCount >= 3) {
                 $courseId = $examUser->exam->course_id;
                 $userId = $examUser->user_id;
@@ -164,11 +166,11 @@ class ExamAttemptService
                 $courseCount = User::find($userId)->courses()
                 ->whereNotNull('course_user.created_at') // 🔥 Ajout du préfixe 'course_user.'
                 ->count();
-                
+
                 if ($courseCount == 0) {
                     Log::info("role change");
-                    
-                    
+
+
                     // 📌 Gérer les rôles de l'utilisateur
                     $studentRole = Role::where('name', 'student')->first();
                     $userRole = Role::where('name', 'user')->first();
@@ -187,7 +189,7 @@ class ExamAttemptService
                         'message' => 'Exam failed, You have exceeded your maximum attempts and will need to repurchase the course to try again.',
                     ];
                 }
-                   
+
             }
         }
 

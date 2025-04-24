@@ -2,13 +2,17 @@
 
 namespace App\Services;
 
-use App\Services\VideoProgressService;
+use App\Models\Coupon;
 use App\Models\ExamUser;
+use Illuminate\Support\Str;
 use App\Models\VideoProgress;
 use App\Models\UserSectionAttempt;
-class HelperService 
+use App\Services\VideoProgressService;
+
+
+class HelperService
 {
-    
+
 
     public static function checkCourseCompletion($course_id)
     {
@@ -30,8 +34,8 @@ class HelperService
             'status'       => 'completed',
             'score'        => $score,
             'completed_at' => now(),
-        ]);       
-        
+        ]);
+
     }
     public static function resetAllVideos($examUser)
     {
@@ -39,13 +43,22 @@ class HelperService
         ->whereHas('video.section', function ($query) use ($examUser) {
             $query->where('course_id', $examUser->exam->course_id);
         })
-        ->update(['is_completed' => 0]);      
+        ->update(['is_completed' => 0]);
         UserSectionAttempt::where('user_id', $examUser->user_id)
         ->whereHas('section', function ($query) use ($examUser) {
             $query->where('course_id', $examUser->exam->course_id);
         })
         ->delete();
     }
+    public static function generateUniqueCouponCode($length = 12)
+    {
+        do {
+            $code = strtoupper(Str::random($length));
+        } while (Coupon::where('code', $code)->exists());
+
+        return $code;
+    }
+
 }
 
 

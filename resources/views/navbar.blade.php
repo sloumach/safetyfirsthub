@@ -251,6 +251,13 @@
                                         <i class='bx bx-user-circle'></i>
                                         Profile
                                     </a>
+                                    @if (Auth::user()->hasRole('admin'))
+                                    <a href="{{ route('admincourses') }}" class="dropdown-item">
+                                        <i class='bx bx-user-circle'></i>
+                                        Admin Panel
+                                    </a>
+                                    @endif
+
                                     <a href="{{ route('logout') }}" class="dropdown-item">
                                         <i class='bx bx-log-out'></i>
                                         Logout
@@ -332,8 +339,8 @@
                                 </div>
                             </div>
                         </div>
-                        @endguest 
-                       
+                        @endguest
+
                     </div>
                 </div>
             </div>
@@ -346,7 +353,7 @@ function toggleProfileMenu(event) {
     event.preventDefault();
     // Get both desktop and mobile dropdowns
     const dropdowns = document.querySelectorAll('.profile-dropdown-menu');
-    
+
     // Toggle both dropdowns
     dropdowns.forEach(dropdown => {
         dropdown.classList.toggle('show');

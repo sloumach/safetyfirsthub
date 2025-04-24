@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\Payment;
 use Stripe\Checkout\Session;
 use App\Events\CoursePurchased;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -107,18 +108,31 @@ class PaymentService
                     event(new CoursePurchased($user, $course));
                 }
                 if ($couponCode) {
-                    $coupon = Coupon::where('code', $couponCode)->first();
-                    if ($coupon) {
+                    DB::beginTransaction();
+                    try {
+                        $coupon = Coupon::where('code', $couponCode)->lockForUpdate()->first();
+
+                        if (!$coupon || !$coupon->isValid()) {
+                            throw new \Exception("Coupon is no longer valid.");
+                        }
+
                         $existingUsage = $coupon->users()->where('user_id', $user->id)->first();
                         if ($existingUsage) {
                             $coupon->users()->updateExistingPivot($user->id, [
                                 'times_used' => $existingUsage->pivot->times_used + 1
                             ]);
+
                         } else {
                             $coupon->users()->attach($user->id, ['times_used' => 1]);
                         }
+                        $coupon->increment('used_count');
+                        DB::commit();
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        throw $e; // Important de relancer l'erreur pour être attrapée par le catch principal de processPayment
                     }
                 }
+
 
                 // Nettoyer le panier après un paiement réussi
                 // Suppression du coupon après paiement réussi

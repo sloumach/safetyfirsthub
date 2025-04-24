@@ -97,7 +97,7 @@
                                                         <i class="fas fa-edit"></i> Edit
                                                     </a>
                                                     <form action="{{ route('admin.coupons.destroy', $coupon) }}" method="POST" style="display:inline-block;">
-                                                        @csrf 
+                                                        @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm">
                                                             <i class="fas fa-trash"></i> Delete
@@ -142,9 +142,10 @@
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('adminassets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ asset('adminassets/js/sb-admin-2.min.js') }}"></script>
 
         <!-- Custom scripts for all pages-->
-        <script src="adminassets/js/sb-admin-2.min.js"></script>
+
 
     <!-- DataTables JavaScript -->
     <script src="{{ asset('adminassets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
