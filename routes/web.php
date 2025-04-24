@@ -81,7 +81,7 @@ Route::group([ 'middleware' => ['auth'/* ,'verified' */]], function () {
 
 Route::group(['middleware' => ['auth', /* 'verified', */ 'role:student']], function () {
     // Dashboard route
-    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
+    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('admin.apply.coupon');
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard/{any?}', 'index')->where('any', '.*')->name('dashboard');
         // API routes under '/api' prefix
