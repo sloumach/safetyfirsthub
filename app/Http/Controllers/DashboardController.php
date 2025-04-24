@@ -89,7 +89,7 @@ class DashboardController extends Controller
     {
         $course = Course::with(['sections.videos', 'sections.quiz.questions.choices'])->findOrFail($course_id);
         $userId = auth()->id();
-    
+
         return response()->json([
             'sections' => $course->sections->map(function ($section) use ($userId) {
                 // Vérifier si l'utilisateur a réussi le quiz de cette section
@@ -97,7 +97,7 @@ class DashboardController extends Controller
                     ->where('section_id', $section->id)
                     ->orderByDesc('created_at') // Dernière tentative en premier
                     ->first();
-    
+
                 return [
                     'id'     => $section->id,
                     'title'  => $section->title,
@@ -106,7 +106,7 @@ class DashboardController extends Controller
                             'id'           => $video->id,
                             'title'        => $video->title,
                             'duration'     => $video->duration,
-                            'video_url'    => url("/sections/{$section->id}/video"), 
+                            'video_url'    => url("/sections/{$section->id}/video"),
                             'is_completed' => VideoProgress::where('user_id', $userId)
                                 ->where('video_id', $video->id)
                                 ->where('is_completed', true)
@@ -143,7 +143,7 @@ class DashboardController extends Controller
             }),
         ]);
     }
-    
+
 
 
     public function getVideoUrl($video_id)
@@ -199,6 +199,7 @@ class DashboardController extends Controller
                 'instructor'   => 'John Doe',
                 'price'        => 'Free',
                 'email'        => $user->email,
+                'category'     => $course->category,
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Course not found'], 404);
@@ -267,12 +268,12 @@ class DashboardController extends Controller
         $path = "courses/covers/{$filename}";
 
         // Vérifier si l'image existe
-        if (! Storage::disk('private')->exists($path)) {
+        if (! Storage::disk('public')->exists($path)) {
             abort(404, 'Cover not found');
         }
 
         // Retourner l'image
-        return response()->file(Storage::disk('private')->path($path));
+        return response()->file(Storage::disk('public')->path($path));
     }
     public function getPassedExams()
     {

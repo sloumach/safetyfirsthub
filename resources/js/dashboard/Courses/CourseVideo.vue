@@ -8,6 +8,9 @@
                             <li class="breadcrumb-item">
                                 <router-link to="/dashboard/courses">Certified Courses</router-link>
                             </li>
+                            <li class="breadcrumb-item">
+                                {{ course.category  }}
+                            </li>
                             <li class="breadcrumb-item active" aria-current="page">
                                 {{ course?.name || course?.title }}
                             </li>
@@ -20,10 +23,10 @@
                 <!-- Sidebar Column -->
                 <div class="col-lg-3 col-md-4">
                     <div class="course-sidebar">
-                        <h4 class="sidebar-title d-flex justify-content-between align-items-center" 
+                        <h4 class="sidebar-title d-flex justify-content-between align-items-center"
                             @click="toggleMobileSidebar">
                             Course Content
-                            <i class="fas d-md-none" 
+                            <i class="fas d-md-none"
                                :class="isSidebarOpen ? 'fa-chevron-up' : 'fa-chevron-down'">
                             </i>
                         </h4>
@@ -111,11 +114,11 @@
                                     <div class="video-container">
                                         <!-- Simple watermark -->
                                         <div class="video-watermark">{{ userEmail }} | safetyfirsthub.com</div>
-                                        
-                                        <video 
-                                            ref="videoPlayer" 
-                                            class="video-player" 
-                                            controls 
+
+                                        <video
+                                            ref="videoPlayer"
+                                            class="video-player"
+                                            controls
                                             @timeupdate="updateProgress(currentContent.section_id, currentContent.video_id, $event)"
                                             @ended="markAsCompleted(currentContent.section_id, currentContent.video_id)"
                                             @seeking="preventSeeking">
@@ -126,7 +129,7 @@
 
                                     <div class="video-messages">
                                         <div v-if="isCompleted" class="video-status-message success">
-                                            <span>Vous avez terminé cette vidéo ! Vous pouvez maintenant passer l'examen.</span>
+                                            <span>You've completed this video! Now you can take the exam.</span>
                                         </div>
                                         <div v-else class="video-status-message warning">
                                             <i class="fas fa-clock"></i>
@@ -394,14 +397,35 @@ const markAsCompleted = async (section_id, video_id) => {
             }
         }
 
-        // Show completion message
-        await Swal.fire({
-            title: 'Vidéo Complétée',
-            text: 'Vous pouvez maintenant passer le quiz de la section.',
-            icon: 'success',
-            confirmButtonColor: '#FF8A00'
-        });
+        // Check if this is the last section and last video
+        const isLastSection = currentSection.value.id === sections.value[sections.value.length - 1].id;
+        const allVideosCompleted = currentSection.value.videos.every(video => video.is_completed);
 
+        // If it's the last section, all videos are completed, and there's no quiz
+        if (isLastSection && allVideosCompleted && !currentSection.value.quiz) {
+            await Swal.fire({
+                title: 'Congratulations! 🎉',
+                text: 'You have completed all sections! You will now be redirected to the final exam.',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#FF8A00',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="bx bx-trophy"></i> Take Exam',
+                cancelButtonText: 'Later'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.push('/dashboard/exams');
+                }
+            });
+        } else {
+            // Show regular completion message
+            await Swal.fire({
+                title: 'Video Completed! 🎉',
+                text: 'You can now proceed.',
+                icon: 'success',
+                confirmButtonColor: '#FF8A00'
+            });
+        }
     } catch (error) {
         console.error("Erreur lors de la complétion de la vidéo :", error);
     }
@@ -619,7 +643,7 @@ const handleQuizCompletion = async ({ passed, score }) => {
                 icon: 'success',
                 confirmButtonColor: '#FF8A00'
             });
-            
+
             // Redirect to exam page
             router.push('/dashboard/exams');
         } else {
@@ -734,7 +758,7 @@ onBeforeUnmount(() => {
 // Add a watch for isCompleted
 watch(isCompleted, (newValue) => {
     if (newValue && currentSection.value?.quiz) {
-     
+
     }
 });
 
@@ -784,7 +808,7 @@ const toggleMobileSidebar = () => {
     .video-player {
         max-height: 350px !important;
     }
-    
+
     .video-watermark {
         font-size: 11px !important;
         bottom: 45% !important;
