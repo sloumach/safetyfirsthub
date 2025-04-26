@@ -25,13 +25,13 @@
                     <span class="question-number">Question {{ currentQuestionIndex + 1 }} of {{ quiz.questions.length }}</span>
                     <p class="question-text">{{ currentQuestion.text }}</p>
                 </div>
-                
+
                 <div class="choices-container">
-                    <label v-for="choice in currentQuestion.choices" 
-                           :key="choice.id" 
+                    <label v-for="choice in currentQuestion.choices"
+                           :key="choice.id"
                            class="choice-label"
                            :class="{ 'selected': selectedAnswers[currentQuestion.id] === choice.id }">
-                        <input type="radio" 
+                        <input type="radio"
                                :name="'question-' + currentQuestion.id"
                                :value="choice.id"
                                v-model="selectedAnswers[currentQuestion.id]"
@@ -84,9 +84,9 @@ const currentQuestion = computed(() => {
 });
 
 const startTimer = () => {
-    timer.value = 10;
+    timer.value = 60;
     clearInterval(timerInterval);
-    
+
     timerInterval = setInterval(() => {
         if (timer.value > 0) {
             timer.value--;
@@ -97,26 +97,26 @@ const startTimer = () => {
 };
 
 const handleTimeUp = () => {
-   
+
     clearInterval(timerInterval);
     moveToNextQuestion();
 };
 
 const moveToNextQuestion = async () => {
-   
-    
+
+
     if (currentQuestionIndex.value === props.quiz.questions.length - 1) {
         await submitQuiz();
         return;
     }
-    
+
     currentQuestionIndex.value++;
     startTimer();
 };
 
 const submitQuiz = async () => {
     clearInterval(timerInterval);
-    
+
     try {
         const answers = props.quiz.questions.map(question => ({
             question_id: question.id,
@@ -145,7 +145,7 @@ const submitQuiz = async () => {
 
     } catch (error) {
         console.error('Quiz Submission Error:', error);
-        
+
         Swal.fire({
             title: 'Error',
             text: 'Failed to submit quiz. Please try again.',
@@ -159,7 +159,7 @@ const submitQuiz = async () => {
 // Watch for answer selection to automatically move to next question
 watch(() => selectedAnswers.value[currentQuestion.value?.id], (newValue) => {
     if (newValue !== undefined) {
-       
+
         setTimeout(() => moveToNextQuestion(), 500);
     }
 });
@@ -444,12 +444,12 @@ onUnmounted(() => {
         padding: 16px;
     }
     .timer {
-   
+
     margin-left: 16px;
-   
+
 }
 .passing-score{
     margin-left: 16px;
 }
 }
-</style> 
+</style>

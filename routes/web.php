@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth', /* 'verified', */ 'role:student']], funct
 
         });
         // Secure storage access route
-        Route::get('/storage/private-cover/{filename}', 'serveCover')->name('cover.access');
+        Route::get('/storage/courses/covers/{filename}', 'serveCover')->name('cover.access');
 
     });
     Route::prefix('exam')->group(function () {

@@ -32,10 +32,10 @@
               :alt="course.name"
               @error="handleImageError"
             />
-            <div class="exam-badge">
+            <!-- <div class="exam-badge">
               <i class='bx bx-video'></i>
               {{ course.total_videos }} videos required
-            </div>
+            </div> -->
           </div>
 
           <div class="exam-content">
@@ -49,7 +49,7 @@
               </div>
               <div class="info-item">
                 <i class='bx bx-time'></i>
-                <span>60 minutes</span>
+
               </div>
             </div>
 
@@ -131,17 +131,17 @@ export default {
         const response = await axios.get('/api/courses');
         const coursesWithExamStatus = response.data.map(course => {
           // Find best score for this course's exam
-          const courseExams = examHistory.filter(result => 
+          const courseExams = examHistory.filter(result =>
             result.exam.course_id === course.id
           );
           const bestScore = Math.max(...courseExams.map(exam => exam.score), 0);
-          
+
           return {
             ...course,
             examcheck: bestScore >= 70 // Pass if best score is 70% or higher
           };
         });
-        
+
         courses.value = coursesWithExamStatus;
       } catch (error) {
         console.error('Error fetching courses:', error);
@@ -193,13 +193,13 @@ export default {
 
     const shouldShowPagination = computed(() => {
       return courses.value.length > itemsPerPage.value
-    })  
+    })
 
     const paginatedCourses = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
       return courses.value.slice(start, end);
-    })    
+    })
 
     const displayedPages = computed(() => {
       const pages = [] ;

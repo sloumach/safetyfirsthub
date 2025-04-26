@@ -113,7 +113,7 @@
                                 <div class="doc-content video-wrapper">
                                     <div class="video-container">
                                         <!-- Simple watermark -->
-                                        <div class="video-watermark">{{ userEmail }} | safetyfirsthub.com</div>
+                                        <div class="video-watermark"> safetyfirsthub.com</div>
 
                                         <video
                                             ref="videoPlayer"

@@ -76,7 +76,7 @@ const hasAttemptsExhausted = ref(false);
 const noQuestionsAvailable = ref(false);
 let isActive = true;
 // Add timer ref
-const timer = ref(10);
+const timer = ref(60);
 let timerInterval = null;
 
 // Add these security-related refs
