@@ -118,6 +118,7 @@ class DashboardController extends Controller
                             'id'      => $slide->id,
                             'title'   => $slide->title,
                             'content' => $slide->content,
+                            'file' => $slide->file_path,
                         ];
                     }),
                     'quiz' => $section->quiz ? [

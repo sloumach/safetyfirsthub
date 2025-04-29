@@ -161,12 +161,12 @@ class AdminController extends Controller
             }
             DB::commit();
             $this->flasher->addSuccess('Course added successfully! ');
-            return redirect()->route('adminindex');
+            return redirect()->route('admincourses');
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error("Error in addCourse: " . $e->getMessage());
             $this->flasher->addSuccess('Course added successfully! ');
-            return redirect()->route('adminindex');
+            return redirect()->route('admincourses');
         }
     }
     public function edit($id)

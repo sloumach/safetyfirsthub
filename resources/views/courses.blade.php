@@ -73,7 +73,7 @@
 					<div class="welcome-content">
 						<h2>Start Your Learning Journey</h2>
 						<p>Browse through our courses and take the first step towards your goals</p>
-						
+
 						<div class="welcome-steps">
 							<div class="step">
 								<span class="step-number">1</span>
@@ -93,12 +93,31 @@
 					</div>
 				</div>
 
+				<!-- Add Category Filter Section -->
+				<div class="category-filter-section mb-4">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+								<div class="filter-buttons">
+									<button class="filter-btn active" data-category="all">All Courses</button>
+									@php
+										$categories = $courses->pluck('category')->unique();
+									@endphp
+									@foreach($categories as $category)
+										<button class="filter-btn" data-category="{{ $category }}">{{ $category }}</button>
+									@endforeach
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<div class="showing-result">
 					<div class="row align-items-center">
 						<!-- <div class="col-lg-6 col-md-4">
 							 <div class="showing-result-count">
 								<p>Showing 1-8 of 14 results</p>
-							</div> 
+							</div>
 						</div>
 
 						<div class="col-lg-3 col-md-4">
@@ -129,18 +148,18 @@
 				<div class="courses-container">
 					<div class="row courses-grid" >
 						@foreach ($courses as $course)
-							<div class="course-item col-lg-4 col-md-6 col-sm-12">
+							<div class="course-item col-lg-4 col-md-6 col-sm-12" data-category="{{ $course->category }}">
 								<a href="{{ route('singlecourse', ['id' => $course->id]) }}" class="course-link">
 									<div class="single-course" onmousemove="moveHelper(event, this)">
 										<div class="course-helper">Click to start learning</div>
-										
+
 										<div class="course-img-wrapper">
 											<img src="{{ asset('storage/' . $course->cover) }}" alt="Cover for {{ $course->category }}">
 										</div>
 
 										<div class="course-content">
 											<span class="price">${{ $course->price }}</span>
-											
+
 											<div class="title-container">
 												<h3>{{ $course->name }}</h3>
 												<span class="tag">{{ $course->category }}</span>
@@ -191,5 +210,6 @@
     </body>
     @include('layouts.scripts')
     <!-- Page Specific Scripts -->
-    <script src="assets/js/pagination.js"></script>
+    <script src="assets/js/courseblade.js"></script>
+	<script src="assets/js/pagination.js"></script>
 </html>

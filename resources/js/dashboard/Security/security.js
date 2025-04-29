@@ -43,10 +43,10 @@ const PreventSecurity = (() => {
     };
 
     const setSecurityCallback = (callback) => {
-       
+
         securityCallback = callback;
     };
-    
+
     const triggerSecurityEvent = (reason) => {
         if (securityCallback) {
             securityCallback(reason);
@@ -118,10 +118,10 @@ const PreventSecurity = (() => {
     };
 
     const handleSecurityViolation = async (router) => {
-       
-        
+
+
         if (securityCallback) {
-         
+
             await securityCallback('video_security_breach');
         }
 
@@ -132,7 +132,7 @@ const PreventSecurity = (() => {
 
     const handleBlurVideo = async (router) => {
         if (isCourseVideoSessionActive) {
-           
+
             await handleSecurityViolation(router);
         }else if (isQuizSessionActive) {
             triggerSecurityEvent('quiz_security_breach');
@@ -142,7 +142,7 @@ const PreventSecurity = (() => {
 
     const handleVisibilityChangeVideo = async (router) => {
         if (document.hidden && isCourseVideoSessionActive) {
-           
+
             await handleSecurityViolation(router);
         }else if (isQuizSessionActive) {
             triggerSecurityEvent('quiz_security_breach');
@@ -151,10 +151,15 @@ const PreventSecurity = (() => {
     };
 
     const handleKeydownVideo = async (e, router) => {
-        if (isCourseVideoSessionActive && ((e.ctrlKey && e.key === 'r') || e.key === 'F5')) {
-            e.preventDefault();
-            router.push("/dashboard/courses");
-        }else if (isQuizSessionActive) {
+        if (isCourseVideoSessionActive) {
+            // Block Ctrl+R, F5, and Ctrl+C
+            if ((e.ctrlKey && (e.key === 'r' || e.key === 'c')) || e.key === 'F5') {
+                e.preventDefault();
+                if (e.key === 'r' || e.key === 'F5') {
+                    router.push("/dashboard/courses");
+                }
+            }
+        } else if (isQuizSessionActive) {
             const blockedKeys = ['F12', 'F5', 'r'];
             const blockedCombos = [
                 e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)
@@ -179,8 +184,8 @@ const PreventSecurity = (() => {
     };
 
     const handleBeforeUnload = (e, currentContent, isCompleted) => {
-        if (isCourseVideoSessionActive && 
-            currentContent?.type === 'video' && 
+        if (isCourseVideoSessionActive &&
+            currentContent?.type === 'video' &&
             !isCompleted) {
             e.preventDefault();
             e.returnValue = '';
@@ -190,7 +195,7 @@ const PreventSecurity = (() => {
     const init = (appRouter, isQuiz = false) => {
         router = appRouter;
         isQuizSessionActive = isQuiz;
-        
+
         window.addEventListener('blur', handleBlur);
         document.addEventListener('visibilitychange', handleVisibilityChange);
         document.addEventListener('contextmenu', disableRightClick);
@@ -206,7 +211,7 @@ const PreventSecurity = (() => {
         isCourseVideoSessionActive = !isQuiz; // Set to false if it's a quiz
         isQuizSessionActive = isQuiz; // Set to true if it's a quiz
 
-        
+
         window.addEventListener('blur', () => handleBlurVideo(appRouter));
         document.addEventListener('visibilitychange', () => handleVisibilityChangeVideo(appRouter));
         document.addEventListener('contextmenu', disableRightClick);
@@ -240,9 +245,9 @@ const PreventSecurity = (() => {
         videoRef = null;
     };
 
-    return { 
-        init, 
-        cleanup, 
+    return {
+        init,
+        cleanup,
         setSecurityCallback,
         initVideo,
         cleanupVideo
