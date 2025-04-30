@@ -1,19 +1,22 @@
 <?php
 namespace App\Services;
 
+use Mail;
 use App\Models\Exam;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Order;
 use App\Models\Choice;
+use App\Models\Payment;
 use App\Models\ExamUser;
-use App\Models\VideoProgress;
 use App\Models\Question;
 use App\Models\UserAnswer;
-use App\Models\User;
-use App\Models\Role;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use App\Models\Payment;
-use App\Models\Order;
+use App\Models\VideoProgress;
 use App\Models\UserSectionAttempt;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Mail\ExamFailedNotification;
+use App\Mail\ExamPassedNotification;
 
 class ExamAttemptService
 {
@@ -119,6 +122,22 @@ class ExamAttemptService
         $status = $score >= $examUser->exam->passing_score ? 'passed' : 'failed';
 
         HelperService::markExamAsCompleted($examUser->id, $score, $status);
+
+        // 📌 Envoi de l'email de notification
+        $user = $examUser->user;
+        $course = $examUser->exam->course;
+
+        if ($status === 'failed') {
+            $attemptsLeft = max(0, 3 - $attemptsCount);
+
+            Mail::to($user->email)->send(
+                new ExamFailedNotification($user, $course, $attemptsLeft)
+            );
+        } else {
+            Mail::to($user->email)->send(
+                new ExamPassedNotification($user, $course)
+            );
+        }
         $status === 'failed' ? HelperService::resetAllVideos($examUser) : null;
         $attemptsCount = ExamUser::where('user_id', $examUser->user_id)
             ->whereHas('exam', function ($query) use ($examUser) {
@@ -191,7 +210,7 @@ class ExamAttemptService
                 }
 
             }
-            //ici email en cas failed
+
         }
 
         return [
