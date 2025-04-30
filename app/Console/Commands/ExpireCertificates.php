@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\Certificate;
 use Carbon\Carbon;
+use App\Models\Certificate;
+use Illuminate\Console\Command;
+use App\Mail\CertificateExpired;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CertificateExpiringInOneMonth;
+use App\Mail\CertificateExpiringInFifteenDays;
 
 class ExpireCertificates extends Command
 {
@@ -24,18 +28,30 @@ class ExpireCertificates extends Command
             $examUser = $certificate->examUser;
             $exam = $examUser?->exam;
             $course = $exam?->course;
-
+            $user = $examUser?->user;
             // On vérifie que tout est bien chargé et que la durée est définie
-            if (!$course || !$course->duration) {
+            if (!$user || !$course || !$course->duration) {
                 continue;
             }
 
             // Calcul de la date d’expiration
             $expirationDate = $certificate->created_at->copy()->addMonths($course->duration);
 
-            if (now()->greaterThan($expirationDate)) {
+            $now = now();
+
+            $daysUntilExpiration = $now->diffInDays($expirationDate, false);
+
+            if ($daysUntilExpiration <= 0) {
+                // Expiré
                 $certificate->update(['available' => false]);
+                Mail::to($user->email)->send(new CertificateExpired($certificate));
                 $expiredCount++;
+            } elseif ($daysUntilExpiration === 15) {
+                // 15 jours avant
+                Mail::to($user->email)->send(new CertificateExpiringInFifteenDays($certificate));
+            } elseif ($daysUntilExpiration === 30) {
+                // 1 mois avant
+                Mail::to($user->email)->send(new CertificateExpiringInOneMonth($certificate));
             }
         }
 
