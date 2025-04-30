@@ -191,6 +191,7 @@ class ExamAttemptService
                 }
 
             }
+            //ici email en cas failed
         }
 
         return [

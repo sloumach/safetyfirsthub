@@ -61,7 +61,7 @@ class RegisteredUserController extends Controller
             ]);
 
             //SendEmailVerificationJob::dispatch($user);
-            //event(new Registered($user)); // il prend minimum 5 secondes pour envoyer le mail
+            event(new Registered($user)); // il prend minimum 2 secondes pour envoyer le mail
 
             Auth::login($user);
 
@@ -76,6 +76,7 @@ class RegisteredUserController extends Controller
             }
             return back()->withInput();
         } catch (\Exception $e) {
+            dd($e->getMessage());
             $this->flasher->addError('An error occurred during registration. Please try again.');
             return back()->withInput();
         }

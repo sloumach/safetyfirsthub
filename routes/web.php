@@ -46,9 +46,11 @@ Route::controller(ContactController::class)->group(function () {
 Route::controller(CourseController::class)->group(function () {
     Route::get('/singlecourse/{id}', 'singlecourse')->name('singlecourse');
     Route::get('/courses', 'index')->name('courses');
+    Route::get('/search', 'search')->name('search.courses');
+
 });
 
-Route::group([ 'middleware' => ['auth'/* ,'verified' */]], function () {
+Route::group([ 'middleware' => ['auth','verified']], function () {
 
     Route::controller(ShopController::class)->group(function () {
         Route::get('/shop', 'index')->name('shop');
@@ -79,7 +81,7 @@ Route::group([ 'middleware' => ['auth'/* ,'verified' */]], function () {
     });
 });
 
-Route::group(['middleware' => ['auth', /* 'verified', */ 'role:student']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:student']], function () {
     // Dashboard route
     Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('admin.apply.coupon');
     Route::controller(DashboardController::class)->group(function () {
@@ -135,7 +137,7 @@ Route::group(['middleware' => ['auth', /* 'verified', */ 'role:student']], funct
     // ------------------ Routes pour l'administration ------------------
 
 
-Route::middleware(['auth', /*'verified',*/ 'role:admin'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::prefix('admin/exams')->controller(AdminExamsController::class)->group(function () {
         // Gestion des examens
         Route::get('/', 'listExams')->name('admin.exams');
