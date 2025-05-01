@@ -126,7 +126,13 @@ class ExamAttemptService
         // 📌 Envoi de l'email de notification
         $user = $examUser->user;
         $course = $examUser->exam->course;
-
+        $attemptsCount = ExamUser::where('user_id', $examUser->user_id)
+        ->whereHas('exam', function ($query) use ($examUser) {
+            $query->where('course_id', $examUser->exam->course_id);
+        })
+        ->where('status', 'completed')
+        ->where('score', '<', $examUser->exam->passing_score)
+        ->count();        // 📌 Vérifier le nombre total de tentatives échouées
         if ($status === 'failed') {
             $attemptsLeft = max(0, 3 - $attemptsCount);
 
@@ -139,13 +145,7 @@ class ExamAttemptService
             );
         }
         $status === 'failed' ? HelperService::resetAllVideos($examUser) : null;
-        $attemptsCount = ExamUser::where('user_id', $examUser->user_id)
-            ->whereHas('exam', function ($query) use ($examUser) {
-                $query->where('course_id', $examUser->exam->course_id);
-            })
-            ->where('status', 'completed')
-            ->where('score', '<', $examUser->exam->passing_score)
-            ->count();        // 📌 Vérifier le nombre total de tentatives échouées
+
 
         Log::info($attemptsCount);
         Log::info("role changed");
