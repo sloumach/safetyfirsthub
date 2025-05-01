@@ -377,11 +377,9 @@
                 if (e.target.classList.contains("remove-video-btn") || e.target.closest(".remove-video-btn")) {
                     const video = e.target.closest(".video-accordion");
                     const videosWrapper = video.closest(".videos-wrapper");
-                    if (videosWrapper.querySelectorAll(".video-accordion").length > 1) {
+
                         video.remove();
-                    } else {
-                        alert("You cannot remove the last video!");
-                    }
+
                 }
             });
             });
