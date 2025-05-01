@@ -170,6 +170,7 @@
 
     </body>
     @include('layouts.scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.querySelector('.coupon-apply-btn').addEventListener('click', function() {
             let couponCode = document.querySelector('#coupon_code').value;
@@ -184,20 +185,29 @@
             .then(response => response.json())
             .then(data => {
                 let messageBox = document.querySelector('#coupon-message');
+                console.log(data);
                 if (data.success) {
+                    Swal.fire({
+                        title: "Coupon Applied!",
+                        icon: "success",
+                    });
                     // Just update the totals
                     document.querySelector('#discount').innerText = `$${data.discount}`;
                     document.querySelector('#payable_total').innerHTML = `<b>$${data.new_total}</b>`;
                 } else {
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something went wrong with the coupon!"
+                    });
                     messageBox.innerHTML = `<span class="text-danger">${data.message}</span>`;
                 }
             });
         });
         </script>
 
-    <!-- Page Specific Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <script src="adminassets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-    <script src="{{ asset('assets/js/cart.js') }}"></script>
+
 </html>

@@ -111,7 +111,7 @@ const handleTimeUp = async () => {
 
 // Modify startTimer to ensure timer is working properly
 const startTimer = () => {
-    timer.value = 10;
+    timer.value = 60;
     clearInterval(timerInterval);
 
     timerInterval = setInterval(() => {

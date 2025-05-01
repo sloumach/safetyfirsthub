@@ -76,7 +76,11 @@ class RegisteredUserController extends Controller
             }
             return back()->withInput();
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            foreach ($e->errors() as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->flasher->addError($field . ': ' . $message);
+                }
+            }
             $this->flasher->addError('An error occurred during registration. Please try again.');
             return back()->withInput();
         }

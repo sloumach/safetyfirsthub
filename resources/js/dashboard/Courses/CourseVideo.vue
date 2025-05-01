@@ -124,6 +124,7 @@
                                             ref="videoPlayer"
                                             class="video-player"
                                             controls
+                                            controlsList="nodownload"
                                             @timeupdate="updateProgress(currentContent.section_id, currentContent.video_id, $event)"
                                             @ended="markAsCompleted(currentContent.section_id, currentContent.video_id)"
                                             @seeking="preventSeeking">

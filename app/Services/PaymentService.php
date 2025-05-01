@@ -24,6 +24,7 @@ class PaymentService
 
             $session = Session::create([
                 'payment_method_types' => ['card'],
+                'locale' => 'auto',
                 'line_items' => [[
                     'price_data' => [
                         'currency' => 'usd',

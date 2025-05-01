@@ -48,7 +48,7 @@
                 <span>{{ course.students || 0 }} students</span> -->
               </div>
               <div class="info-item">
-                <i class='bx bx-time'></i>
+
 
               </div>
             </div>
