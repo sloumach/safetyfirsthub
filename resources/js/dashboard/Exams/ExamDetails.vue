@@ -248,8 +248,8 @@ const handleExamCompletion = async (examData) => {
         } else {
             // Show failure message
             await Swal.fire({
-                title: "Examen échoué ❌",
-                text: `Votre score est de ${score}%. ${retry_allowed ? `Il vous reste ${attempts_left} tentatives.` : "Vous ne pouvez plus réessayer."}`,
+                title: "Failed exam ❌",
+                text: `Your score is ${score}%. ${retry_allowed ? `You have left ${attempts_left} attempts.` : "You can't try again."}`,
                 icon: "error",
                 confirmButtonColor: "#3085d6",
                 confirmButtonText: "OK",
@@ -352,27 +352,31 @@ const showInitialWarning = () => {
 // 🏁 Démarrer une session d'examen
 onMounted(async () => {
     try {
-        // Show warning first
+        console.log('ExamDetails mounted');
+        
         const confirmed = await showInitialWarning();
 
         if (!confirmed) {
-            return; // User cancelled, don't start exam
+            console.log('User cancelled exam start');
+            router.push('/dashboard/exams');
+            return;
         }
 
-        // Initialize security after warning is acknowledged
+        console.log('Initializing exam security...');
+        
+        PreventSecurity.cleanup(); // Clean up any existing state
         PreventSecurity.setSecurityCallback(reportSecurityBreach);
         PreventSecurity.init(router);
 
-        // Start exam session
         const response = await axios.post(`/exam/start/${route.params.id}`);
         sessionId.value = response.data.session_id;
         fetchNextQuestion();
     } catch (error) {
+        console.error('Error in exam initialization:', error);
         // Handle max attempts reached error
         if (error.response?.status === 403 && error.response?.data?.error === 'exam.max_attempts_reached') {
             hasAttemptsExhausted.value = true;
 
-            // Show alert before resetting progress
             await Swal.fire({
                 title: 'Maximum Attempts Reached',
                 text: 'You have reached the maximum number of attempts. Your progress will be reset.',
@@ -383,17 +387,16 @@ onMounted(async () => {
     }
 });
 
-// 🛑 Nettoyage à la fermeture de la page
-onUnmounted(() => {
-    isActive = false;
-    clearInterval(timerInterval);
+// Ensure cleanup happens when component is unmounted
+onBeforeUnmount(() => {
+    console.log('ExamDetails unmounting, cleaning up security...');
+    PreventSecurity.cleanup();
 });
 
-// Clean up event listeners
-onBeforeUnmount(() => {
-    PreventSecurity.cleanup();
-
-
+onUnmounted(() => {
+    console.log('ExamDetails unmounted');
+    isActive = false;
+    clearInterval(timerInterval);
 });
 </script>
 
