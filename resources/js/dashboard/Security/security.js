@@ -18,9 +18,9 @@ const showSecurityAlert = async (message) => {
 };
 
 const PreventSecurity = (() => {
-    let isExamSessionActive = true;
-    let isCourseVideoSessionActive = true;
-    let isQuizSessionActive = true;
+    let isExamSessionActive = false;
+    let isCourseVideoSessionActive = false;
+    let isQuizSessionActive = false;
     let router = null;
     let detectDevToolsInterval = null;
     let securityCallback = null;
@@ -43,7 +43,7 @@ const PreventSecurity = (() => {
     };
 
     const setSecurityCallback = (callback) => {
-
+        console.log('Setting security callback');
         securityCallback = callback;
     };
 
@@ -54,12 +54,19 @@ const PreventSecurity = (() => {
     };
 
     const handleBlur = async () => {
+        console.log('Blur event triggered - Current states:', {
+            isExamSessionActive,
+            isQuizSessionActive
+        });
+
         if (isExamSessionActive) {
-            triggerSecurityEvent('raison');
+            console.log('Exam security breach detected!');
+            if (securityCallback) {
+                await securityCallback('raison');
+            }
             isExamSessionActive = false;
-            router.push('/dashboard/exams');
-        } else if (isQuizSessionActive) {
-            triggerSecurityEvent('quiz_security_breach');
+            window.location.replace('/dashboard/exams');
+            return;
         }
     };
 
@@ -118,10 +125,7 @@ const PreventSecurity = (() => {
     };
 
     const handleSecurityViolation = async (router) => {
-
-
         if (securityCallback) {
-
             await securityCallback('video_security_breach');
         }
 
@@ -132,9 +136,8 @@ const PreventSecurity = (() => {
 
     const handleBlurVideo = async (router) => {
         if (isCourseVideoSessionActive) {
-
             await handleSecurityViolation(router);
-        }else if (isQuizSessionActive) {
+        } else if (isQuizSessionActive) {
             triggerSecurityEvent('quiz_security_breach');
             router.push("/dashboard/courses");
         }
@@ -142,9 +145,8 @@ const PreventSecurity = (() => {
 
     const handleVisibilityChangeVideo = async (router) => {
         if (document.hidden && isCourseVideoSessionActive) {
-
             await handleSecurityViolation(router);
-        }else if (isQuizSessionActive) {
+        } else if (isQuizSessionActive) {
             triggerSecurityEvent('quiz_security_breach');
             router.push("/dashboard/courses");
         }
@@ -177,7 +179,7 @@ const PreventSecurity = (() => {
         // Simply navigate back when popstate occurs
         if (isCourseVideoSessionActive) {
             router.push("/dashboard/courses");
-        }else if (isQuizSessionActive) {
+        } else if (isQuizSessionActive) {
             triggerSecurityEvent('quiz_security_breach');
             router.push("/dashboard/courses");
         }
@@ -193,15 +195,44 @@ const PreventSecurity = (() => {
     };
 
     const init = (appRouter, isQuiz = false) => {
+        console.log('Initializing security...');
+        
+        // First remove any existing listeners
+        removeAllListeners();
+        
+        // Then set the state
+        isExamSessionActive = true;
         router = appRouter;
         isQuizSessionActive = isQuiz;
 
+        console.log('After init - States:', {
+            isExamSessionActive,
+            isQuizSessionActive,
+            hasRouter: !!router
+        });
+
+        // Add fresh event listeners
+        addAllListeners();
+        
+        window.history.pushState(null, '', window.location.href);
+    };
+
+    const addAllListeners = () => {
+        console.log('Adding all listeners...');
         window.addEventListener('blur', handleBlur);
         document.addEventListener('visibilitychange', handleVisibilityChange);
         document.addEventListener('contextmenu', disableRightClick);
         window.addEventListener('keydown', handleKeydown);
         window.addEventListener('popstate', handlePopstate);
-        window.history.pushState(null, '', window.location.href);
+    };
+
+    const removeAllListeners = () => {
+        console.log('Removing all listeners...');
+        window.removeEventListener('blur', handleBlur);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        document.removeEventListener('contextmenu', disableRightClick);
+        window.removeEventListener('keydown', handleKeydown);
+        window.removeEventListener('popstate', handlePopstate);
     };
 
     const initVideo = (appRouter, videoPlayerRef, contentRef, completedRef, isQuiz = false) => {
@@ -210,7 +241,6 @@ const PreventSecurity = (() => {
         currentContent = contentRef;
         isCourseVideoSessionActive = !isQuiz; // Set to false if it's a quiz
         isQuizSessionActive = isQuiz; // Set to true if it's a quiz
-
 
         window.addEventListener('blur', () => handleBlurVideo(appRouter));
         document.addEventListener('visibilitychange', () => handleVisibilityChangeVideo(appRouter));
@@ -221,16 +251,12 @@ const PreventSecurity = (() => {
     };
 
     const cleanup = () => {
-        window.removeEventListener('blur', handleBlur);
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-        document.removeEventListener('contextmenu', disableRightClick);
-        window.removeEventListener('keydown', handleKeydown);
-        window.removeEventListener('popstate', handlePopstate);
-        clearInterval(detectDevToolsInterval);
-        if (isExamSessionActive) {
-            router.push('/dashboard/exams');
-        }
+        console.log('Cleaning up security...');
+        removeAllListeners();
+        isExamSessionActive = false;
         isQuizSessionActive = false;
+        router = null;
+        securityCallback = null;
     };
 
     const cleanupVideo = () => {
