@@ -230,27 +230,35 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'zip' => 'required|string|max:20',
+            'lastname'  => 'required|string|max:255',
+            'country'   => 'required|string|max:255',
+            'address'   => 'required|string|max:255',
+            'city'      => 'required|string|max:255',
+            'state'     => 'required|string|max:255',
+            'zip'       => 'required|string|max:20',
+            'password'  => 'nullable|string|min:8|confirmed',
         ]);
 
+
         $user = auth()->user();
+
         try {
             $user->update([
                 'firstname' => $validated['firstname'],
-                'lastname' => $validated['lastname'],
-                'country' => $validated['country'],
-                'adress' => $validated['address'],  // attention "adress" dans ta base
-                'city' => $validated['city'],
-                'state' => $validated['state'],
-                'zipcode' => $validated['zip'],
+                'lastname'  => $validated['lastname'],
+                'country'   => $validated['country'],
+                'adress'    => $validated['address'],  // ⚠️ orthographe dans ta base
+                'city'      => $validated['city'],
+                'state'     => $validated['state'],
+                'zipcode'   => $validated['zip'],
+                'password'  => $validated['password']
+                    ? bcrypt($validated['password'])
+                    : $user->password, // garde l'ancien si vide
             ]);
+
             flash()->success('Profile updated successfully.');
             return redirect()->back()->withInput();
+
         } catch (\Exception $e) {
             flash()->error('Error updating profile: ' . $e->getMessage());
             return redirect()->back()->withInput();

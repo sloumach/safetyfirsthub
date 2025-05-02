@@ -107,7 +107,17 @@
                     <div class="ud-form-group">
                         <label class="ud-label">Zip</label>
                         <input type="text" class="ud-input" name="zip" value="{{ $user->zipcode }}" required>
+                    </div><br>
+                    <div class="ud-form-group">
+                        <label class="ud-label">New Password <small>(leave blank to keep current)</small></label>
+                        <input type="password" class="ud-input" name="password" autocomplete="new-password">
                     </div>
+
+                    <div class="ud-form-group">
+                        <label class="ud-label">Confirm New Password</label>
+                        <input type="password" class="ud-input" name="password_confirmation" autocomplete="new-password">
+                    </div>
+
                 </div>
 
                 <div class="ud-button-group">

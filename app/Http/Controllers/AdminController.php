@@ -62,7 +62,7 @@ class AdminController extends Controller
             // 🔹 Validation des données
             $validatedData = $request->validate([
                 'name'                        => 'required|string|max:255',
-                'total_videos'                => 'required|integer|min:1',
+                'total_videos'                => 'required|integer|min:0',
                 'price'                       => 'required|numeric|min:0',
                 'category'                    => 'required|string|max:255',
                 'short_description'           => 'required|string|max:500',
