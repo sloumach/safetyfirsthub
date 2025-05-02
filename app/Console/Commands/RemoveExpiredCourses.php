@@ -32,6 +32,22 @@ class RemoveExpiredCourses extends Command
             foreach ($user->courses as $course) {
                 $purchaseDate = $course->pivot->created_at;
                 $expirationDate = Carbon::parse($purchaseDate)->addMonths(3);
+                $daysRemaining = now()->diffInDays($expirationDate, false);
+
+                if ($daysRemaining === 30 || $daysRemaining === 15) {
+                    $hasPassedExam = $user->examUsers()
+                        ->whereHas('exam', fn($q) => $q->where('course_id', $course->id))
+                        ->exists();
+
+                    $hasNotPassedExam = !$hasPassedExam;
+
+                    $mailClass = $daysRemaining === 30
+                        ? new \App\Mail\CourseExpiringInOneMonth($user, $course, 30, $hasNotPassedExam)
+                        : new \App\Mail\CourseExpiringInFifteenDays($user, $course, 15, $hasNotPassedExam);
+
+                    \Illuminate\Support\Facades\Mail::to($user->email)->send($mailClass);
+                }
+
 
                 if (now()->greaterThan($expirationDate)) {
                     // Stocker les cours expirés

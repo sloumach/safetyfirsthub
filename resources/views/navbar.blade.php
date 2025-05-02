@@ -213,11 +213,12 @@
 
                             <div class="search-overlay search-popup">
                                 <div class='search-box'>
-                                    <form class="search-form">
-                                        <input class="search-input" name="search" placeholder="Search" type="text">
+                                    <form class="search-form" action="{{ route('search.courses') }}" method="GET">
 
+                                        <input class="search-input" name="search" placeholder="Search" type="text">
                                         <button class="search-button" type="submit"><i class="bx bx-search"></i></button>
                                     </form>
+
                                 </div>
                             </div>
                         </div>
@@ -294,11 +295,12 @@
 
                             <div class="search-overlay search-popup">
                                 <div class='search-box'>
-                                    <form class="search-form">
+                                    <form class="search-form" action="{{ route('search.courses') }}" method="POST">
+                                        @csrf
                                         <input class="search-input" name="search" placeholder="Search" type="text">
-
-                                        <button class="search-button" type="submit"><i class="bx bx-search"></i></button>
+                                        <input class="search-button" type="submit"><i class="bx bx-search"></i>
                                     </form>
+
                                 </div>
                             </div>
                         </div>

@@ -20,14 +20,14 @@
             <p class="subtitle">Your Purchased Certifications</p>
             <p class="description" style="color: #666; font-size: 14px; margin-top: 5px;">
                 <span style="display: block; margin-top: 10px;">
-                    If you want to buy another certified course, 
+                    If you want to buy another certified course,
                     <a href="/courses" style="color: #2d6cdf; font-weight: 600; text-decoration: underline;">CLICK ME!</a>
                 </span>
             </p>
         </div>
 
         <div class="dashboard-content">
-          
+
             <!-- Mobile Toggle -->
             <button class="mobile-toggle" @click="toggleSidebar">
                 <i class='bx bx-menu'></i>
@@ -40,8 +40,8 @@
                     <div class="col-12 col-md-6 col-lg-4 lg8a" v-for="course in paginatedCourses" :key="course.id">
                         <div class="course-card">
                             <div class="course-image">
-                                <img 
-                                    :src="course.cover || 'https://placehold.co/600x400/003366/ffffff?text=Course'" 
+                                <img
+                                    :src="course.cover || 'https://placehold.co/600x400/003366/ffffff?text=Course'"
                                     :alt="course.name"
                                     @error="handleImageError"
                                 />
@@ -50,11 +50,11 @@
                                     {{ course.total_videos }} videos
                                 </div>
                             </div>
-                            
+
                             <div class="course-content">
                                 <h3>{{ course.name }}</h3>
                                 <p>{{ course.short_description }}</p>
-                                
+
                                 <div class="course-meta">
                                     <!-- <span>
                                         <i class='bx bx-user'></i>
@@ -72,8 +72,8 @@
 
                 <!-- Modern Pagination -->
                 <div class="modern-pagination" v-if="totalPages > 1">
-                    <button 
-                        class="nav-btn prev" 
+                    <button
+                        class="nav-btn prev"
                         @click="changePage(currentPage - 1)"
                         :disabled="currentPage === 1"
                     >
@@ -81,8 +81,8 @@
                     </button>
 
                     <div class="page-numbers">
-                        <button 
-                            v-for="page in displayedPages" 
+                        <button
+                            v-for="page in displayedPages"
                             :key="page"
                             @click="changePage(page)"
                             :class="['page-btn', { active: currentPage === page }]"
@@ -91,8 +91,8 @@
                         </button>
                     </div>
 
-                    <button 
-                        class="nav-btn next" 
+                    <button
+                        class="nav-btn next"
                         @click="changePage(currentPage + 1)"
                         :disabled="currentPage === totalPages"
                     >
@@ -127,9 +127,11 @@ export default {
         const fetchCourses = async () => {
             try {
                 const response = await axios.get('/api/courses');
-                
+
+
                 if (response.data && response.data.length > 0) {
                     courses.value = response.data;
+                    console.log(courses.value);
                 } else {
                     courses.value = [];
                     Swal.fire({
@@ -481,7 +483,7 @@ export default {
     .dashboard-header h2 {
         font-size: 1.5rem !important;
     }
-    
+
 }
 
 @media (max-width: 992px) {

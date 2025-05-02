@@ -8,6 +8,9 @@
                             <li class="breadcrumb-item">
                                 <router-link to="/dashboard/courses">Certified Courses</router-link>
                             </li>
+                            <li class="breadcrumb-item">
+                                {{ course.category  }}
+                            </li>
                             <li class="breadcrumb-item active" aria-current="page">
                                 {{ course?.name || course?.title }}
                             </li>
@@ -20,10 +23,10 @@
                 <!-- Sidebar Column -->
                 <div class="col-lg-3 col-md-4">
                     <div class="course-sidebar">
-                        <h4 class="sidebar-title d-flex justify-content-between align-items-center" 
+                        <h4 class="sidebar-title d-flex justify-content-between align-items-center"
                             @click="toggleMobileSidebar">
                             Course Content
-                            <i class="fas d-md-none" 
+                            <i class="fas d-md-none"
                                :class="isSidebarOpen ? 'fa-chevron-up' : 'fa-chevron-down'">
                             </i>
                         </h4>
@@ -49,7 +52,12 @@
                                     <!-- 🔹 Affichage des slides (contenu écrit du cours) -->
                                     <div v-if="section.slides.length > 0">
                                         <div v-for="slide in section.slides" :key="slide.id" class="section-item"
-                                            @click="selectContent({ type: 'text', title: slide.title, content: JSON.parse(slide.content) })">
+                                        @click="selectContent({
+                                                type: 'text',
+                                                title: slide.title,
+                                                content: parseSlideContent(slide.content),
+                                                file: slide.file
+                                            })">
                                             <i class="fas fa-file-alt"></i>
                                             {{ slide.title }}
                                         </div>
@@ -110,12 +118,13 @@
                                 <div class="doc-content video-wrapper">
                                     <div class="video-container">
                                         <!-- Simple watermark -->
-                                        <div class="video-watermark">{{ userEmail }} | safetyfirsthub.com</div>
-                                        
-                                        <video 
-                                            ref="videoPlayer" 
-                                            class="video-player" 
-                                            controls 
+                                        <div class="video-watermark"> safetyfirsthub.com</div>
+
+                                        <video
+                                            ref="videoPlayer"
+                                            class="video-player"
+                                            controls
+                                            controlsList="nodownload"
                                             @timeupdate="updateProgress(currentContent.section_id, currentContent.video_id, $event)"
                                             @ended="markAsCompleted(currentContent.section_id, currentContent.video_id)"
                                             @seeking="preventSeeking">
@@ -126,7 +135,7 @@
 
                                     <div class="video-messages">
                                         <div v-if="isCompleted" class="video-status-message success">
-                                            <span>Vous avez terminé cette vidéo ! Vous pouvez maintenant passer l'examen.</span>
+                                            <span>You've completed this video! Now you can take the exam.</span>
                                         </div>
                                         <div v-else class="video-status-message warning">
                                             <i class="fas fa-clock"></i>
@@ -148,7 +157,24 @@
                                     </div>
                                 </div>
 
-                                <div class="doc-content" v-html="currentContent.content"></div>
+                                <!-- <div class="doc-content" v-html="currentContent.content"></div> -->
+                                <div class="doc-content" v-html="sanitizeContent(currentContent.content)"></div>
+                                <div v-if="currentContent.file" class="doc-attachment">
+                                    <!-- Show image if it's an image file -->
+                                    <div v-if="isImageFile(currentContent.file)" class="doc-image">
+                                        <img :src="getImageUrl(currentContent.file)" :alt="currentContent.title" class="img-fluid mt-3">
+                                    </div>
+                                    <!-- Show PDF download/view option if it's a PDF file -->
+                                    <div v-else-if="isPdfFile(currentContent.file)" class="doc-pdf">
+                                        <a :href="getPdfUrl(currentContent.file)" target="_blank" class="pdf-link">
+                                            <div class="pdf-container">
+                                                <i class="fas fa-file-pdf"></i>
+                                                <span>View PDF Document</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -307,6 +333,7 @@ const fetchSections = async () => {
     try {
         const response = await axios.get(`/courses/${route.params.id}/sections`);
         sections.value = response.data.sections;
+        console.log("Sections:", sections.value);
         // Initialize sections state
         sections.value.forEach((section, index) => {
             openSections.value[section.id] = index === 0; // Open first section
@@ -321,7 +348,8 @@ const fetchSections = async () => {
                 selectContent({
                     type: 'text',
                     title: firstSlide.title,
-                    content: JSON.parse(firstSlide.content)
+                    content: JSON.parse(firstSlide.content),
+                    file: firstSlide.file
                 });
             }
         }
@@ -394,14 +422,35 @@ const markAsCompleted = async (section_id, video_id) => {
             }
         }
 
-        // Show completion message
-        await Swal.fire({
-            title: 'Vidéo Complétée',
-            text: 'Vous pouvez maintenant passer le quiz de la section.',
-            icon: 'success',
-            confirmButtonColor: '#FF8A00'
-        });
+        // Check if this is the last section and last video
+        const isLastSection = currentSection.value.id === sections.value[sections.value.length - 1].id;
+        const allVideosCompleted = currentSection.value.videos.every(video => video.is_completed);
 
+        // If it's the last section, all videos are completed, and there's no quiz
+        if (isLastSection && allVideosCompleted && !currentSection.value.quiz) {
+            await Swal.fire({
+                title: 'Congratulations! 🎉',
+                text: 'You have completed all sections! You will now be redirected to the final exam.',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#FF8A00',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="bx bx-trophy"></i> Take Exam',
+                cancelButtonText: 'Later'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.push('/dashboard/exams');
+                }
+            });
+        } else {
+            // Show regular completion message
+            await Swal.fire({
+                title: 'Video Completed! 🎉',
+                text: 'You can now proceed.',
+                icon: 'success',
+                confirmButtonColor: '#FF8A00'
+            });
+        }
     } catch (error) {
         console.error("Erreur lors de la complétion de la vidéo :", error);
     }
@@ -415,7 +464,10 @@ const toggleSection = (sectionId) => {
 
 // 🔄 Sélectionner un contenu
 const selectContent = (content) => {
-    currentContent.value = content;
+    currentContent.value = {
+        ...content,
+        content: sanitizeContent(content.content)
+    };
     showPreview.value = false;
 
     // If it's a slide, ensure proper scroll into view
@@ -619,7 +671,7 @@ const handleQuizCompletion = async ({ passed, score }) => {
                 icon: 'success',
                 confirmButtonColor: '#FF8A00'
             });
-            
+
             // Redirect to exam page
             router.push('/dashboard/exams');
         } else {
@@ -648,7 +700,8 @@ const handleQuizCompletion = async ({ passed, score }) => {
             selectContent({
                 type: 'text',
                 title: currentSection.value.slides[0]?.title || '',
-                content: currentSection.value.slides[0]?.content || ''
+                content: currentSection.value.slides[0]?.content || '',
+                file: currentSection.value.slides[0]?.file || ''
             });
         }
     } else {
@@ -664,7 +717,8 @@ const handleQuizCompletion = async ({ passed, score }) => {
             selectContent({
                 type: 'text',
                 title: currentSection.value.slides[0].title,
-                content: currentSection.value.slides[0].content
+                content: currentSection.value.slides[0].content,
+                file: currentSection.value.slides[0].file
             });
         }
 
@@ -684,23 +738,99 @@ const getQuizIcon = (section) => {
     return 'fa-question-circle';
 };
 
+// Add these helper functions
+const parseSlideContent = (content) => {
+    try {
+        // First remove the extra quotes and unescape the content
+        const unescapedContent = JSON.parse(content);
+        return unescapedContent;
+    } catch (e) {
+        console.error('Error parsing slide content:', e);
+        return content; // Return original content if parsing fails
+    }
+};
+
+const sanitizeContent = (content) => {
+    if (!content) return '';
+    try {
+        // If content is already an object/parsed, return as is
+        if (typeof content === 'object') {
+            return content;
+        }
+        // If it's a string that needs parsing
+        return parseSlideContent(content);
+    } catch (e) {
+        console.error('Error sanitizing content:', e);
+        return content;
+    }
+};
+
+const getImageUrl = (filePath) => {
+    if (!filePath) return null;
+    return `/storage/${filePath}`;
+};
+
+// Add these helper functions
+const isImageFile = (filePath) => {
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+    return imageExtensions.some(ext => filePath.toLowerCase().endsWith(ext));
+};
+
+const isPdfFile = (filePath) => {
+    return filePath.toLowerCase().endsWith('.pdf');
+};
+
+const getPdfUrl = (filePath) => {
+    if (!filePath) return null;
+    return `/storage/${filePath}`;
+};
+
+// Inside the <script setup> section, after the imports
+const showInitialWarning = () => {
+    return Swal.fire({
+        title: 'Important Notice!',
+        html: `
+            <div class="security-warning">
+                <p><i class="fas fa-exclamation-triangle" style="color: #FF8A00; font-size: 48px; margin-bottom: 20px;"></i></p>
+                <p>To ensure proper course progress tracking, please note:</p>
+                <ul style="text-align: left; margin-top: 15px;">
+                    <li>❌ Do not switch between browser tabs</li>
+                    <li>❌ Do not close the window/tab</li>
+                    <li>❌ Do not minimize the browser</li>
+                    <li>❌ Do not use browser navigation (back/forward)</li>
+                </ul>
+                <p style="margin-top: 15px; color: #FF8A00;">Violating these rules will reset your progress!</p>
+            </div>
+        `,
+        icon: 'warning',
+        confirmButtonText: 'I Understand',
+        confirmButtonColor: '#FF8A00',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showCancelButton: false
+    });
+};
 // 🎯 Montage du composant
 onMounted(() => {
-    fetchCourse();
-    fetchSections();
 
-    PreventSecurity.setSecurityCallback(reportSecurityBreach);
+    showInitialWarning().then(() => {
+        // Proceed with initialization after warning is acknowledged
+        fetchCourse();
+        fetchSections();
 
-    PreventSecurity.initVideo(
-        router,
-        videoPlayer.value,
-        currentContent,
-        isCompleted
-    );
+        PreventSecurity.setSecurityCallback(reportSecurityBreach);
 
-    // Check localStorage for saved state, default to true if not set
-    const savedState = localStorage.getItem('courseSidebarOpen');
-    isSidebarOpen.value = savedState === null ? true : savedState === 'true';
+        PreventSecurity.initVideo(
+            router,
+            videoPlayer.value,
+            currentContent,
+            isCompleted
+        );
+
+        // Check localStorage for saved state, default to true if not set
+        const savedState = localStorage.getItem('courseSidebarOpen');
+        isSidebarOpen.value = savedState === null ? true : savedState === 'true';
+    });
 });
 
 
@@ -734,7 +864,7 @@ onBeforeUnmount(() => {
 // Add a watch for isCompleted
 watch(isCompleted, (newValue) => {
     if (newValue && currentSection.value?.quiz) {
-     
+
     }
 });
 
@@ -784,7 +914,7 @@ const toggleMobileSidebar = () => {
     .video-player {
         max-height: 350px !important;
     }
-    
+
     .video-watermark {
         font-size: 11px !important;
         bottom: 45% !important;
@@ -1542,5 +1672,87 @@ h5 {
 /* Quiz item when locked */
 .quiz-item.locked .fas.fa-question-circle {
     color: #999999 !important; /* Gray */
+}
+
+.doc-attachment {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.doc-image {
+    width: 100%;
+    text-align: center;
+}
+
+.doc-image img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.doc-pdf {
+    width: 100%;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.pdf-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.pdf-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.pdf-container:hover {
+    background-color: #FF8A00;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-container i {
+    font-size: 24px;
+    color: #FF8A00;
+}
+
+.pdf-container:hover i {
+    color: white;
+}
+
+.pdf-container span {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .doc-image img {
+        height: 200px;
+    }
+
+    .pdf-container {
+        padding: 15px;
+    }
+
+    .pdf-container i {
+        font-size: 20px;
+    }
+
+    .pdf-container span {
+        font-size: 14px;
+    }
 }
 </style>

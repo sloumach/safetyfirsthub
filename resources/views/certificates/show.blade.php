@@ -12,17 +12,17 @@
         <div class="certificate-frame">
             <div class="certificate-content">
                 <div class="certificate-number">
-                    Certificate N°: {{ $certificateNumber ?? 'CERT-2024-001' }}
+                    Certificate N° : CERT-00{{  $cert_num ?? '2024-001' }}
                 </div>
-                
+
                 <h1 class="title">CERTIFICATE OF COMPLETION</h1>
-                
+
                 <div class="certificate-text">
                     <p class="certifies">This certifies that</p>
                     <h2 class="candidate-name">{{ $firstname }} {{ $lastname }}</h2> <!-- ici firstname et fullname -->
                     <p class="completion-text">has successfully completed the course</p>
                     <h3 class="program-name">{{ $course_name }}</h3><!-- ici course name -->
-                    
+
                     <div class="certificate-details">
                         <div class="detail-item">
                             <img src="{{ asset('assets/img/clock.svg') }}" alt="Credit Hours" class="detail-icon">
@@ -44,10 +44,10 @@
                         <div class="qr-corner bottom-left"></div>
                         <div class="qr-corner bottom-right"></div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
     </div>
 </body>
-</html> 
+</html>

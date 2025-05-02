@@ -62,7 +62,7 @@ class AdminController extends Controller
             // 🔹 Validation des données
             $validatedData = $request->validate([
                 'name'                        => 'required|string|max:255',
-                'total_videos'                => 'required|integer|min:1',
+                'total_videos'                => 'required|integer|min:0',
                 'price'                       => 'required|numeric|min:0',
                 'category'                    => 'required|string|max:255',
                 'short_description'           => 'required|string|max:500',
@@ -161,12 +161,12 @@ class AdminController extends Controller
             }
             DB::commit();
             $this->flasher->addSuccess('Course added successfully! ');
-            return redirect()->route('adminindex');
+            return redirect()->route('admincourses');
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error("Error in addCourse: " . $e->getMessage());
             $this->flasher->addSuccess('Course added successfully! ');
-            return redirect()->route('adminindex');
+            return redirect()->route('admincourses');
         }
     }
     public function edit($id)
@@ -233,10 +233,10 @@ class AdminController extends Controller
                     $slide->content = $slideData['content'] ?? '';
 
                     if ($request->hasFile("sections.$sectionIndex.slides.$slideIndex.file")) {
-                        if ($slide->file && Storage::exists($slide->file)) {
-                            Storage::delete($slide->file);
+                        if ($slide->file_path && Storage::exists($slide->file_path)) {
+                            Storage::delete($slide->file_path);
                         }
-                        $slide->file = $request->file("sections.$sectionIndex.slides.$slideIndex.file")
+                        $slide->file_path = $request->file("sections.$sectionIndex.slides.$slideIndex.file")
                             ->store('courses/slides', 'public');
                     }
 

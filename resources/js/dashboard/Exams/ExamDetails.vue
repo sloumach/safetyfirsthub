@@ -76,7 +76,7 @@ const hasAttemptsExhausted = ref(false);
 const noQuestionsAvailable = ref(false);
 let isActive = true;
 // Add timer ref
-const timer = ref(10);
+const timer = ref(60);
 let timerInterval = null;
 
 // Add these security-related refs
@@ -111,7 +111,7 @@ const handleTimeUp = async () => {
 
 // Modify startTimer to ensure timer is working properly
 const startTimer = () => {
-    timer.value = 10;
+    timer.value = 60;
     clearInterval(timerInterval);
 
     timerInterval = setInterval(() => {
@@ -293,17 +293,81 @@ const reportSecurityBreach = async (reason) => {
     }
 
 };
+const showInitialWarning = () => {
+    return Swal.fire({
+        title: '⚠️ Important Exam Rules',
+        html: `
+            <div class="exam-rules-warning">
+                <div class="warning-section">
+                    <p class="warning-header">Please read carefully before starting:</p>
 
+                    <div class="rules-list">
+                        <p class="rule">
+                            <i class="fas fa-clock" style="color: #FF8A00;"></i>
+                            <span>Each question has a <b>${timer.value}-second time limit</b>. If time runs out, the question will be marked as failed.</span>
+                        </p>
+
+                        <p class="rule">
+                            <i class="fas fa-exclamation-triangle" style="color: #FF8A00;"></i>
+                            <span>The following actions will result in <b>automatic exam failure</b>:</span>
+                        </p>
+
+                        <ul class="prohibited-actions">
+                            <li>❌ Switching browser tabs or windows</li>
+                            <li>❌ Closing the browser/tab</li>
+                            <li>❌ Using browser navigation (back/forward)</li>
+                            <li>❌ Minimizing the browser window</li>
+                            <li>❌ Using keyboard shortcuts (Ctrl+R, F5, etc.)</li>
+                        </ul>
+
+                        <p class="rule">
+                            <i class="fas fa-info-circle" style="color: #FF8A00;"></i>
+                            <span>Once you start, you must complete the entire exam in one session.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="confirmation-text" style="margin-top: 20px; color: #FF8A00;">
+                    Click "I Understand" to begin the exam
+                </div>
+            </div>
+        `,
+        confirmButtonText: 'I Understand',
+        confirmButtonColor: '#FF8A00',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showCancelButton: true,
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#dc3545',
+        customClass: {
+            popup: 'exam-warning-popup'
+        }
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            router.push('/dashboard/exams');
+        }
+        return result.isConfirmed;
+    });
+};
 // 🏁 Démarrer une session d'examen
 onMounted(async () => {
-    PreventSecurity.setSecurityCallback(reportSecurityBreach);
-    PreventSecurity.init(router);
     try {
+        // Show warning first
+        const confirmed = await showInitialWarning();
+
+        if (!confirmed) {
+            return; // User cancelled, don't start exam
+        }
+
+        // Initialize security after warning is acknowledged
+        PreventSecurity.setSecurityCallback(reportSecurityBreach);
+        PreventSecurity.init(router);
+
+        // Start exam session
         const response = await axios.post(`/exam/start/${route.params.id}`);
         sessionId.value = response.data.session_id;
         fetchNextQuestion();
     } catch (error) {
-
         // Handle max attempts reached error
         if (error.response?.status === 403 && error.response?.data?.error === 'exam.max_attempts_reached') {
             hasAttemptsExhausted.value = true;
@@ -315,10 +379,8 @@ onMounted(async () => {
                 icon: 'warning',
                 confirmButtonText: 'OK'
             });
-
         }
     }
-
 });
 
 // 🛑 Nettoyage à la fermeture de la page
@@ -650,5 +712,66 @@ body {
 
 .return-btn:hover {
     opacity: 0.9;
+}
+
+.exam-rules-warning {
+    text-align: left;
+    padding: 10px;
+}
+
+.warning-header {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #FF8A00;
+}
+
+.rules-list {
+    margin: 15px 0;
+}
+
+.rule {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.rule i {
+    margin-top: 3px;
+}
+
+.prohibited-actions {
+    list-style: none;
+    margin: 10px 0 10px 25px;
+    padding: 0;
+}
+
+.prohibited-actions li {
+    margin: 8px 0;
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.confirmation-text {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* SweetAlert2 custom styling */
+:deep(.exam-warning-popup) {
+    max-width: 600px !important;
+}
+
+@media (max-width: 768px) {
+    .rule {
+        font-size: 14px;
+    }
+
+    .prohibited-actions li {
+        font-size: 14px;
+    }
 }
 </style>

@@ -1,19 +1,22 @@
 <?php
 namespace App\Services;
 
+use Mail;
 use App\Models\Exam;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Order;
 use App\Models\Choice;
+use App\Models\Payment;
 use App\Models\ExamUser;
-use App\Models\VideoProgress;
 use App\Models\Question;
 use App\Models\UserAnswer;
-use App\Models\User;
-use App\Models\Role;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use App\Models\Payment;
-use App\Models\Order;
+use App\Models\VideoProgress;
 use App\Models\UserSectionAttempt;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Mail\ExamFailedNotification;
+use App\Mail\ExamPassedNotification;
 
 class ExamAttemptService
 {
@@ -119,14 +122,30 @@ class ExamAttemptService
         $status = $score >= $examUser->exam->passing_score ? 'passed' : 'failed';
 
         HelperService::markExamAsCompleted($examUser->id, $score, $status);
-        $status === 'failed' ? HelperService::resetAllVideos($examUser) : null;
+
+        // 📌 Envoi de l'email de notification
+        $user = $examUser->user;
+        $course = $examUser->exam->course;
         $attemptsCount = ExamUser::where('user_id', $examUser->user_id)
-            ->whereHas('exam', function ($query) use ($examUser) {
-                $query->where('course_id', $examUser->exam->course_id);
-            })
-            ->where('status', 'completed')
-            ->where('score', '<', $examUser->exam->passing_score)
-            ->count();        // 📌 Vérifier le nombre total de tentatives échouées
+        ->whereHas('exam', function ($query) use ($examUser) {
+            $query->where('course_id', $examUser->exam->course_id);
+        })
+        ->where('status', 'completed')
+        ->where('score', '<', $examUser->exam->passing_score)
+        ->count();        // 📌 Vérifier le nombre total de tentatives échouées
+        if ($status === 'failed') {
+            $attemptsLeft = max(0, 3 - $attemptsCount);
+
+            Mail::to($user->email)->send(
+                new ExamFailedNotification($user, $course, $attemptsLeft)
+            );
+        } else {
+            Mail::to($user->email)->send(
+                new ExamPassedNotification($user, $course)
+            );
+        }
+        $status === 'failed' ? HelperService::resetAllVideos($examUser) : null;
+
 
         Log::info($attemptsCount);
         Log::info("role changed");
@@ -191,6 +210,7 @@ class ExamAttemptService
                 }
 
             }
+
         }
 
         return [
