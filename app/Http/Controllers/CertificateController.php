@@ -47,11 +47,14 @@ class CertificateController extends Controller
                 'user_firstname' => $user->firstname,
                 'user_lastname'  => $user->lastname,
                 'course_name'    => $courseName,
+                'cert_num'  => $certificate->cert_num,
                 'certificate'    => [
-                    'url'      => route('certificates.view', $certificate->certificate_url),
-                    'qr_code'  => base64_encode(QrCode::format('svg')->size(200)->generate(route('certificates.scan', $certificate->certificate_url))),
+                    'url'       => route('certificates.view', $certificate->certificate_url),
+                    'qr_code'   => base64_encode(QrCode::format('svg')->size(200)->generate(route('certificates.scan', $certificate->certificate_url))),
+
                 ],
             ]);
+
         }
 
         // 🔹 Générer une URL unique pour le certificat
@@ -74,6 +77,7 @@ class CertificateController extends Controller
             'user_firstname' => $user->firstname,
             'user_lastname'  => $user->lastname,
             'course_name'    => $courseName,
+            'cert_num'  => $certificate->cert_num,
             'certificate'    => [
                 'url'      => route('certificates.view', $certificate->certificate_url),
                 'qr_code'  => base64_encode(QrCode::format('svg')->size(200)->generate(route('certificates.scan', $certificate->certificate_url))),
@@ -95,14 +99,17 @@ class CertificateController extends Controller
         $request->session()->put("certificate_access_{$certificate_url}", true);
 
         // Rediriger vers la page de visualisation du certificat
-        return redirect()->route('certificates.view', ['certificate_url' => $certificate_url]);
+        return redirect()->route('certificates.view', [
+            'certificate_url' => $certificate_url,
+            /* 'cert_num' => $certificate->cert_num, */
+        ]);
+
     }
 
     /**
      * Afficher un certificat (uniquement via QR code)
      */
-    public function viewCertificate($certificate_url, Request $request)
-    {
+    public function viewCertificate($certificate_url, Request $request)    {
         $certificate = Certificate::where('certificate_url', $certificate_url)
             ->where('available', true)
             ->with(['examUser.user', 'examUser.exam.course'])
@@ -118,7 +125,7 @@ class CertificateController extends Controller
             ->generate(route('certificates.scan', $certificate->certificate_url)));
 
         $data = [
-            'certificateNumber' => 'CERT-' . str_pad($certificate->id, 5, '0', STR_PAD_LEFT),
+            'cert_num'  => $certificate->cert_num,
             'firstname' => $certificate->examUser->user->firstname,
             'lastname' => $certificate->examUser->user->lastname,
             'course_name' => $certificate->examUser->exam->course->name,

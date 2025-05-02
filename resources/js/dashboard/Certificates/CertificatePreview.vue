@@ -1,7 +1,7 @@
 <template>
     <div class="certificate-preview">
       <div class="certificate-frame">
-
+<p>Certificate N° {{ certNum }}</p>
         <div class="certificate-content">
           <h1 class="title">CERTIFICATE OF COMPLETION</h1>
 
@@ -45,6 +45,10 @@
         type: String,
         default: ''
       },
+        certNum: {
+            type: String,
+            default: ''
+        },
       programName: {
         type: String,
         default: ''

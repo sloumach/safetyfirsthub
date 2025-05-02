@@ -21,6 +21,7 @@
                 :creditHours="'40'"
                 :completionDate="currentDate"
                 :qrCode="qrCodeImage"
+                :certNum="`${cert_num}`"
             />
             <div class="download-button-container">
                 <button @click="downloadCertificate" class="download-btn">
@@ -51,6 +52,7 @@
         const loading = ref(true);
         const qrCodeImage = ref(null);
         const firstname = ref("");
+        const cert_num = ref("");
         const lastname = ref("");
         const courseName = ref("");
         const error = ref(null);
@@ -76,6 +78,7 @@
                   ? response.data.certificate.qr_code
                   : `data:image/svg+xml;base64,${response.data.certificate.qr_code}`;
                 firstname.value = response.data.user_firstname;
+                cert_num.value = response.data.cert_num;
                 lastname.value = response.data.user_lastname;
                 courseName.value = response.data.course_name;
 
@@ -108,6 +111,7 @@
                             firstname.value = retryResponse.data.user_firstname;
                             lastname.value = retryResponse.data.user_lastname;
                             courseName.value = retryResponse.data.course_name;
+                            cert_num.value = retryResponse.data.cert_num;
 
                             loading.value = false;
                             return;
@@ -172,6 +176,7 @@
             lastname,
             courseName,
             error,
+            cert_num,
             downloadCertificate
         };
     },

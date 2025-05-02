@@ -20,7 +20,6 @@ class ExamPassedNotification extends Mailable
     public function __construct(
         public User $user,
         public Course $course,
-        public int $attemptsLeft
     ) {}
 
     /**
@@ -42,8 +41,7 @@ class ExamPassedNotification extends Mailable
             view: 'emails.exam_passed',
             with: [
                 'user' => $this->user,
-                'course' => $this->course,
-                'attemptsLeft' => $this->attemptsLeft
+                'course' => $this->course
             ]
         );
     }

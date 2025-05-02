@@ -51,7 +51,7 @@ Route::controller(CourseController::class)->group(function () {
 });
 
 Route::group([ 'middleware' => ['auth','verified']], function () {
-
+    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('admin.apply.coupon');
     Route::controller(ShopController::class)->group(function () {
         Route::get('/shop', 'index')->name('shop');
         Route::get('/cart', 'cart')->name('cart');
@@ -83,7 +83,7 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
 
 Route::group(['middleware' => ['auth', 'verified', 'role:student']], function () {
     // Dashboard route
-    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('admin.apply.coupon');
+
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard/{any?}', 'index')->where('any', '.*')->name('dashboard');
         // API routes under '/api' prefix
