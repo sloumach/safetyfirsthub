@@ -46,6 +46,13 @@
         <!-- Start Navbar Area -->
 		@include('navbar')
 		<!-- End Navbar Area -->
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
 
 		<!-- Start Page Title Area -->
 		<div class="page-title-area bg-8">
@@ -83,17 +90,17 @@
 						@csrf
 						<div class="login-form-group">
 							<label>Email</label>
-							<input class="@error('email') is-invalid @enderror" 
-								   type="text" 
-								   name="email" 
+							<input class="@error('email') is-invalid @enderror"
+								   type="text"
+								   name="email"
 								   id="email"
 								   value="{{ old('email') }}">
-						</div>	
+						</div>
 
 						<div class="login-form-group">
 							<label>Password</label>
-							<input class="@error('password') is-invalid @enderror" 
-								   type="password" 
+							<input class="@error('password') is-invalid @enderror"
+								   type="password"
 								   name="password">
 						</div>
 
@@ -134,9 +141,9 @@
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const email = document.getElementById('email').value;
-            
+
             if (!isValidEmail(email)) {
                 Swal.fire({
                     icon: 'error',
@@ -146,7 +153,7 @@
                 });
                 return;
             }
-            
+
             // If email is valid, submit the form
             this.submit();
         });

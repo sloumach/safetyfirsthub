@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use App\Models\Certificate;
 use App\Models\ExamUser;
+use App\Models\Certificate;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -62,7 +63,7 @@ class CertificateController extends Controller
         // 🔹 Calcul du prochain numéro de certificat
         $lastCertNum = Certificate::max('cert_num');
         $nextCertNum = $lastCertNum ? $lastCertNum + 1 : 1;
-
+        Log::info("lastCertNum: " . $lastCertNum . " nextCertNum: " . $nextCertNum);
         // 🔹 Créer un nouveau certificat
         $certificate = Certificate::create([
             'exam_user_id'    => $examUser->id,
@@ -71,7 +72,7 @@ class CertificateController extends Controller
             'user_id'         => $examUser->user_id,
             'cert_num'        => $nextCertNum,
         ]);
-
+        Log::info("certificate created: " . $certificate);
         return response()->json([
             'message'        => 'Certificate generated successfully.',
             'user_firstname' => $user->firstname,

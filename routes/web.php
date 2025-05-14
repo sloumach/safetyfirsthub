@@ -50,7 +50,7 @@ Route::controller(CourseController::class)->group(function () {
 
 });
 
-Route::group([ 'middleware' => ['auth','verified']], function () {
+Route::group([ 'middleware' => ['auth','verified','check.status']], function () {
     Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('admin.apply.coupon');
     Route::controller(ShopController::class)->group(function () {
         Route::get('/shop', 'index')->name('shop');
@@ -81,7 +81,7 @@ Route::group([ 'middleware' => ['auth','verified']], function () {
     });
 });
 
-Route::group(['middleware' => ['auth', 'verified', 'role:student']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:student', 'check.status']], function () {
     // Dashboard route
 
     Route::controller(DashboardController::class)->group(function () {
@@ -187,6 +187,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
 
     });
+    Route::post('/admin/users/{user}/toggle-status', [AdminController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+    Route::get('/admin/users/{user}/details', [AdminController::class, 'userDetails'])->name('admin.users.details');
+
+
 });
 
 
