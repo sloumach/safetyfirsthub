@@ -1,8 +1,15 @@
+
+
+
 <template>
     <div class="certificate-preview">
       <div class="certificate-frame">
-<p>Certificate N° {{ certNum }}</p>
+
         <div class="certificate-content">
+            <div class="certificate-number">
+            Certificate N° : CERT-00{{ certNum || '2024-001' }}
+            </div>
+          <br>
           <h1 class="title">CERTIFICATE OF COMPLETION</h1>
 
           <div class="certificate-text">
@@ -12,10 +19,6 @@
             <h3 class="program-name">({{ programName || 'NOM DU PROGRAMME/FORMATION' }})</h3>
 
             <div class="certificate-details">
-              <div class="detail-item">
-                <img src="../../../../public/assets/img/clock.svg" alt="Credit Hours" class="detail-icon">
-                <span>Credit Hours: {{ creditHours }}</span>
-              </div>
               <div class="detail-item">
                 <img src="../../../../public/assets/img/medal.svg" alt="Completion Date" class="detail-icon">
                 <span>Completion Date: {{ completionDate }}</span>
@@ -38,6 +41,7 @@
   </template>
 
   <script>
+
   export default {
     name: 'CertificatePreview',
     props: {
@@ -45,10 +49,6 @@
         type: String,
         default: ''
       },
-        certNum: {
-            type: String,
-            default: ''
-        },
       programName: {
         type: String,
         default: ''
@@ -57,6 +57,10 @@
         type: String,
         default: ''
       },
+      certNum: {
+            type: String,
+            default: ''
+        },
       completionDate: {
         type: String,
         default: ''
@@ -89,6 +93,15 @@
     display: block;
     margin: 20px auto 40px;
   }
+  .certificate-number {
+    position: absolute;
+    top: 107px;
+    right: 40%;
+    color: #333;
+    font-size: 14px;
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+}
 
   .certificate-content {
     text-align: center;
@@ -175,10 +188,12 @@
   }
 
   .qr-placeholder {
-    width: 80px;
-    height: 80px;
-    position: relative;
-  }
+  width: 80px;
+  height: 80px;
+  position: relative;
+  top: -10px; /* Ajuste la valeur selon le déplacement désiré */
+}
+
 
   /* QR code image styling */
   .qr-code-image {
@@ -289,6 +304,7 @@
     .qr-placeholder {
       width: 70px;
       height: 70px;
+      top: -10px;
     }
   }
 
@@ -300,6 +316,15 @@
 
     .certificate-frame {
       padding: 1.5rem;
+    }
+    .certificate-number {
+        position: absolute;
+        top: 20%;
+        right: 41%;
+        color: #333;
+        font-size: 12px;
+        font-family: 'Times New Roman', serif;
+        font-style: italic;
     }
 
     .program-name {
@@ -340,6 +365,15 @@
     .program-name {
       font-size: 14px;
       padding: 0 10px;
+    }
+    .certificate-number {
+        position: absolute;
+        top: 35%;
+        right: 116px;
+        color: #333;
+        font-size: 7px;
+        font-family: 'Times New Roman', serif;
+        font-style: italic;
     }
 
     .detail-item {

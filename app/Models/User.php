@@ -29,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'adress',
         'zipcode',
         'password',
+        'status',
     ];
 
 
@@ -92,5 +93,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Order::class);
     }
+    public function examUsers()
+{
+    return $this->hasMany(ExamUser::class);
+}
 
 }

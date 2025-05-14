@@ -21,4 +21,9 @@ class Video extends Model
     {
         return $this->belongsTo(Section::class);
     }
+    public function videoProgress()
+{
+    return $this->hasMany(VideoProgress::class);
+}
+
 }

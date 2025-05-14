@@ -384,8 +384,27 @@ class AdminController extends Controller
     {
         $users = User::with(['roles', 'courses'])
             ->orderBy('created_at', 'desc')
-            ->get(['id', 'firstname', 'lastname', 'email', 'created_at']);
+            ->get(['id', 'firstname', 'lastname', 'email', 'created_at','status']);
 
         return view('adminpanel.usersmanagement', compact('users'));
     }
+    public function toggleStatus(User $user)
+    {
+        $user->status = $user->status === 'active' ? 'inactive' : 'active';
+        $user->save();
+
+        return response()->json(['status' => $user->status]);
+    }
+    public function userDetails(User $user)
+{
+    $user->load([
+        'courses.sections.videos.videoProgress',
+        'examUsers.exam',
+        'examUsers.certificate',
+    ]);
+
+    return view('adminpanel.userDetailModal', compact('user'));
+}
+
+
 }

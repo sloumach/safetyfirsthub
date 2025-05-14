@@ -45,11 +45,6 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                        For more information about DataTables, please visit the <a target="_blank"
-                            href="https://datatables.net">official DataTables documentation</a>.</p>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
@@ -64,10 +59,9 @@
                                             <th>Name</th>
                                             <th>email</th>
                                             <th>status</th>
-                                            <th>Start course</th>
-                                            <th>courses</th>
+                                            <th>Account created at:</th>
                                             <th>actions</th>
-                                            <th>certificates</th>
+
                                         </tr>
                                     </thead>
                                     {{-- <tfoot>
@@ -85,33 +79,23 @@
                                                 <td>{{ $user->firstname }}, {{ $user->lastname }}</td>
                                                 <td>{{ $user->email }}</td>
                                                 <td>
-                                                    @php
-                                                        $roles = $user->roles->pluck('name')->implode(', ');
-                                                    @endphp
-                                                    {{ $roles ?: 'User' }}
+                                                    {{ $user->status }}
                                                 </td>
                                                 <td>
-                                                    @if($user->courses->isNotEmpty())
-                                                        <ul class="list-unstyled mb-0">
-                                                            @foreach($user->courses as $course)
-                                                                <li>{{ \Carbon\Carbon::parse($course->pivot->created_at)->format('d M Y') }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                    @else
-                                                        <span class="text-muted">No Course</span>
-                                                    @endif
+                                                    {{ \Carbon\Carbon::parse($user->created_at)->format('d M Y') }}
+
                                                 </td>
                                                 <td>
-                                                    @if($user->courses->isNotEmpty())
-                                                        <ul class="list-unstyled mb-0">
-                                                            @foreach($user->courses as $course)
-                                                                <li><strong>{{ $course->name }}</strong></li>
-                                                            @endforeach
-                                                        </ul>
-                                                    @else
-                                                        <span class="text-muted">No Course</span>
-                                                    @endif
+                                                    <button class="btn btn-sm btn-warning toggle-status" data-id="{{ $user->id }}">
+                                                        {{ $user->status === 'active' ? 'Désactiver' : 'Activer' }}
+                                                    </button>
+                                                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#userDetailModal" data-id="{{ $user->id }}">
+                                                        View
+                                                    </button>
+
                                                 </td>
+
+
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -169,6 +153,13 @@
         </div>
     </div>
 
+    <div class="modal fade" id="userDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" id="user-detail-content">
+                <!-- contenu chargé dynamiquement en JS -->
+            </div>
+        </div>
+    </div>
 
 
 </body>
@@ -188,5 +179,35 @@
 
 <!-- Page level custom scripts -->
 <script src="{{ asset('adminassets/js/demo/datatables-demo.js') }}"></script>
+<script>
+    document.querySelectorAll('.toggle-status').forEach(button => {
+        button.addEventListener('click', function () {
+            const userId = this.getAttribute('data-id');
+            fetch(`/admin/users/${userId}/toggle-status`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json())
+              .then(data => location.reload());
+        });
+    });
+</script>{{-- w9eft hne el modal il affiche les details de l'utilisateur --}}
+<script>
+    document.querySelectorAll('[data-target="#userDetailModal"]').forEach(button => {
+        button.addEventListener('click', function () {
+            console.log('clicked');
+            const userId = this.getAttribute('data-id');
+            fetch(`/admin/users/${userId}/details`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('user-detail-content').innerHTML = html;
+                });
+        });
+    });
+</script>
+
+
 
 </html>

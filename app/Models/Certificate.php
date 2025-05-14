@@ -14,6 +14,7 @@ class Certificate extends Model
         'certificate_url',
         'available',
         'user_id',
+        'cert_num',
     ];
 
     public function examUser()
