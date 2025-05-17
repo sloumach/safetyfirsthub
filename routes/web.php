@@ -123,17 +123,19 @@ Route::group(['middleware' => ['auth', 'verified', 'role:student', 'check.status
     });
     Route::get('/courses/{course_id}/sections', [DashboardController::class, 'getCourseSections'])
     ->whereNumber('course_id');
-    Route::prefix('certificates')->controller(CertificateController::class)->group(function () {
-        Route::get('/generate/{exam_id}', 'generateCertificate')->whereNumber('exam_id')->name('certificates.generate');
-        Route::get('/{certificate_url}/scan', 'scanCertificate')->where('certificate_url', '.*')->name('certificates.scan');
-        Route::get('/{certificate_url}/view', 'viewCertificate')->where('certificate_url', '.*')->name('certificates.view');
-    });
+
     Route::controller(SectionQuizController::class)->group(function () {
         Route::post('/sections/{sectionId}/quiz/submit', [SectionQuizController::class, 'submitQuizAnswers']);
     });
 
 
 });
+
+Route::get('/certificates/{certificate_url}/scan', [CertificateController::class, 'scanCertificate'])
+    ->where('certificate_url', '.*')
+    ->name('certificates.scan');
+    Route::get('/{certificate_url}/view', [CertificateController::class, 'viewCertificate'])
+->where('certificate_url', '.*')->name('certificates.view');
     // ------------------ Routes pour l'administration ------------------
 
 

@@ -92,10 +92,11 @@ class CertificateController extends Controller
      */
     public function scanCertificate($certificate_url, Request $request)
     {
+
         $certificate = Certificate::where('certificate_url', $certificate_url)
             ->where('available', true)
             ->firstOrFail();
-
+dd($certificate);
         // Ajouter une session spécifique au certificat
         $request->session()->put("certificate_access_{$certificate_url}", true);
 

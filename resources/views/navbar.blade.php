@@ -264,6 +264,9 @@
                                         Logout
                                     </a>
                                 </div>
+                                <span class="text-center">
+                                    {{ Auth::user()->firstname }}
+                                </span>
                             </div>
                         </div>
                         @endguest
