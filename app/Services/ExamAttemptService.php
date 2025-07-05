@@ -10,13 +10,15 @@ use App\Models\Choice;
 use App\Models\Payment;
 use App\Models\ExamUser;
 use App\Models\Question;
+use App\Events\ExamFailed;
+use App\Events\ExamPassed;
 use App\Models\UserAnswer;
 use App\Models\VideoProgress;
 use App\Models\UserSectionAttempt;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use App\Mail\ExamFailedNotification;
 use App\Mail\ExamPassedNotification;
+use Illuminate\Support\Facades\Auth;
 
 class ExamAttemptService
 {
@@ -141,10 +143,10 @@ class ExamAttemptService
 
         // 📧 Notifications par email
         if ($status === 'failed') {
-            Mail::to($user->email)->send(new ExamFailedNotification($user, $course, $attemptsLeft));
+            event(new ExamFailed($user, $course, $examUser, $attemptsLeft));
             HelperService::resetAllVideos($examUser);
         } else {
-            Mail::to($user->email)->send(new ExamPassedNotification($user, $course));
+            event(new ExamPassed($user, $course, $examUser));
         }
 
         // 🚫 Si 3 tentatives échouées, on révoque l'accès
