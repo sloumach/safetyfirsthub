@@ -42,7 +42,7 @@
     </head>
     <body>
 		<!-- Start Preloader Area -->
-	
+
 		<!-- End Preloader Area -->
 
 		<!-- Start Navbar Area -->
@@ -107,7 +107,7 @@
 							</div>
 						</div>
 
-						
+
 					</div>
 
 					<div class="col-lg-4">
@@ -344,12 +344,11 @@
     @include('layouts.scripts')
     <!-- Page Specific Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ asset('assets/js/single-course.js') }}"></script>
     <script>
     function toggleDescription() {
         const description = document.getElementById('courseDescription');
         const btn = document.querySelector('.read-more-btn');
-        
+
         description.classList.toggle('expanded');
         btn.classList.toggle('expanded');
     }

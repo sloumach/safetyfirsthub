@@ -19,7 +19,7 @@
                 :candidateName="`${firstname} ${lastname}`"
                 :programName="courseName"
                 :creditHours="'40'"
-                :completionDate="currentDate"
+                :completionDate="completionDate"
                 :qrCode="qrCodeImage"
                 :certNum="`${cert_num}`"
             />
@@ -47,6 +47,8 @@
       CertificatePreview
     },
     setup() {
+        const completionDate = ref("");
+
         const route = useRoute();
         const router = useRouter();
         const loading = ref(true);
@@ -56,6 +58,7 @@
         const lastname = ref("");
         const courseName = ref("");
         const error = ref(null);
+
 
         const currentDate = computed(() => {
             return new Date().toLocaleDateString("en-US", {
@@ -81,6 +84,11 @@
                 cert_num.value = response.data.cert_num;
                 lastname.value = response.data.user_lastname;
                 courseName.value = response.data.course_name;
+                completionDate.value = new Date(response.data.created_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                });
 
                 loading.value = false;
             } catch (e) {
@@ -112,6 +120,11 @@
                             lastname.value = retryResponse.data.user_lastname;
                             courseName.value = retryResponse.data.course_name;
                             cert_num.value = retryResponse.data.cert_num;
+                            completionDate.value = new Date(retryResponse.data.completed_at).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                            });
 
                             loading.value = false;
                             return;
@@ -171,6 +184,7 @@
         return {
             loading,
             qrCodeImage,
+            completionDate ,
             currentDate,
             firstname,
             lastname,

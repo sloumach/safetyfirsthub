@@ -115,113 +115,99 @@ class ExamAttemptService
 
     public function finalizeExam($examUser)
     {
-        $totalQuestions = Question::where('exam_id', $examUser->exam_id)->count();
-        $correctAnswers = UserAnswer::where('exam_user_id', $examUser->id)->where('is_correct', true)->count();
+        $exam     = $examUser->exam;
+        $user     = $examUser->user;
+        $course   = $exam->course;
+        $courseId = $course->id;
+        $userId   = $user->id;
 
-        $score  = round(($correctAnswers / $totalQuestions) * 100);
-        $status = $score >= $examUser->exam->passing_score ? 'passed' : 'failed';
+        // 🎯 Calcul du score
+        $totalQuestions  = Question::where('exam_id', $exam->id)->count();
+        $correctAnswers  = UserAnswer::where('exam_user_id', $examUser->id)->where('is_correct', true)->count();
+        $score           = round(($correctAnswers / $totalQuestions) * 100);
+        $status          = $score >= $exam->passing_score ? 'passed' : 'failed';
 
+        // ✅ Marquer l'examen comme terminé
         HelperService::markExamAsCompleted($examUser->id, $score, $status);
 
-        // 📌 Envoi de l'email de notification
-        $user = $examUser->user;
-        $course = $examUser->exam->course;
-        $attemptsCount = ExamUser::where('user_id', $examUser->user_id)
-        ->whereHas('exam', function ($query) use ($examUser) {
-            $query->where('course_id', $examUser->exam->course_id);
-        })
-        ->where('status', 'completed')
-        ->where('score', '<', $examUser->exam->passing_score)
-        ->count();        // 📌 Vérifier le nombre total de tentatives échouées
-        if ($status === 'failed') {
-            $attemptsLeft = max(0, 3 - $attemptsCount);
+        // 🔄 Compter les tentatives échouées pour ce cours
+        $attemptsCount = ExamUser::where('user_id', $userId)
+            ->whereHas('exam', fn($q) => $q->where('course_id', $courseId))
+            ->where('status', 'completed')
+            ->where('score', '<', $exam->passing_score)
+            ->count();
 
-            Mail::to($user->email)->send(
-                new ExamFailedNotification($user, $course, $attemptsLeft)
-            );
+        $attemptsLeft = max(0, 3 - $attemptsCount);
+
+        // 📧 Notifications par email
+        if ($status === 'failed') {
+            Mail::to($user->email)->send(new ExamFailedNotification($user, $course, $attemptsLeft));
+            HelperService::resetAllVideos($examUser);
         } else {
-            Mail::to($user->email)->send(
-                new ExamPassedNotification($user, $course)
-            );
+            Mail::to($user->email)->send(new ExamPassedNotification($user, $course));
         }
-        $status === 'failed' ? HelperService::resetAllVideos($examUser) : null;
 
+        // 🚫 Si 3 tentatives échouées, on révoque l'accès
+        if ($status === 'failed' && $attemptsCount >= 3) {
+            // 🧹 Nettoyage des données liées au cours
+            ExamUser::where('user_id', $userId)
+                ->whereHas('exam', fn($q) => $q->where('course_id', $courseId))
+                ->delete();
 
-        Log::info($attemptsCount);
-        Log::info("role changed");
-        Log::info($attemptsCount);
-        Log::info($status);
-        Log::info($score);
-        Log::info($correctAnswers);
+            Payment::where('user_id', $userId)
+                ->whereHas('orders', fn($q) => $q->where('course_id', $courseId))
+                ->delete();
 
-        if ($status === 'failed') {
-
-            if ($attemptsCount >= 3) {
-                $courseId = $examUser->exam->course_id;
-                $userId = $examUser->user_id;
-                $user = User::find($userId);
-                ExamUser::where('user_id', $user->id)
-                ->whereHas('exam', function ($query) use ($courseId) {
-                    $query->where('course_id', $courseId);
-                })->delete();
-                // 📌 1. Supprimer les paiements liés à l’achat du cours
-                Payment::where('user_id', $user->id)
-                ->whereHas('orders', function ($query) use ($courseId) {
-                    $query->where('course_id', $courseId);
-                })->delete();
-
-                // 📌 2. Supprimer les commandes d’achat de ce cours
-                Order::where('user_id', $user->id)
+            Order::where('user_id', $userId)
                 ->where('course_id', $courseId)
                 ->delete();
 
-                UserSectionAttempt::where('user_id', $user->id)
-                ->whereHas('section', function ($query) use ($courseId) {
-                    $query->where('course_id', $courseId);
-                })->delete();
-                // 📌 Supprimer l'accès au cours
-                $user->courses()->detach($courseId);
+            UserSectionAttempt::where('user_id', $userId)
+                ->whereHas('section', fn($q) => $q->where('course_id', $courseId))
+                ->delete();
 
-                $courseCount = User::find($userId)->courses()
-                ->whereNotNull('course_user.created_at') // 🔥 Ajout du préfixe 'course_user.'
+            $user->courses()->detach($courseId);
+
+            // 🧠 Vérifier s’il reste des cours actifs
+            $remainingCourses = $user->courses()
+                ->whereNotNull('course_user.created_at')
                 ->count();
 
-                if ($courseCount == 0) {
-                    Log::info("role change");
+            // 👤 Mise à jour du rôle si plus aucun cours actif
+            if ($remainingCourses === 0) {
+                Log::info("User #$userId - role downgraded from 'student' to 'user' after failing all courses.");
 
+                $studentRole = Role::where('name', 'student')->first();
+                $userRole    = Role::where('name', 'user')->first();
 
-                    // 📌 Gérer les rôles de l'utilisateur
-                    $studentRole = Role::where('name', 'student')->first();
-                    $userRole = Role::where('name', 'user')->first();
-                    $user->roles()->detach($studentRole->id); // Retirer "student"
-                    $user->roles()->syncWithoutDetaching([$userRole->id]); // Ajouter "user"
+                $user->roles()->detach($studentRole->id);
+                $user->roles()->syncWithoutDetaching([$userRole->id]);
 
-                    return [
-                        'exam_completed' => true,
-                        'score'          => $score,
-                        'status'         => 200,
-                        'examresult'     => $status,
-                        'passing_score'  => $examUser->exam->passing_score,
-                        'retry_allowed'  => $status === 'failed' && $examUser->attempts < 3,
-                        'attempts_left'  => max(0, 3 - $attemptsCount),
-                        'role_changed'  => 1,
-                        'message' => 'Exam failed, You have exceeded your maximum attempts and will need to repurchase the course to try again.',
-                    ];
-                }
-
+                return [
+                    'exam_completed' => true,
+                    'score'          => $score,
+                    'status'         => 200,
+                    'examresult'     => $status,
+                    'passing_score'  => $exam->passing_score,
+                    'retry_allowed'  => false,
+                    'attempts_left'  => 0,
+                    'role_changed'   => 1,
+                    'message'        => 'Exam failed. You have exceeded your maximum attempts and access has been revoked. Please repurchase the course to try again.',
+                ];
             }
-
         }
 
+        // 🔚 Résultat par défaut
         return [
             'exam_completed' => true,
             'score'          => $score,
             'status'         => 200,
             'examresult'     => $status,
-            'passing_score'  => $examUser->exam->passing_score,
+            'passing_score'  => $exam->passing_score,
             'retry_allowed'  => $status === 'failed' && $examUser->attempts < 3,
-            'attempts_left'  => max(0, 3 - $attemptsCount),
-            'role_changed'  => 0,
+            'attempts_left'  => $attemptsLeft,
+            'role_changed'   => 0,
         ];
     }
+
 }

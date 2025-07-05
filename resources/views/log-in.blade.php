@@ -46,13 +46,7 @@
         <!-- Start Navbar Area -->
 		@include('navbar')
 		<!-- End Navbar Area -->
-        @if ($errors->any())
-        <div class="alert alert-danger">
-            @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
-            @endforeach
-        </div>
-    @endif
+
 
 		<!-- Start Page Title Area -->
 		<div class="page-title-area bg-8">

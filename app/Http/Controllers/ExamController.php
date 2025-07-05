@@ -42,7 +42,7 @@ class ExamController extends Controller
             return ($result);
         /* HelperService::markExamAsCompleted($session_id,0,'completed');
         HelperService::resetAllVideos($examUser) ;
-        
+
         return response()->json([
             'exam_completed' => true,
             'message' => 'Exam cancelled and it will marked as failed',
