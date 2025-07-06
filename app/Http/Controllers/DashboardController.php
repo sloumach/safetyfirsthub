@@ -145,8 +145,6 @@ class DashboardController extends Controller
         ]);
     }
 
-
-
     public function getVideoUrl($video_id)
     {
         $user = auth()->user();

@@ -4,12 +4,23 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Exam;
 use App\Models\Question;
+use App\Services\AdminExamsManagement;
+use App\Services\AdminQuestionsManagement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Flasher\Prime\FlasherInterface;
 
 class AdminExamsController extends Controller
 {
+    protected AdminExamsManagement $examService;
+    protected AdminQuestionsManagement $questionService;
+
+    public function __construct(AdminExamsManagement $examService, AdminQuestionsManagement $questionService)
+    {
+        $this->examService = $examService;
+        $this->questionService = $questionService;
+    }
+
     public function listExams()
     {
         $exams = Exam::with('course')->get();
@@ -25,26 +36,17 @@ class AdminExamsController extends Controller
 
     public function storeExam(Request $request)
     {
-        
-        $rules = [
+        $data = $request->validate([
             'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'duration' => 'required|integer|min:5|max:120',
             'passing_score' => 'required|integer|min:1|max:100',
             'is_active' => 'boolean',
-        ];
+        ]);
 
-        foreach ($rules as $field => $rule) {
-            $validator = Validator::make($request->all(), [$field => $rule]);
-            if ($validator->fails()) {
-                flash()->error($validator->errors()->first());
-                return back()->withInput();
-            }
-        }
+        $this->examService->store($data);
 
-        $validatedData = $request->all();
-        Exam::create($validatedData);
         return redirect()->route('admin.exams')->with('success', 'Exam created successfully!');
     }
 
@@ -58,13 +60,13 @@ class AdminExamsController extends Controller
     public function updateExam(Request $request, $id)
     {
         try {
-            $validatedData = $request->validate([
-                'course_id'     => 'required|exists:courses,id',
-                'title'         => 'required|string|max:255',
-                'description'   => 'nullable|string',
-                'duration'      => 'required|integer|min:5|max:120',
+            $data = $request->validate([
+                'course_id' => 'required|exists:courses,id',
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'duration' => 'required|integer|min:5|max:120',
                 'passing_score' => 'required|integer|min:1|max:100',
-                'is_active'     => 'boolean',
+                'is_active' => 'boolean',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             foreach ($e->errors() as $field => $messages) {
@@ -75,8 +77,7 @@ class AdminExamsController extends Controller
             return back()->withInput();
         }
 
-        $exam = Exam::findOrFail($id);
-        $exam->update($validatedData);
+        $this->examService->update($id, $data);
 
         return redirect()->route('admin.exams')->with('success', 'Exam updated successfully!');
     }
@@ -102,46 +103,52 @@ class AdminExamsController extends Controller
         return view('adminpanel.exams.create_question', compact('exam'));
     }
 
-    public function storeQuestion(Request $request, $exam_id)
+    public function storeQuestion(Request $request, $examId)
     {
-        $rules = [
+        $data = $request->validate([
             'question_text' => 'required|string|max:1000',
             'answers' => 'required|array|size:4',
             'answers.*' => 'required|string|max:255',
             'correct_answer' => 'required|integer|min:1|max:4',
-        ];
-
-        foreach ($rules as $field => $rule) {
-            $validator = Validator::make($request->all(), [$field => $rule]);
-            if ($validator->fails()) {
-                flash()->error($validator->errors()->first());
-                return back()->withInput();
-            }
-        }
-
-        $validatedData = $request->all();
-        $exam = Exam::findOrFail($exam_id);
-
-        // Créer la question
-        $question = $exam->questions()->create([
-            'question_text' => $validatedData['question_text'],
         ]);
 
-        // Vérifier que $question est bien créé avant d'ajouter les réponses
-        if (! $question) {
-           
-            return redirect()->back()->with('error', 'Error creating question.');
-        }
+        $this->questionService->store(
+            $examId,
+            $data['question_text'],
+            $data['answers'],
+            $data['correct_answer']
+        );
 
-        // Ajouter les réponses
-        foreach ($validatedData['answers'] as $index => $answerText) {
-            $question->choices()->create([
-                'choice_text' => $answerText,                                      // Assurez-vous que c'est bien `choice_text` et non `answer_text`
-                'is_correct'  => ($index + 1 == $validatedData['correct_answer']), // Vérifie si c'est la bonne réponse
-            ]);
-        }
+        return redirect()->route('admin.exams.questions', $examId)->with('success', 'Question ajoutée avec succès !');
+    }
 
-        return redirect()->route('admin.exams.questions', $exam_id)->with('success', 'Question ajoutée avec succès !');
+    public function editQuestion($id)
+    {
+        $question = Question::with('choices')->findOrFail($id);
+        $exam     = $question->exam; // Récupérer l'examen associé à la question
+
+        return view('adminpanel.exams.edit_question', compact('question', 'exam'));
+    }
+
+    public function updateQuestion(Request $request, $id)
+    {
+        $data = $request->validate([
+            'question_text' => 'required|string|max:1000',
+            'choices' => 'required|array|size:4',
+            'choices.*' => 'required|string|max:255',
+            'correct_answer' => 'required|integer|min:1|max:4',
+        ]);
+
+        $question = Question::findOrFail($id);
+
+        $this->questionService->update(
+            $id,
+            $data['question_text'],
+            $data['choices'],
+            $data['correct_answer']
+        );
+
+        return redirect()->route('admin.exams.questions', $question->exam_id)->with('success', 'Question mise à jour avec succès !');
     }
 
     public function deleteQuestion($id)
@@ -160,51 +167,6 @@ class AdminExamsController extends Controller
         $exam->save();
 
         return redirect()->back()->with('success', 'Exam status updated successfully!');
-    }
-
-    public function editQuestion($id)
-    {
-        $question = Question::with('choices')->findOrFail($id);
-        $exam     = $question->exam; // Récupérer l'examen associé à la question
-
-        return view('adminpanel.exams.edit_question', compact('question', 'exam'));
-    }
-
-    public function updateQuestion(Request $request, $id)
-    {
-        try {
-            $validatedData = $request->validate([
-                'question_text'  => 'required|string|max:1000',
-                'choices'        => 'required|array|size:4',
-                'choices.*'      => 'required|string|max:255',
-                'correct_answer' => 'required|integer|min:1|max:4',
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            foreach ($e->errors() as $field => $messages) {
-                foreach ($messages as $message) {
-                    flash()->error($field . ': ' . $message);
-                }
-            }
-            return back()->withInput();
-        }
-
-        $question = Question::findOrFail($id);
-        $exam_id  = $question->exam_id; // Récupérer l'ID de l'examen pour la redirection
-
-        // Mise à jour du texte de la question
-        $question->update([
-            'question_text' => $validatedData['question_text'],
-        ]);
-
-        // Mettre à jour les choix existants
-        foreach ($question->choices as $index => $choice) {
-            $choice->update([
-                'choice_text' => $validatedData['choices'][$index],
-                'is_correct'  => ($index + 1 == $validatedData['correct_answer']), // Mettre à jour la bonne réponse
-            ]);
-        }
-
-        return redirect()->route('admin.exams.questions', $exam_id)->with('success', 'Question updated successfully!');
     }
 
 }

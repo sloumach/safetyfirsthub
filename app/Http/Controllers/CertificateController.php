@@ -9,83 +9,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Services\CertificateManagement;
+
 
 
 class CertificateController extends Controller
 {
+    public function __construct(protected CertificateManagement $certificateService) {}
+
+
     /**
      * Générer un certificat après la réussite d'un examen
      */
-    public function generateCertificate($exam_id)
+
+    public function generateCertificate($examId)
     {
-        // Find the exam_user record for the current user and exam
-        $examUser = ExamUser::where('exam_id', $exam_id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
-
-        // Vérifier si l'utilisateur a réussi l'examen
-        if ($examUser->score < $examUser->exam->score) {
-            return response()->json(['error' => 'You have not passed this exam.'], 403);
-        }
-
-        // Récupérer l'utilisateur connecté
-        $user = auth()->user();
-
-        // Récupérer le nom du cours associé à l'examen
-        $courseName = $examUser->exam->course->name ?? 'Unknown Course';
-
-        // Vérifier si un certificat existe déjà pour cet examen
-        $certificate = Certificate::where('exam_user_id', $examUser->id)->first();
-
-        if ($certificate) {
-            if (!$certificate->available) {
-                return response()->json(['error' => 'This certificate has expired.'], 403);
-            }
-
-            // 🔹 Si le certificat est valide, on retourne directement ses informations
-            return response()->json([
-                'message'        => 'Certificate already exists.',
-                'user_firstname' => $user->firstname,
-                'user_lastname'  => $user->lastname,
-                'course_name'    => $courseName,
-                'cert_num'  => $certificate->cert_num,
-                'certificate'    => [
-                    'url'       => route('certificates.view', $certificate->certificate_url),
-                    'qr_code'   => base64_encode(QrCode::format('svg')->size(200)->generate(route('certificates.scan', $certificate->certificate_url))),
-
-                ],
-            ]);
-
-        }
-
-        // 🔹 Générer une URL unique pour le certificat
-        $certificate_url = Str::uuid()->toString();
-        // 🔹 Calcul du prochain numéro de certificat
-        $lastCertNum = Certificate::max('cert_num');
-        $nextCertNum = $lastCertNum ? $lastCertNum + 1 : 1;
-        Log::info("lastCertNum: " . $lastCertNum . " nextCertNum: " . $nextCertNum);
-        // 🔹 Créer un nouveau certificat
-        $certificate = Certificate::create([
-            'exam_user_id'    => $examUser->id,
-            'certificate_url' => $certificate_url,
-            'available'       => true, // Valide par défaut
-            'user_id'         => $examUser->user_id,
-            'cert_num'        => $nextCertNum,
-        ]);
-        Log::info("certificate created: " . $certificate);
-        return response()->json([
-            'message'        => 'Certificate generated successfully.',
-            'user_firstname' => $user->firstname,
-            'user_lastname'  => $user->lastname,
-            'course_name'    => $courseName,
-            'cert_num'  => $certificate->cert_num,
-            'certificate'    => [
-                'url'      => route('certificates.view', $certificate->certificate_url),
-                'qr_code'  => base64_encode(QrCode::format('svg')->size(200)->generate(route('certificates.scan', $certificate->certificate_url))),
-            ],
-        ]);
+        $data = $this->certificateService->generate($examId);
+        return response()->json($data);
     }
-
 
     /**
      * 🔹 Nouvelle route intermédiaire après scan du QR Code
@@ -96,7 +37,6 @@ class CertificateController extends Controller
         $certificate = Certificate::where('certificate_url', $certificate_url)
             ->where('available', true)
             ->firstOrFail();
-dd($certificate);
         // Ajouter une session spécifique au certificat
         $request->session()->put("certificate_access_{$certificate_url}", true);
 
