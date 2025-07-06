@@ -10,9 +10,22 @@ use App\Models\VideoProgress;
 use App\Models\UserSectionAttempt;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
+use App\Services\DashboardExamManagement;
+use App\Services\DashboardCourseManagement;
+use App\Services\DashboardCourseSectionManagement;
+
+
+
 
 class DashboardController extends Controller
 {
+
+    public function __construct(
+        protected DashboardCourseManagement $dashboardService,
+        protected DashboardCourseSectionManagement $sectionService,
+        protected DashboardExamManagement $examService
+        ) {}
+
     public function index()
     {
         $user    = auth()->user();
@@ -29,120 +42,25 @@ class DashboardController extends Controller
 
         return view('userdashboard.dashboard-course', compact('courses'));
     }
+
     public function getCourses()
     {
         try {
-            $user = auth()->user();
-
-            $courses = $user->courses->map(function ($course) use ($user) {
-                $coverUrl = $course->cover ? $this->getcoverurl(basename($course->cover)) : null;
-
-                // 🔹 Récupérer le dernier achat du cours
-                $order = Order::where('user_id', $user->id)
-                    ->whereHas('course', fn($query) => $query->where('course_id', $course->id))
-                    ->latest()
-                    ->first();
-
-                if (! $order) {
-                    return [
-                        'id'           => $course->id,
-                        'name'         => $course->name,
-                        'description'  => $course->description,
-                        'cover'        => $coverUrl,
-                        'total_videos' => $course->total_videos,
-                        'students'     => $course->students ?? 0,
-                        'examcheck'    => false, // ❌ Aucun examen valide trouvé
-                        'exam_id'      => null,
-                        'short_description' => $course->short_description,
-                    ];
-                }
-                $examcheck = ExamUser::query()
-                    ->where('user_id', $user->id)
-                    ->where('order_id', $order->id) // ✅ Vérifie uniquement les examens de CE paiement
-                    ->whereHas('exam', fn($query) => $query->where('course_id', $course->id))
-                    ->whereColumn('score', '>=', 'exams.passing_score') // ✅ Vérifie si la tentative est réussie
-                    ->join('exams', 'exam_users.exam_id', '=', 'exams.id')
-                    ->latest('exam_users.id') // ✅ Prend la dernière tentative réussie
-                    ->value('exam_users.id'); // ✅ Récupère l'ID de la meilleure tentative
-
-                return [
-                    'id'           => $course->id,
-                    'name'         => $course->name,
-                    'description'  => $course->description,
-                    'cover'        => $coverUrl,
-                    'total_videos' => $course->total_videos,
-                    'students'     => $course->students ?? 0,
-                    'examcheck'    => (bool) $examcheck, // ✅ Vérification basée sur le score minimum requis
-                    'exam_id'      => $examcheck,
-                    'short_description' => $course->short_description,
-                ];
-            });
-
+            $courses = $this->dashboardService->getUserCourses();
             return response()->json($courses, 200);
-
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getmessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
     public function getCourseSections($course_id)
     {
-        $course = Course::with(['sections.videos', 'sections.quiz.questions.choices'])->findOrFail($course_id);
-        $userId = auth()->id();
-
-        return response()->json([
-            'sections' => $course->sections->map(function ($section) use ($userId) {
-                // Vérifier si l'utilisateur a réussi le quiz de cette section
-                $userAttempt = \App\Models\UserSectionAttempt::where('user_id', $userId)
-                    ->where('section_id', $section->id)
-                    ->orderByDesc('created_at') // Dernière tentative en premier
-                    ->first();
-
-                return [
-                    'id'     => $section->id,
-                    'title'  => $section->title,
-                    'videos' => $section->videos->map(function ($video) use ($section, $userId) {
-                        return [
-                            'id'           => $video->id,
-                            'title'        => $video->title,
-                            'duration'     => $video->duration,
-                            'video_url'    => url("/sections/{$section->id}/video"),
-                            'is_completed' => VideoProgress::where('user_id', $userId)
-                                ->where('video_id', $video->id)
-                                ->where('is_completed', true)
-                                ->exists(),
-                        ];
-                    }),
-                    'slides' => $section->slides->map(function ($slide) {
-                        return [
-                            'id'      => $slide->id,
-                            'title'   => $slide->title,
-                            'content' => $slide->content,
-                            'file' => $slide->file_path,
-                        ];
-                    }),
-                    'quiz' => $section->quiz ? [
-                        'id'             => $section->quiz->id,
-                        'passing_score'  => $section->quiz->passing_score,
-                        'is_attempted'   => $userAttempt !== null, // Si une tentative existe
-                        'is_passed'      => $userAttempt ? $userAttempt->score >= $section->quiz->passing_score : false, // Vérifie si l'utilisateur a réussi
-                        'score'          => $userAttempt->score ?? null, // Score obtenu
-                        'questions'      => $section->quiz->questions->map(function ($question) {
-                            return [
-                                'id'      => $question->id,
-                                'text'    => $question->question_text,
-                                'choices' => $question->choices->map(function ($choice) {
-                                    return [
-                                        'id'   => $choice->id,
-                                        'text' => $choice->choice_text,
-                                    ];
-                                }),
-                            ];
-                        }),
-                    ] : null,
-                ];
-            }),
-        ]);
+        try {
+            $sections = $this->sectionService->getCourseSections($course_id);
+            return response()->json(['sections' => $sections], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function getVideoUrl($video_id)
@@ -205,15 +123,6 @@ class DashboardController extends Controller
         }
     }
 
-    public function getVideo($id)
-    {
-        try {
-
-        } catch (\Exception $th) {
-
-        }
-    }
-
     public function streamVideo($video_id)
     {
         $user = auth()->user();
@@ -251,12 +160,6 @@ class DashboardController extends Controller
         ]);
     }
 
-
-    private function getcoverurl($filename)
-    {
-        return URL::temporarySignedRoute('cover.access', now()->addMinutes(30), ['filename' => $filename]);
-    }
-
     public function serveCover($filename)
     {
         // Vérifier la signature de l'URL
@@ -274,40 +177,20 @@ class DashboardController extends Controller
         // Retourner l'image
         return response()->file(Storage::disk('public')->path($path));
     }
+
     public function getPassedExams()
     {
         try {
-            $user = auth()->user();
-
-            // Récupérer les examens réussis par l'utilisateur
-            $passedExams = ExamUser::where('user_id', $user->id)
-                ->whereColumn('score', '>=', 'exams.passing_score')     // ✅ Vérifie si le score est suffisant
-                ->join('exams', 'exam_users.exam_id', '=', 'exams.id')  // ✅ Joindre la table exams pour récupérer les détails
-                ->join('courses', 'exams.course_id', '=', 'courses.id') // ✅ Joindre la table courses pour récupérer le nom du cours
-                ->select(
-                    'exam_users.id as exam_user_id',
-                    'exams.id as exam_id',
-                    'exams.title as exam_title',
-                    'exams.passing_score',
-                    'exam_users.score',
-                    'exam_users.completed_at',
-                    'courses.id as course_id',
-                    'courses.name as course_name',
-                    'courses.cover as course_cover'
-                )
-                ->get();
-
-            // ✅ Ajouter l'URL du cover si disponible
-            $passedExams->transform(function ($exam) {
-                $exam->course_cover = $exam->course_cover ? $this->getcoverurl(basename($exam->course_cover)) : null;
-                return $exam;
-            });
-
-            return response()->json($passedExams, 200);
-
+            $exams = $this->examService->getPassedExams();
+            return response()->json($exams, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch passed exams'], 500);
         }
+    }
+
+        private function getcoverurl($filename)
+    {
+        return URL::temporarySignedRoute('cover.access', now()->addMinutes(30), ['filename' => $filename]);
     }
 
 }
