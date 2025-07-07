@@ -42,5 +42,9 @@ class ExamUser extends Pivot
     {
         return $this->hasOne(Certificate::class, 'exam_user_id');
     }
+    public function getPassedAttribute(): bool
+    {
+        return $this->exam && $this->score >= $this->exam->passing_score;
+    }
 
 }

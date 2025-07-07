@@ -352,28 +352,46 @@ const showInitialWarning = () => {
 // 🏁 Démarrer une session d'examen
 onMounted(async () => {
     try {
-        console.log('ExamDetails mounted');
-        
         const confirmed = await showInitialWarning();
 
         if (!confirmed) {
-            console.log('User cancelled exam start');
             router.push('/dashboard/exams');
             return;
         }
 
-        console.log('Initializing exam security...');
-        
-        PreventSecurity.cleanup(); // Clean up any existing state
+        PreventSecurity.cleanup();
         PreventSecurity.setSecurityCallback(reportSecurityBreach);
         PreventSecurity.init(router);
 
-        const response = await axios.post(`/exam/start/${route.params.id}`);
+        let response = null;
+
+        try {
+            response = await axios.post(`/exam/start/${route.params.id}`);
+        } catch (error) {
+            if (error.response?.status === 404) {
+                Swal.fire({
+                    title: 'Error',
+                    text: error.response.data?.error ?? 'Exam not found',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                router.push('/dashboard/exams');
+                return;
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong. Please try again later.',
+                });
+                return;
+            }
+        }
+
         sessionId.value = response.data.session_id;
         fetchNextQuestion();
     } catch (error) {
         console.error('Error in exam initialization:', error);
-        // Handle max attempts reached error
+
         if (error.response?.status === 403 && error.response?.data?.error === 'exam.max_attempts_reached') {
             hasAttemptsExhausted.value = true;
 
@@ -387,14 +405,15 @@ onMounted(async () => {
     }
 });
 
+
 // Ensure cleanup happens when component is unmounted
 onBeforeUnmount(() => {
-    console.log('ExamDetails unmounting, cleaning up security...');
+
     PreventSecurity.cleanup();
 });
 
 onUnmounted(() => {
-    console.log('ExamDetails unmounted');
+
     isActive = false;
     clearInterval(timerInterval);
 });

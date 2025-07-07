@@ -3,19 +3,20 @@
         <div class="container py-3"> <!-- Reduced padding -->
             <div class="row">
                 <div class="col-12">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-2"> <!-- Reduced margin -->
-                            <li class="breadcrumb-item">
-                                <router-link to="/dashboard/courses">Certified Courses</router-link>
-                            </li>
-                            <li class="breadcrumb-item">
-                                {{ course.category  }}
-                            </li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                {{ course?.name || course?.title }}
-                            </li>
-                        </ol>
-                    </nav>
+                    <nav v-if="course" aria-label="breadcrumb">
+    <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item">
+            <router-link to="/dashboard/courses">Certified Courses</router-link>
+        </li>
+        <li class="breadcrumb-item">
+            {{ course.category }}
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            {{ course.name || course.title }}
+        </li>
+    </ol>
+</nav>
+
                 </div>
             </div>
 
@@ -812,7 +813,6 @@ const showInitialWarning = () => {
 };
 // 🎯 Montage du composant
 onMounted(() => {
-
     showInitialWarning().then(() => {
         // Proceed with initialization after warning is acknowledged
         fetchCourse();

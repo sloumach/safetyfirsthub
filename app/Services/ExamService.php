@@ -24,19 +24,26 @@ class ExamService
         if (!$order) {
             return ['error' => __('exam.no_valid_purchase'), 'status' => 403];
         } */
-        
+
         /* if(!HelperService::checkCourseCompletion($course_id)->completed){
             return ['error' => __('exam.course_not_completeddd'), 'status' => 403];
         } */
         $attemptedExamIds = ExamUser::where('user_id', $user->id)
-        ->pluck('exam_id')
-        ->toArray();
+            ->pluck('exam_id')
+            ->toArray();
         $availableExams = Exam::where('course_id', $course_id)
-        ->where('is_active', true)
-        ->whereNotIn('id', $attemptedExamIds)
-        ->get();
+            ->where('is_active', true)
+            ->whereNotIn('id', $attemptedExamIds)
+            ->get();
+
+        // Log the attempted exam IDs and available exams
+        \Log::info('Attempted Exam IDs:', ['user_id' => $user->id, 'attempted_exam_ids' => $attemptedExamIds]);
+        \Log::info('Available Exams:', ['course_id' => $course_id, 'available_exams' => $availableExams->pluck('id')->toArray()]);
+        if ($availableExams->isEmpty()) {
+            return ['error' => __('exam.no_exam_available'), 'status' => 404];
+        }
         $exam = $availableExams->random();
-       
+
 
         if (!$exam) {
             return ['error' => __('exam.no_exam_available'), 'status' => 404];
@@ -98,7 +105,7 @@ class ExamService
     public function userExamHistory()
     {
         $user = Auth::user();
-        
+
         $examHistory = ExamUser::where('user_id', $user->id)
             ->with(['exam' => function($query) {
                 $query->with('course:id,name');
@@ -125,7 +132,7 @@ class ExamService
     public function examResults($session_id)
     {
         $user = Auth::user();
-        
+
         $examUser = ExamUser::where('exam_id', $session_id)
             ->where('user_id', $user->id)
             ->with(['exam.course:id,name'])
@@ -144,5 +151,5 @@ class ExamService
             'course_name' => $examUser->exam->course->name
         ];
     }
-   
+
 }

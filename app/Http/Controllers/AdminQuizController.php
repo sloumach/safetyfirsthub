@@ -10,9 +10,17 @@ use App\Models\SectionQuizChoice;
 use App\Models\SectionQuizQuestion;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
+use App\Services\AdminQuizzesManagement;
 
 class AdminQuizController extends Controller
 {
+    protected AdminQuizzesManagement $quizService;
+
+    public function __construct(AdminQuizzesManagement $quizService)
+    {
+        $this->quizService = $quizService;
+    }
+
     public function index()
     {
         $quizzes = SectionQuiz::with('section')->get();
@@ -27,13 +35,13 @@ class AdminQuizController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'title' => 'required|string|max:255',
             'section_id' => 'required|exists:sections,id',
             'passing_score' => 'required|integer|min:0|max:100',
         ]);
 
-        SectionQuiz::create($request->all());
+        $this->quizService->store($data);
 
         return redirect()->route('admin.quizzes.index')->with('success', 'Quiz ajouté avec succès.');
     }
@@ -52,25 +60,18 @@ class AdminQuizController extends Controller
         return view('adminpanel.quizzes.edit', compact('quiz', 'courses'));
     }
 
-
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $data = $request->validate([
             'title' => 'required|string|max:255',
             'section_id' => 'required|exists:sections,id',
             'passing_score' => 'required|integer|min:0|max:100',
         ]);
 
-        $quiz = SectionQuiz::findOrFail($id);
-        $quiz->update([
-            'title' => $request->title,
-            'section_id' => $request->section_id,
-            'passing_score' => $request->passing_score,
-        ]);
+        $this->quizService->update($id, $data);
 
         return redirect()->route('admin.quizzes.index')->with('success', 'Quiz mis à jour avec succès.');
     }
-
 
     public function destroy($id)
     {

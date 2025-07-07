@@ -37,8 +37,9 @@
         <div class="mb-3 border p-2 rounded">
             <strong>{{ $examUser->exam->title }}</strong><br>
             Score : {{ $examUser->score }} –
-            <span class="badge badge-{{ $examUser->status === 'passed' ? 'success' : 'danger' }}">
-                {{ ucfirst($examUser->status) }}
+            <span class="badge badge-{{ $examUser->passed ? 'success' : 'danger' }}">
+                {{ ucfirst($examUser->passed ? 'passed' : 'failed') }}
+
             </span>
         </div>
     @empty

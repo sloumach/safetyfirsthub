@@ -121,7 +121,7 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label>State <span class="required">*</span></label>
-                                            <input type="text" value="{{ auth()->user()->state }} class="form-control" name="state" required>
+                                            <input type="text" value="{{ auth()->user()->state }}" class="form-control" name="state" required>
                                         </div>
                                     </div>
 

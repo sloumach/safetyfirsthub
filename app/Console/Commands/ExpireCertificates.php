@@ -5,10 +5,10 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Models\Certificate;
 use Illuminate\Console\Command;
-use App\Mail\CertificateExpired;
+use App\Events\CertificateExpired;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\CertificateExpiringInOneMonth;
-use App\Mail\CertificateExpiringInFifteenDays;
+use App\Events\CertificateExpiringInOneMonth;
+use App\Events\CertificateExpiringInFifteenDays;
 
 class ExpireCertificates extends Command
 {
@@ -42,17 +42,15 @@ class ExpireCertificates extends Command
             $daysUntilExpiration = $now->diffInDays($expirationDate, false);
 
             if ($daysUntilExpiration <= 0) {
-                // Expiré
                 $certificate->update(['available' => false]);
-                Mail::to($user->email)->send(new CertificateExpired($certificate));
+                event(new CertificateExpired($certificate));
                 $expiredCount++;
             } elseif ($daysUntilExpiration === 15) {
-                // 15 jours avant
-                Mail::to($user->email)->send(new CertificateExpiringInFifteenDays($certificate));
+                event(new CertificateExpiringInFifteenDays($certificate));
             } elseif ($daysUntilExpiration === 30) {
-                // 1 mois avant
-                Mail::to($user->email)->send(new CertificateExpiringInOneMonth($certificate));
+                event(new CertificateExpiringInOneMonth($certificate));
             }
+
         }
 
         $this->info("$expiredCount certificat(s) expiré(s) ont été désactivé(s).");

@@ -9,6 +9,8 @@ use App\Models\Course;
 use App\Models\Certificate;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use App\Events\CourseExpiringInOneMonth;
+use App\Events\CourseExpiringInFifteenDays;
 
 class RemoveExpiredCourses extends Command
 {
@@ -42,10 +44,9 @@ class RemoveExpiredCourses extends Command
                     $hasNotPassedExam = !$hasPassedExam;
 
                     $mailClass = $daysRemaining === 30
-                        ? new \App\Mail\CourseExpiringInOneMonth($user, $course, 30, $hasNotPassedExam)
-                        : new \App\Mail\CourseExpiringInFifteenDays($user, $course, 15, $hasNotPassedExam);
+                        ? event(new CourseExpiringInOneMonth($user, $course, 30, $hasNotPassedExam))
+                        : event (new CourseExpiringInFifteenDays($user, $course, 15, $hasNotPassedExam));
 
-                    \Illuminate\Support\Facades\Mail::to($user->email)->send($mailClass);
                 }
 
 
